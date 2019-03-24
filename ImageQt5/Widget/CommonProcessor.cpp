@@ -36,75 +36,75 @@ void CommonProcessor::ProcessGeneralImage(GeneralImage* image)
 		{
 			uchar* pPixel = pImageData + j * pitch + i;
 			uchar* pBackupPixel = pBackupImageData + j * pitch + i;
-			float fResult = (*(pBackupPixel)-127.0f) * (_contrast + 100) / 100.0f + 127.0f;
-			fResult *= (100.0f + _brightness / 2.0f) / 100.0f;
-			if (fResult >= 255)
+			float result = (*(pBackupPixel)-127.0f) * (_contrast + 100) / 100.0f + 127.0f;
+			result *= (100.0f + _brightness / 2.0f) / 100.0f;
+			if (result >= 255)
 			{
 				*(pPixel) = 255;
 			}
-			else if (fResult <= 0)
+			else if (result <= 0)
 			{
 				*(pPixel) = 0;
 			}
 			else
 			{
-				*(pPixel) = round(fResult);
+				*(pPixel) = round(result);
 			}
 		}
 
 	//	PIProgressSetPercent((j + 1), nHeight);
 	}
 
-//	PIProgressDone();*/
+//	PIProgressDone();
 }
 
 template<typename Type>
-void CommonProcessor::ProcessTemplate(TemplateImage<Type>* pImage)
+void CommonProcessor::ProcessTemplate(TemplateImage<Type>* image)
 {
-	assert(pImage);
+	assert(image);
 
-/*	int nWidth = pImage->GetWidth();
-	int nHeight = pImage->GetHeight();
-	Type* pProcessingData = pImage->GetProcessingData();
-	BYTE* pBYTEImage = pImage->GetBYTEImage();
-	Type fMaxValue = pImage->GetMaximumValue();
-	Type fMinValue = pImage->GetMinimumValue();
+	int width = image->width();
+	int height = image->height();
+	Type* pProcessingData = image->getProcessingData();
+	uchar* pBYTEImage = image->getBYTEImage();
+	Type maxValue = image->getMaximumValue();
+	Type minValue = image->getMinimumValue();
 
-	float fAverage = float(fMinValue + fMaxValue) / 2.0f;
-	float fVariable;
-	if (fMaxValue != fMinValue)
+	float average = float(minValue + maxValue) / 2.0f;
+	float variable;
+	if (maxValue != minValue)
 	{
-		fVariable = 255.0f / float(fMaxValue - fMinValue);
+		variable = 255.0f / float(maxValue - minValue);
 	}
 	else
 	{
-		fVariable = 0.0f;
+		variable = 0.0f;
 	}
 
-	for (int i = 0; i < nWidth * nHeight; i++)
+	for (int i = 0; i < width * height; i++)
 	{
-		float fResult = float(pProcessingData[i] - fAverage) * (m_nContrast + 100) / 100.0f + fAverage;
-		fResult *= (100.0f + m_nBrightness / 2.0f) / 100.0f;
-		if (fResult >= fMaxValue)
+		float result = float(pProcessingData[i] - average) * (_contrast + 100) / 100.0f + average;
+		result *= (100.0f + _brightness / 2.0f) / 100.0f;
+		if (result >= maxValue)
 		{
 			pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] = 255;
 		}
-		else if (fResult <= fMinValue)
+		else if (result <= minValue)
 		{
 			pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] = 0;
 		}
 		else
 		{
-			pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] = BYTE((fResult - fMinValue) * fVariable);
+			pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] = uchar((result - minValue) * variable);
 		}
 	}
 
 	// 拷贝到图像
-	pImage->CopyToImage();*/
+	image->copyToImage();
 }
 
 // 处理float数组
-void CommonProcessor::ProcessArray(float* pArray, int width, int height, float minValue, float maxValue, unsigned char* pByte)
+void CommonProcessor::ProcessArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)
 {
 	assert(pArray && pByte);
 

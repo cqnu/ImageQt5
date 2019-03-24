@@ -17,7 +17,7 @@ protected:
 	void ProcessTemplate(TemplateImage<Type>* pImage);
 
 	// 处理float数组
-	virtual void ProcessArray(float* pArray, int width, int height, float minValue, float maxValue, unsigned char* pByte);
+	virtual void ProcessArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte);
 
 public:
 	void SetBrightnessAndContrast(int brightness, int contrast);

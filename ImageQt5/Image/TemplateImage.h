@@ -4,7 +4,7 @@
 #include "baseimage.h"
 #include <QMessageBox>
 #include <cmath>
-#include "globalfunc.h"
+#include "GlobalFunc.h"
 
 #ifdef _MSC_VER
 #pragma execution_character_set("UTF-8")
@@ -18,8 +18,31 @@ public:
 	virtual ~TemplateImage();
 
 public:
+	// 返回原始数据指针
+	Type* getOriginalData();
+
+	// 返回正在处理的数据指针
+	Type* getProcessingData();
+
 	// 遍历查找数组最大最小值
 	bool findTopAndBottom(Type* pData, int num);
+
+	// 返回数据中最小值
+	Type getMinimumValue() const { return _minValue; }
+
+	// 设置数据中最小值
+	void setMinimumValue(Type minValue) { _minValue = minValue; }
+
+	// 返回数据中最大值
+	Type getMaximumValue()	const { return _maxValue; }
+
+	// 设置数据中最大值
+	void setMaximumValue(Type maxValue) { _maxValue = maxValue; }
+
+
+
+	// 返回量化处理后的数组
+	uchar* getBYTEImage() { return _byteImage; }
 
 	// 分配内存空间
 	bool allocateMemory();
@@ -84,6 +107,20 @@ TemplateImage<Type>::~TemplateImage()
 		delete [] _byteImage;
 		_byteImage = NULL;
 	}
+}
+
+// 返回原始数据指针
+template <typename Type>
+Type* TemplateImage<Type>::getOriginalData()
+{
+	return _originalData;
+}
+
+// 返回正在处理的数据指针
+template <typename Type>
+Type* TemplateImage<Type>::getProcessingData()
+{
+	return _processingData;
 }
 
 // 遍历查找数组最大最小值
