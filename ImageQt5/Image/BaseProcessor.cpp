@@ -1,107 +1,106 @@
 
-#include "stdafx.h"
-#include "VSBaseProcessor.h"
+#include "BaseProcessor.h"
 
 #include <typeinfo.h>
-#include "VSGeneralImage.h"
-#include "VSFloatScanImage.h"
-#include "VSShortScanImage.h"
-#include "VSRegionImage.h"
+#include "GeneralImage.h"
+//#include "FloatScanImage.h"
+//#include "ShortScanImage.h"
+//#include "RegionImage.h"
 
-CVSBaseProcessor* CVSBaseProcessor::m_pCurrentProcessor = NULL;
+BaseProcessor* BaseProcessor::_currentProcessor = NULL;
 
-CVSBaseProcessor::CVSBaseProcessor()
+BaseProcessor::BaseProcessor()
 {
-	m_pCurrentProcessor = this;
+	_currentProcessor = this;
 }
 
-CVSBaseProcessor::~CVSBaseProcessor()
+BaseProcessor::~BaseProcessor()
 {
 
 }
 
-CVSBaseProcessor* CVSBaseProcessor::GetProcessor()
+BaseProcessor* BaseProcessor::GetProcessor()
 {
-	return m_pCurrentProcessor;
+	return _currentProcessor;
 }
 
-void CVSBaseProcessor::Process(CVSBaseImage* pImage)
+void BaseProcessor::Process(BaseImage* pImage)
 {
 	SetCurrentProcessor();
 	
-	if (typeid(*pImage) == typeid(CVSGeneralImage))
+	if (typeid(*pImage) == typeid(GeneralImage))
 	{
-		CVSGeneralImage* pGeneralImage = dynamic_cast<CVSGeneralImage*>(pImage);
+		GeneralImage* pGeneralImage = dynamic_cast<GeneralImage*>(pImage);
 		ProcessGeneralImage(pGeneralImage);
 	}
-	else if (dynamic_cast<CVSTemplateImage<float>*>(pImage))
+	else if (dynamic_cast<TemplateImage<float>*>(pImage))
 	{
-		CVSTemplateImage<float>* pFloatImage = dynamic_cast<CVSTemplateImage<float>*>(pImage);
-		ASSERT(pFloatImage);
+		TemplateImage<float>* pFloatImage = dynamic_cast<TemplateImage<float>*>(pImage);
+		assert(pFloatImage);
 		ProcessFloatImage(pFloatImage);
 	}
-	else if (dynamic_cast<CVSTemplateImage<unsigned short>*>(pImage))
+	else if (dynamic_cast<TemplateImage<unsigned short>*>(pImage))
 	{
-		CVSTemplateImage<unsigned short>* pUShortImage = dynamic_cast<CVSTemplateImage<unsigned short>*>(pImage);
-		ASSERT(pUShortImage);
+		TemplateImage<unsigned short>* pUShortImage = dynamic_cast<TemplateImage<unsigned short>*>(pImage);
+		assert(pUShortImage);
 		ProcessUShortImage(pUShortImage);
 	}
-	else if (dynamic_cast<CVSTemplateImage<unsigned char>*>(pImage))
+	else if (dynamic_cast<TemplateImage<unsigned char>*>(pImage))
 	{
-		CVSTemplateImage<unsigned char>* pUCharImage = dynamic_cast<CVSTemplateImage<unsigned char>*>(pImage);
-		ASSERT(pUCharImage);
+		TemplateImage<unsigned char>* pUCharImage = dynamic_cast<TemplateImage<unsigned char>*>(pImage);
+		assert(pUCharImage);
 		ProcessUCharImage(pUCharImage);
 	}
-	else if (dynamic_cast<CVSTemplateImage<short>*>(pImage))
+	else if (dynamic_cast<TemplateImage<short>*>(pImage))
 	{
-		CVSTemplateImage<short>* pShortImage = dynamic_cast<CVSTemplateImage<short>*>(pImage);
-		ASSERT(pShortImage);
+		TemplateImage<short>* pShortImage = dynamic_cast<TemplateImage<short>*>(pImage);
+		assert(pShortImage);
 		ProcessShortImage(pShortImage);
 	}
-	else if (dynamic_cast<CVSTemplateImage<int>*>(pImage))
+	else if (dynamic_cast<TemplateImage<int>*>(pImage))
 	{
-		CVSTemplateImage<int>* pIntImage = dynamic_cast<CVSTemplateImage<int>*>(pImage);
-		ASSERT(pIntImage);
+		TemplateImage<int>* pIntImage = dynamic_cast<TemplateImage<int>*>(pImage);
+		assert(pIntImage);
 		ProcessIntImage(pIntImage);
 	}
-	else if (dynamic_cast<CVSTemplateImage<unsigned int>*>(pImage))
+	else if (dynamic_cast<TemplateImage<unsigned int>*>(pImage))
 	{
-		CVSTemplateImage<unsigned int>* pUIntImage = dynamic_cast<CVSTemplateImage<unsigned int>*>(pImage);
-		ASSERT(pUIntImage);
+		TemplateImage<unsigned int>* pUIntImage = dynamic_cast<TemplateImage<unsigned int>*>(pImage);
+		assert(pUIntImage);
 		ProcessUIntImage(pUIntImage);
 	}
-	else if (dynamic_cast<CVSTemplateImage<double>*>(pImage))
+	else if (dynamic_cast<TemplateImage<double>*>(pImage))
 	{
-		CVSTemplateImage<double>* pDoubleImage = dynamic_cast<CVSTemplateImage<double>*>(pImage);
-		ASSERT(pDoubleImage);
+		TemplateImage<double>* pDoubleImage = dynamic_cast<TemplateImage<double>*>(pImage);
+		assert(pDoubleImage);
 		ProcessDoubleImage(pDoubleImage);
 	}
-	else if (typeid(*pImage) == typeid(CVSRegionImage))
+/*	else if (typeid(*pImage) == typeid(RegionImage))
 	{
-		CVSRegionImage* pRegionImage = dynamic_cast<CVSRegionImage*>(pImage);
-		ASSERT(pRegionImage);
+		RegionImage* pRegionImage = dynamic_cast<RegionImage*>(pImage);
+		assert(pRegionImage);
 		ProcessRegionImage(pRegionImage);
-	}
+	}*/
 }
-
-void CVSBaseProcessor::ProcessRegionImage(CVSRegionImage* pImage)
+/* TODO
+void BaseProcessor::ProcessRegionImage(RegionImage* pImage)
 {
-	CVSRegionImage* pRegionImage = dynamic_cast<CVSRegionImage*>(pImage);
-	ASSERT(pRegionImage);
+	RegionImage* pRegionImage = dynamic_cast<RegionImage*>(pImage);
+	assert(pRegionImage);
 
 	Process(pRegionImage->GetImplImage());
+}*/
+
+BaseProcessor* BaseProcessor::SetCurrentProcessor()
+{
+	BaseProcessor* oldProcessor = _currentProcessor;
+	_currentProcessor = this;
+	return oldProcessor;
 }
 
-CVSBaseProcessor* CVSBaseProcessor::SetCurrentProcessor()
+void BaseProcessor::ConvertToByte(float* pArray, int nWidth, int nHeight, float fMinValue, float fMaxValue, unsigned char* pByte)
 {
-	CVSBaseProcessor* pOldProcessor = m_pCurrentProcessor;
-	m_pCurrentProcessor = this;
-	return pOldProcessor;
-}
-
-void CVSBaseProcessor::ConvertToByte(float* pArray, int nWidth, int nHeight, float fMinValue, float fMaxValue, BYTE* pByte)
-{
-	ASSERT(pArray && pByte);
+	assert(pArray && pByte);
 
 	// 常数, 作为一个临时变量拿到for循环外
 	float fVariable;
@@ -116,6 +115,6 @@ void CVSBaseProcessor::ConvertToByte(float* pArray, int nWidth, int nHeight, flo
 
 	for (int i = 0; i < nWidth * nHeight; i++)
 	{
-		pByte[3 * i] = pByte[3 * i + 1] = pByte[3 * i + 2] = BYTE((pArray[i] - fMinValue) * fVariable);
+		pByte[3 * i] = pByte[3 * i + 1] = pByte[3 * i + 2] = unsigned char((pArray[i] - fMinValue) * fVariable);
 	}
 }

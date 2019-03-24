@@ -115,12 +115,15 @@
   <ItemGroup>
     <ClCompile Include="Document.cpp" />
     <ClCompile Include="GlobalFunc.cpp" />
+    <ClCompile Include="Image\BaseProcessor.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="Image\BaseImage.cpp" />
     <ClCompile Include="Image\GeneralImage.cpp" />
     <ClCompile Include="Image\ScanImage.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="View.cpp" />
+    <ClCompile Include="Widget\CommonProcessor.cpp" />
+    <ClCompile Include="Widget\CommonWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -141,10 +144,16 @@
     <ClInclude Include="Document.h" />
     <ClInclude Include="GlobalFunc.h" />
     <ClInclude Include="Image\BaseImage.h" />
+    <ClInclude Include="Image\BaseProcessor.h" />
     <ClInclude Include="Image\dataheader.h" />
     <ClInclude Include="Image\GeneralImage.h" />
     <ClInclude Include="Image\ScanImage.h" />
     <ClInclude Include="Image\TemplateImage.h" />
+    <ClInclude Include="Widget\CommonProcessor.h" />
+    <QtMoc Include="Widget\CommonWidget.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
     <QtMoc Include="view.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>

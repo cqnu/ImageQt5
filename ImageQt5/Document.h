@@ -41,6 +41,9 @@ public:
 	float getZoomFactor() const { return zoomFactor; }
 	void setZoomFactor(float factor);
 
+	// Repaint view
+	void repaintView();
+
 private:
 	View* getView() const;
 

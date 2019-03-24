@@ -60,6 +60,15 @@
     <ClCompile Include="mainwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Image\BaseProcessor.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\CommonWidget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\CommonProcessor.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="view.h">
@@ -67,6 +76,9 @@
     </QtMoc>
     <QtMoc Include="mainwindow.h">
       <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\CommonWidget.h">
+      <Filter>Widget</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +115,12 @@
     </ClInclude>
     <ClInclude Include="globalfunc.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\BaseProcessor.h">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\CommonProcessor.h">
+      <Filter>Widget</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

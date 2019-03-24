@@ -143,3 +143,9 @@ void Document::setZoomFactor(float factor)
 
 	getView()->zoomChanged(zoomFactor, oldFactor);
 }
+
+// Repaint view
+void Document::repaintView()
+{
+	getView()->repaint();
+}

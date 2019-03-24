@@ -37,8 +37,6 @@ public:
     QStatusBar *statusBar;
     QDockWidget *dockWidget;
     QWidget *dockWidgetContents;
-    QDockWidget *dockWidget_2;
-    QWidget *dockWidgetContents_2;
     QDockWidget *dockWidget_3;
     QWidget *dockWidgetContents_3;
 
@@ -90,12 +88,6 @@ public:
         dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
         dockWidget->setWidget(dockWidgetContents);
         mainwindow->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockWidget);
-        dockWidget_2 = new QDockWidget(mainwindow);
-        dockWidget_2->setObjectName(QString::fromUtf8("dockWidget_2"));
-        dockWidgetContents_2 = new QWidget();
-        dockWidgetContents_2->setObjectName(QString::fromUtf8("dockWidgetContents_2"));
-        dockWidget_2->setWidget(dockWidgetContents_2);
-        mainwindow->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockWidget_2);
         dockWidget_3 = new QDockWidget(mainwindow);
         dockWidget_3->setObjectName(QString::fromUtf8("dockWidget_3"));
         dockWidgetContents_3 = new QWidget();
@@ -140,7 +132,6 @@ public:
 #endif // QT_NO_SHORTCUT
         menuFile_F->setTitle(QApplication::translate("mainwindow", "File", nullptr));
         dockWidget->setWindowTitle(QApplication::translate("mainwindow", "Histogram", nullptr));
-        dockWidget_2->setWindowTitle(QApplication::translate("mainwindow", "Common", nullptr));
         dockWidget_3->setWindowTitle(QApplication::translate("mainwindow", "Curve", nullptr));
     } // retranslateUi
 

@@ -2,8 +2,11 @@
 
 #include <QFileDialog>
 #include <QPushButton>
-#include "document.h"
-#include "view.h"
+#include <QVBoxLayout>
+
+#include "Document.h"
+#include "View.h"
+#include "Widget/CommonWidget.h"
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -32,6 +35,15 @@ MainWindow::~MainWindow()
 	{
 		delete pView;
 	}
+}
+
+void MainWindow::createDockWidget()
+{
+	CommonWidget* common = new CommonWidget();
+	QDockWidget* dockWidget = new QDockWidget(this);
+	dockWidget->setWindowTitle("Common");
+	dockWidget->setWidget(common);
+	addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockWidget);
 }
 
 void MainWindow::createStatusBar()

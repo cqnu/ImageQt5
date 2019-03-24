@@ -11,7 +11,21 @@ public:
 	virtual ~GeneralImage();
 
 public:
+	// Get backup QImage pointer
+	QImage* getBackupImage() const { return _backupImage; }
+
     virtual float getValue(const QPoint& position) const;
+
+private:
+	// 得到图像中最大最小的像素值
+	void getImageBottomAndTop();
+
+	// Backup origin QImage
+	void backupImage();
+
+private:
+	// Backup origin QImage
+	QImage* _backupImage;
 };
 
 #endif // GENERALIMAGE_H

@@ -1,5 +1,45 @@
 ﻿#include "globalfunc.h"
 
+#include <QApplication>
+#include "mainwindow.h"
+#include "Document.h"
+
+MainWindow* getGlobalWindow()
+{
+	foreach(QWidget* w, qApp->topLevelWidgets())
+		if (MainWindow* mainWin = qobject_cast<MainWindow*>(w))
+			return mainWin;
+	return nullptr;
+}
+
+Document* getGlobalDocument()
+{
+	MainWindow* mainWindow = getGlobalWindow();
+	return mainWindow->getDocument();
+}
+
+BaseImage* getGlobalImage()
+{
+	Document* document = getGlobalDocument();
+	if (document)
+	{
+		return document->getImage();
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+void repaintView()
+{
+	Document* document = getGlobalDocument();
+	if (document)
+	{
+		document->repaintView();
+	}
+}
+
 bool copyByteToImage(uchar* byteImage, int width, int height, QImage* pImage)
 {
 	if (byteImage == NULL || pImage == NULL)

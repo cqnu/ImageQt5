@@ -26,8 +26,9 @@ public:
 
     virtual float getValue(const QPoint& position) const = 0;
 
+	// TODO
     void copyToArray(uchar* array);
-
+	
     bool copyFromArray(uchar* byteImage, int width, int height);
 
 protected:
