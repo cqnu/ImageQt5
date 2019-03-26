@@ -95,17 +95,17 @@ TemplateImage<Type>::~TemplateImage()
 	if (_originalData)
 	{
 		delete [] _originalData;
-		_originalData = NULL;
+		_originalData = nullptr;
 	}
 	if (_processingData)
 	{
 		delete [] _processingData;
-		_processingData = NULL;
+		_processingData = nullptr;
 	}
 	if (_byteImage)
 	{
 		delete [] _byteImage;
-		_byteImage = NULL;
+		_byteImage = nullptr;
 	}
 }
 
@@ -133,7 +133,7 @@ bool TemplateImage<Type>::findTopAndBottom(Type* pData, int num)
 	{
 		if (std::isnan(pData[i]) || std::isinf(pData[i]))
 		{
-			QMessageBox::critical(NULL, "Error in traversing data", "Invalid value in data!", QMessageBox::Ok);
+			QMessageBox::critical(nullptr, "Error in traversing data", "Invalid value in data!", QMessageBox::Ok);
 			return false;
 		}
 
@@ -176,7 +176,7 @@ bool TemplateImage<Type>::allocateMemory()
 template <class Type>
 bool TemplateImage<Type>::convertToByte()
 {
-	if (_processingData == NULL)
+	if (_processingData == nullptr)
 		return false;
 
 	float variable;

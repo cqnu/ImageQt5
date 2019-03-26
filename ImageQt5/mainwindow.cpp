@@ -36,6 +36,7 @@ MainWindow::~MainWindow()
 	{
 		delete pView;
 	}
+	WidgetManager::getInstance()->cleanUp();
 }
 
 void MainWindow::createDockWidget()
@@ -44,7 +45,7 @@ void MainWindow::createDockWidget()
 	QDockWidget* dockWidget = new QDockWidget(this);
 	dockWidget->setWindowTitle("Common");
 	dockWidget->setWidget(common);
-	addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockWidget);
+	addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dockWidget);
 
 	WidgetManager::getInstance()->addWidget(common);
 }
@@ -72,8 +73,8 @@ void MainWindow::showPixelValue(QPoint pos, QRgb rgb)
 
 void MainWindow::clearPixelValue()
 {
-	pixelCordLabel->setText(NULL);
-	pixelInfoLabel->setText(NULL);
+	pixelCordLabel->setText(nullptr);
+	pixelInfoLabel->setText(nullptr);
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -88,7 +89,7 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_actionSaveAs_triggered()
 {
-	if (pDoc->getImage() == NULL)
+	if (pDoc->getImage() == nullptr)
 		return;
 
 	QString fileName = QFileDialog::getSaveFileName(this, tr("Save Image As"),

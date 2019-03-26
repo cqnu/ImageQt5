@@ -2,7 +2,7 @@
 
 #include "BaseWidget.h"
 
-WidgetManager* WidgetManager::_instance = NULL;
+WidgetManager* WidgetManager::_instance = nullptr;
 
 WidgetManager* WidgetManager::getInstance()
 {

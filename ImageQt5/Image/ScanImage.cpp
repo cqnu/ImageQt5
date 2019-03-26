@@ -75,7 +75,7 @@ bool ScanImage::readDataHeader()
 	qint64 expectSize = _width * _height * _slice * sizeof(float) + DATA_HEADER_SIZE;
 	if (expectSize > size)
 	{
-		QMessageBox::critical(NULL, "打开文件错误", "数据尺寸不符合文件信息描述，请确认数据合法性！", QMessageBox::Ok);
+		QMessageBox::critical(nullptr, "打开文件错误", "数据尺寸不符合文件信息描述，请确认数据合法性！", QMessageBox::Ok);
 		return false;
 	}
 
@@ -97,7 +97,7 @@ bool ScanImage::readData()
 
 	if (readSize != sizeof(float) * _width * _height)
 	{
-		QMessageBox::critical(NULL, "打开文件错误", "数据尺寸不符合文件信息描述，请确认数据合法性！", QMessageBox::Ok);
+		QMessageBox::critical(nullptr, "打开文件错误", "数据尺寸不符合文件信息描述，请确认数据合法性！", QMessageBox::Ok);
 		return false;
 	}
 

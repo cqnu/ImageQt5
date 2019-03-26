@@ -7,7 +7,7 @@
 //#include "ShortScanImage.h"
 //#include "RegionImage.h"
 
-BaseProcessor* BaseProcessor::_currentProcessor = NULL;
+BaseProcessor* BaseProcessor::_currentProcessor = nullptr;
 
 BaseProcessor::BaseProcessor()
 {

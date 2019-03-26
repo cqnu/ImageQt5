@@ -1,7 +1,7 @@
 ﻿#include "baseimage.h"
 
 BaseImage::BaseImage() :
-	_pImage(NULL),
+	_pImage(nullptr),
 	_width(0),
 	_height(0),
 	_openSucceed(false)
@@ -10,7 +10,7 @@ BaseImage::BaseImage() :
 }
 
 BaseImage::BaseImage(const QString& pathName) :
-	_pImage(NULL),
+	_pImage(nullptr),
 	_width(0),
 	_height(0),
 	_pathName(pathName),
@@ -24,7 +24,7 @@ BaseImage::~BaseImage()
 	if (_pImage)
 	{
 		delete _pImage;
-		_pImage = NULL;
+		_pImage = nullptr;
 	}
 }
 
@@ -50,7 +50,7 @@ void BaseImage::copyToArray(uchar* array)
 
 bool BaseImage::copyFromArray(uchar* array, int width, int height)
 {
-    if (array == NULL || _pImage == NULL)
+    if (array == nullptr || _pImage == nullptr)
         return false;
 
     if (width != this->width() || height != this->height())

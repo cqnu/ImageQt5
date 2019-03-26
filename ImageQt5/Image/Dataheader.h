@@ -17,9 +17,9 @@ public:
 
 public:
 	uint Attribute;
-    ushort Width;
-    ushort Height;
-    ushort Slice;
+	ushort Width;
+	ushort Height;
+	ushort Slice;
 };
 
 #endif // DATAHEADER_H

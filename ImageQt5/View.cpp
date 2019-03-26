@@ -38,7 +38,7 @@ void View::zoomFitWindow()
 void View::zoomChanged(float zoomFactor, float oldFactor)
 {
 	BaseImage* pImage = getDocument()->getImage();
-	if (pImage == NULL)
+	if (pImage == nullptr)
 		return;
 
 	float zoomChange = zoomFactor / oldFactor;
@@ -65,7 +65,7 @@ void View::zoomChanged(float zoomFactor, float oldFactor)
 QRect View::getImageRect()
 {
 	BaseImage* pImage = getDocument()->getImage();
-	if (pImage == NULL)
+	if (pImage == nullptr)
 		return QRect();
 
 	float zoomFactor = getDocument()->getZoomFactor();
@@ -100,7 +100,7 @@ void View::paintEvent(QPaintEvent*)
 	if (pImage)
 	{
 		QPainter draw(this);
-		// 创建绘图区域
+		// Draw image
 		QRect rect = getImageRect();
 		draw.drawImage(rect, *pImage->getImageEntity());
 	}
@@ -116,8 +116,11 @@ void View::mousePressEvent(QMouseEvent* event)
 {
 	if (event->button() == Qt::LeftButton)
 	{
-		mousePos = event->pos();
-		dragImage = true;
+		if (QApplication::keyboardModifiers() == Qt::ControlModifier)
+		{
+			mousePos = event->pos();
+			dragImage = true;
+		}
 	}
 }
 
@@ -153,25 +156,28 @@ void View::mouseReleaseEvent(QMouseEvent* event)
 void View::wheelEvent(QWheelEvent* event)
 {
 	BaseImage* pImage = getDocument()->getImage();
-	if (pImage == NULL)
+	if (pImage == nullptr)
 		return;
 
-	float zoomFactor = getDocument()->getZoomFactor();
-
-	int delta = event->delta();
-	if (delta > 0)
+	if (QApplication::keyboardModifiers() == Qt::ControlModifier)
 	{
-		//	zoomFactor *= (1.0f + float(delta) / 1500.0f);
-		zoomFactor *= 1.1f;
-	}
-	else
-	{
-		//	zoomFactor /= (1.0f + float(-delta) / 1500.0f);
-		zoomFactor /= 1.1f;
-	}
-	getDocument()->setZoomFactor(zoomFactor);
+		float zoomFactor = getDocument()->getZoomFactor();
 
-	repaint();
+		int delta = event->delta();
+		if (delta > 0)
+		{
+			//	zoomFactor *= (1.0f + float(delta) / 1500.0f);
+			zoomFactor *= 1.1f;
+		}
+		else
+		{
+			//	zoomFactor /= (1.0f + float(-delta) / 1500.0f);
+			zoomFactor /= 1.1f;
+		}
+		getDocument()->setZoomFactor(zoomFactor);
+
+		repaint();
+	}
 }
 
 // Logic point to Image point
@@ -179,7 +185,7 @@ QPoint View::LPtoIP(const QPoint& point)
 {
 	QPoint ptImage(-1, -1);
 	BaseImage* pImage = getDocument()->getImage();
-	if (pImage == NULL)
+	if (pImage == nullptr)
 		return ptImage;
 
 	float x = point.x() - imageCenter.x();
@@ -205,7 +211,7 @@ QPoint View::IPtoLP(const QPoint& point)
 {
 	QPoint ptLogic(-1, -1);
 	BaseImage* pImage = getDocument()->getImage();
-	if (pImage == NULL)
+	if (pImage == nullptr)
 		return ptLogic;
 
 	float zoomFactor = getDocument()->getZoomFactor();
@@ -219,7 +225,7 @@ QPointF View::IPtoLP(const QPointF& point)
 {
 	QPointF ptLogic(-1, -1);
 	BaseImage* pImage = getDocument()->getImage();
-	if (pImage == NULL)
+	if (pImage == nullptr)
 		return ptLogic;
 
 	float zoomFactor = getDocument()->getZoomFactor();
@@ -240,7 +246,7 @@ void View::resetImageCenter()
 void View::restrictImageEdge()
 {
 	BaseImage* pImage = getDocument()->getImage();
-	if (pImage == NULL)
+	if (pImage == nullptr)
 		return;
 
 	float zoomFactor = getDocument()->getZoomFactor();
@@ -269,7 +275,7 @@ void View::restrictImageEdge()
 void View::showPixelStatus(const QPoint& point)
 {
 	BaseImage* pImage = getDocument()->getImage();
-	if (pImage == NULL)
+	if (pImage == nullptr)
 		return;
 
 	QPoint pixelPoint = LPtoIP(point);

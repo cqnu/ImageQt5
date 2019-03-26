@@ -42,7 +42,7 @@ void repaintView()
 
 bool copyByteToImage(uchar* byteImage, int width, int height, QImage* pImage)
 {
-	if (byteImage == NULL || pImage == NULL)
+	if (byteImage == nullptr || pImage == nullptr)
 		return false;
 
 	if (width != pImage->width() || height != pImage->height())
