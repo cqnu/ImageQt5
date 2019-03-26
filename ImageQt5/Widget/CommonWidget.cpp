@@ -6,7 +6,7 @@
 #include "GlobalFunc.h"
 
 CommonWidget::CommonWidget(QWidget* parent)
-	: QWidget(parent)
+	: BaseWidget(parent)
 {
 	_processor = new CommonProcessor;
 
@@ -66,4 +66,12 @@ void CommonWidget::SetBrightnessAndContrast()
 
 		repaintView();
 	}
+}
+
+void CommonWidget::reset()
+{
+	_sliderBright->setValue(0);
+	_sliderContrast->setValue(0);
+	_labelBrightNum->setText(QString::number(0));
+	_labelContrastNum->setText(QString::number(0));
 }

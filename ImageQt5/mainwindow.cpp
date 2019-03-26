@@ -6,6 +6,7 @@
 
 #include "Document.h"
 #include "View.h"
+#include "Widget/WidgetManager.h"
 #include "Widget/CommonWidget.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -44,6 +45,8 @@ void MainWindow::createDockWidget()
 	dockWidget->setWindowTitle("Common");
 	dockWidget->setWidget(common);
 	addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockWidget);
+
+	WidgetManager::getInstance()->addWidget(common);
 }
 
 void MainWindow::createStatusBar()
@@ -99,6 +102,8 @@ void MainWindow::on_actionSaveAs_triggered()
 void MainWindow::on_actionClose_triggered()
 {
 	pDoc->closeFile();
+
+	WidgetManager::getInstance()->reset();
 }
 
 void MainWindow::on_actionQuit_triggered()

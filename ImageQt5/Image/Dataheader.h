@@ -16,10 +16,10 @@ public:
 	}
 
 public:
-	int Attribute;
-    unsigned short Width;
-    unsigned short Height;
-    unsigned short Slice;
+	uint Attribute;
+    ushort Width;
+    ushort Height;
+    ushort Slice;
 };
 
 #endif // DATAHEADER_H

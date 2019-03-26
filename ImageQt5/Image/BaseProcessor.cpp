@@ -39,15 +39,15 @@ void BaseProcessor::Process(BaseImage* pImage)
 		assert(pFloatImage);
 		ProcessFloatImage(pFloatImage);
 	}
-	else if (dynamic_cast<TemplateImage<unsigned short>*>(pImage))
+	else if (dynamic_cast<TemplateImage<ushort>*>(pImage))
 	{
-		TemplateImage<unsigned short>* pUShortImage = dynamic_cast<TemplateImage<unsigned short>*>(pImage);
+		TemplateImage<ushort>* pUShortImage = dynamic_cast<TemplateImage<ushort>*>(pImage);
 		assert(pUShortImage);
 		ProcessUShortImage(pUShortImage);
 	}
-	else if (dynamic_cast<TemplateImage<unsigned char>*>(pImage))
+	else if (dynamic_cast<TemplateImage<uchar>*>(pImage))
 	{
-		TemplateImage<unsigned char>* pUCharImage = dynamic_cast<TemplateImage<unsigned char>*>(pImage);
+		TemplateImage<uchar>* pUCharImage = dynamic_cast<TemplateImage<uchar>*>(pImage);
 		assert(pUCharImage);
 		ProcessUCharImage(pUCharImage);
 	}
@@ -98,23 +98,23 @@ BaseProcessor* BaseProcessor::SetCurrentProcessor()
 	return oldProcessor;
 }
 
-void BaseProcessor::ConvertToByte(float* pArray, int nWidth, int nHeight, float fMinValue, float fMaxValue, unsigned char* pByte)
+void BaseProcessor::ConvertToByte(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)
 {
 	assert(pArray && pByte);
 
 	// 常数, 作为一个临时变量拿到for循环外
-	float fVariable;
-	if (fMaxValue != fMinValue)
+	float variable;
+	if (maxValue != minValue)
 	{
-		fVariable = 255.0f / float(fMaxValue - fMinValue);
+		variable = 255.0f / float(maxValue - minValue);
 	}
 	else
 	{
-		fVariable = 0.0f;
+		variable = 0.0f;
 	}
 
-	for (int i = 0; i < nWidth * nHeight; i++)
+	for (int i = 0; i < width * height; i++)
 	{
-		pByte[3 * i] = pByte[3 * i + 1] = pByte[3 * i + 2] = unsigned char((pArray[i] - fMinValue) * fVariable);
+		pByte[3 * i] = pByte[3 * i + 1] = pByte[3 * i + 2] = uchar((pArray[i] - minValue) * variable);
 	}
 }

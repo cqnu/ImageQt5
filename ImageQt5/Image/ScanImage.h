@@ -1,8 +1,8 @@
 ﻿#ifndef SCANIMAGE_H
 #define SCANIMAGE_H
 
-#include "templateimage.h"
-#include "dataheader.h"
+#include "TemplateImage.h"
+#include "Dataheader.h"
 
 class ScanImage : public TemplateImage<float>
 {
@@ -12,14 +12,14 @@ public:
 	~ScanImage();
 
 public:
-	// 返回头文件
+	// Get reference of DataHeader
 	DataHeader& getDataHeader()		{ return _dh; }
 
 private:
-	// 读数据头
+	// Read data header
 	bool readDataHeader();
 
-	// 读数据
+	// Read data
 	bool readData();
 
 private:

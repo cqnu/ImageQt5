@@ -1,19 +1,23 @@
 #ifndef COMMONNWIDGET_H
 #define COMMONNWIDGET_H
 
-#include <QWidget>
 #include <QSlider>
 #include <QLabel>
 
+#include "BaseWidget.h"
+
 class CommonProcessor;
 
-class CommonWidget : public QWidget
+class CommonWidget : public BaseWidget
 {
 	Q_OBJECT
 
 public:
 	CommonWidget(QWidget* parent = nullptr);
 	virtual ~CommonWidget();
+
+public:
+	virtual void reset();
 
 public slots:
 	void brightValueChanged(int value);

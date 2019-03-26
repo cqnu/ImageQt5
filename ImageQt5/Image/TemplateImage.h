@@ -109,21 +109,21 @@ TemplateImage<Type>::~TemplateImage()
 	}
 }
 
-// 返回原始数据指针
+// Get original data pointer
 template <typename Type>
 Type* TemplateImage<Type>::getOriginalData()
 {
 	return _originalData;
 }
 
-// 返回正在处理的数据指针
+// Get processing data pointer
 template <typename Type>
 Type* TemplateImage<Type>::getProcessingData()
 {
 	return _processingData;
 }
 
-// 遍历查找数组最大最小值
+// Traverse the max and min values in array
 template <class Type>
 bool TemplateImage<Type>::findTopAndBottom(Type* pData, int num)
 {
@@ -133,7 +133,7 @@ bool TemplateImage<Type>::findTopAndBottom(Type* pData, int num)
 	{
 		if (std::isnan(pData[i]) || std::isinf(pData[i]))
 		{
-			QMessageBox::critical(NULL, "遍历数组错误", "数据中含有无效值，请确认数据合法性！", QMessageBox::Ok);
+			QMessageBox::critical(NULL, "Error in traversing data", "Invalid value in data!", QMessageBox::Ok);
 			return false;
 		}
 
@@ -150,7 +150,7 @@ bool TemplateImage<Type>::findTopAndBottom(Type* pData, int num)
 	return true;
 }
 
-// 分配内存空间
+// Allocate memory
 template <class Type>
 bool TemplateImage<Type>::allocateMemory()
 {
@@ -172,7 +172,7 @@ bool TemplateImage<Type>::allocateMemory()
 	return true;
 }
 
-// 量化图像
+// Convert data to byte
 template <class Type>
 bool TemplateImage<Type>::convertToByte()
 {

@@ -6,11 +6,11 @@
 
 #define DECLARE_TEMPLATE_INTERFACE \
 public: \
-	virtual void ProcessUCharImage(TemplateImage<unsigned char>* pImage) { ProcessTemplate<unsigned char>(pImage); } \
+	virtual void ProcessUCharImage(TemplateImage<uchar>* pImage) { ProcessTemplate<uchar>(pImage); } \
 	virtual void ProcessShortImage(TemplateImage<short>* pImage) { ProcessTemplate<short>(pImage); } \
-	virtual void ProcessUShortImage(TemplateImage<unsigned short>* pImage) { ProcessTemplate<unsigned short>(pImage); } \
+	virtual void ProcessUShortImage(TemplateImage<ushort>* pImage) { ProcessTemplate<ushort>(pImage); } \
 	virtual void ProcessIntImage(TemplateImage<int>* pImage) { ProcessTemplate<int>(pImage); } \
-	virtual void ProcessUIntImage(TemplateImage<unsigned int>* pImage) { ProcessTemplate<unsigned int>(pImage); } \
+	virtual void ProcessUIntImage(TemplateImage<uint>* pImage) { ProcessTemplate<uint>(pImage); } \
 	virtual void ProcessFloatImage(TemplateImage<float>* pImage) { ProcessTemplate<float>(pImage); } \
 	virtual void ProcessDoubleImage(TemplateImage<double>* pImage) { ProcessTemplate<double>(pImage); }
 
@@ -36,7 +36,7 @@ public:
 	void Process(BaseImage* pImage);
 
 	// Process float array
-	virtual void ProcessArray(float* pArray, int nWidth, int nHeight, float fMinValue, float fMaxValue, unsigned char* pByte)	{}
+	virtual void ProcessArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)	{}
 
 protected:
 	virtual void ProcessGeneralImage(GeneralImage* pImage) {}
@@ -47,7 +47,7 @@ protected:
 	void ProcessTemplate(TemplateImage<Type>* pImage)	{}
 
 	// Á¿»¯Í¼Ïñ
-	void ConvertToByte(float* pArray, int nWidth, int nHeight, float fMinValue, float fMaxValue, unsigned char* pByte);
+	void ConvertToByte(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte);
 
 private:
 	static BaseProcessor* _currentProcessor;
