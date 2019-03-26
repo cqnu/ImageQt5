@@ -14,6 +14,9 @@ public:
 	// Get backup QImage pointer
 	QImage* getBackupImage() const { return _backupImage; }
 
+	// Histogram statistic
+	virtual void histogramStatistic();
+
     virtual float getValue(const QPoint& position) const;
 
 private:

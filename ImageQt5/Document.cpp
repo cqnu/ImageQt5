@@ -48,6 +48,8 @@ bool Document::openFile(const QString& fileName)
 	if (pBaseImage->isOpenSucceed() == false)
 		return false;
 
+	pBaseImage->histogramStatistic();
+
 	getView()->zoomFitWindow();
 	getView()->repaint();
 

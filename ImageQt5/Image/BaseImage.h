@@ -22,6 +22,15 @@ public:
 
 	bool isOpenSucceed()			{ return _openSucceed; }
 
+	// Get each channel's pixel array
+	uint* getGrayPixelArray()		{ return _grayPixelNumber; }
+	uint* getRedPixelArray()		{ return _redPixelNumber; }
+	uint* getGreenPixelArray()		{ return _greenPixelNumber; }
+	uint* getBluePixelArray()		{ return _bluePixelNumber; }
+
+	// Histogram statistic
+	virtual void histogramStatistic() = 0;
+
     QRgb getPixel(const QPoint& position) const;
 
     virtual float getValue(const QPoint& position) const = 0;
@@ -39,6 +48,12 @@ protected:
 	QString _pathName;
 
 	bool _openSucceed;
+
+	// Storage the pixel number of each channel(0-255)
+	uint _grayPixelNumber[256];
+	uint _redPixelNumber[256];
+	uint _greenPixelNumber[256];
+	uint _bluePixelNumber[256];
 };
 
 #endif // BASEIMAGE_H

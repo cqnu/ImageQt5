@@ -18,26 +18,25 @@ public:
 	virtual ~TemplateImage();
 
 public:
-	// 返回原始数据指针
+	// Get original data pointer
 	Type* getOriginalData();
 
-	// 返回正在处理的数据指针
+	// Get processing data pointer
 	Type* getProcessingData();
 
-	// 遍历查找数组最大最小值
+	// Find top and bottom value in data
 	bool findTopAndBottom(Type* pData, int num);
 
-	// 返回数据中最小值
 	Type getMinimumValue() const { return _minValue; }
 
-	// 设置数据中最小值
 	void setMinimumValue(Type minValue) { _minValue = minValue; }
 
-	// 返回数据中最大值
 	Type getMaximumValue()	const { return _maxValue; }
 
-	// 设置数据中最大值
 	void setMaximumValue(Type maxValue) { _maxValue = maxValue; }
+
+	// Histogram statistic
+	virtual void histogramStatistic();
 
 
 
@@ -148,6 +147,38 @@ bool TemplateImage<Type>::findTopAndBottom(Type* pData, int num)
 	}
 
 	return true;
+}
+
+// Histogram statistic
+template <class Type>
+void TemplateImage<Type>::histogramStatistic()
+{
+	memset(_grayPixelNumber, 0, sizeof(uint) * 256);
+	memset(_redPixelNumber, 0, sizeof(uint) * 256);
+	memset(_greenPixelNumber, 0, sizeof(uint) * 256);
+	memset(_bluePixelNumber, 0, sizeof(uint) * 256);
+
+	float minValue = getMinimumValue();
+	float maxValue = getMaximumValue();
+	if (minValue != maxValue)
+	{
+		float temp = 255.0f / (maxValue - minValue);
+		for (int j = 0; j < _height; j++)
+		{
+			for (int i = 0; i < _width; i++)
+			{
+				float value = getValue(QPoint(i, j));
+				int index = int((value - minValue) * temp);
+				_grayPixelNumber[index]++;
+			}
+		}
+		// 灰度值0、1、2不统计, 置为0
+		memset(_grayPixelNumber, 0, sizeof(uint) * 3);
+
+		memcpy(_redPixelNumber, _grayPixelNumber, sizeof(uint) * 256);
+		memcpy(_greenPixelNumber, _grayPixelNumber, sizeof(uint) * 256);
+		memcpy(_bluePixelNumber, _grayPixelNumber, sizeof(uint) * 256);
+	}
 }
 
 // Allocate memory
