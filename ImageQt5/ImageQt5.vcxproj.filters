@@ -152,5 +152,8 @@
     <ClInclude Include="Widget\CurveProcessor.h">
       <Filter>Widget</Filter>
     </ClInclude>
+    <ClInclude Include="Widget\Peg.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

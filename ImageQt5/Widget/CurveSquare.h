@@ -1,11 +1,12 @@
 #pragma once
 
 #include <QWidget>
+#include "Peg.h"
 
-//typedef QVector<CVSPeg, CVSPeg&> PegArray;
+typedef QVector<Peg> PegArray;
 
-#define AREAWIDTH				255		// 样条曲线调整的区域大小
-#define COLOR_ARRAY_NUMBER		AREAWIDTH + 1
+#define NONE_PEG				-1
+#define AREAWIDTH				256		// 样条曲线调整的区域大小
 
 #ifndef CURVE_CHANNEL
 #define CURVE_CHANNEL
@@ -46,9 +47,24 @@ private:
 	// Paint grid
 	void paintBackground();
 
+	// Paint pegs
+	void paintPegs(QColor color);
+
+	// Paint single peg
+	void paintSinglePeg(const Peg& peg);
+
+	// Paint connection
+	void paintConnection(QColor color);
+
+	// 由x、y值计算出在控件客户区上的坐标
+	QPoint getCoordinate(int x, int y);
+
+	// 点落在任意一个peg内(包括StartPeg和EndPeg)
+	int ptInAnyPeg(QPoint point) const;
+
 private:
 	// 方形区域
-	QRect m_rectSquare;
+	QRect _rectSquare;
 
 	// 其中存放的是量化后的每条线对应相对的高度
 	uint* _heightArray;
@@ -57,26 +73,26 @@ private:
 	uint _minHeight, _maxHeight;
 
 	// 曲线或折线
-	int m_nCurveOrLine;
+	int _curveOrLine;
 
 	// Channel
 	int _channel;
 
-	// 表示当前被选中的peg的index
-	int	m_nActivePegIndex;
+	// Index of active peg
+	int	_activePegIndex;
 
 	// 表明当前活动的pegs链表
-//	PegArray* m_pActivePegs;
+	PegArray* _activePegs;
 
 	// 属于自己的pegs链表
-//	PegArray m_OwnerPegs;
+	PegArray _ownerPegs;
 
 	// 指向当前活动的数组
-	uchar* m_pActiveArray;
+	uchar* _activeArray;
 
 	// 用来存放曲线所对应的值
-	uchar m_arrayIntensity[COLOR_ARRAY_NUMBER];
-	uchar m_arrayRed[COLOR_ARRAY_NUMBER];
-	uchar m_arrayGreen[COLOR_ARRAY_NUMBER];
-	uchar m_arrayBlue[COLOR_ARRAY_NUMBER];
+	uchar _arrayIntensity[AREAWIDTH];
+	uchar _arrayRed[AREAWIDTH];
+	uchar _arrayGreen[AREAWIDTH];
+	uchar _arrayBlue[AREAWIDTH];
 };

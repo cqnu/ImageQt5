@@ -132,7 +132,7 @@ public:
 #endif // QT_NO_SHORTCUT
         menuFile_F->setTitle(QApplication::translate("mainwindow", "File", nullptr));
         dockWidget->setWindowTitle(QApplication::translate("mainwindow", "Histogram", nullptr));
-        dockWidget_3->setWindowTitle(QApplication::translate("mainwindow", "Curve", nullptr));
+        dockWidget_3->setWindowTitle(QApplication::translate("mainwindow", "Toolbox", nullptr));
     } // retranslateUi
 
 };
