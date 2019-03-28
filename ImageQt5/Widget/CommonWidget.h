@@ -1,5 +1,4 @@
-#ifndef COMMONNWIDGET_H
-#define COMMONNWIDGET_H
+#pragma once
 
 #include <QSlider>
 #include <QLabel>
@@ -36,5 +35,3 @@ private:
 	// Image processor
 	CommonProcessor* _processor;
 };
-
-#endif	// COMMONNWIDGET_H

@@ -1,4 +1,4 @@
-﻿#include "baseimage.h"
+﻿#include "BaseImage.h"
 
 BaseImage::BaseImage() :
 	_pImage(nullptr),

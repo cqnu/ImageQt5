@@ -1,5 +1,4 @@
-﻿#ifndef GLOBALFUNC
-#define GLOBALFUNC
+﻿#pragma once
 
 #include <QtGlobal>
 #include <QImage>
@@ -17,5 +16,3 @@ BaseImage* getGlobalImage();
 void repaintView();
 
 bool copyByteToImage(uchar* byteImage, int width, int height, QImage* pImage);
-
-#endif // GLOBALFUNC

@@ -1,5 +1,4 @@
-#ifndef WIDGETMANAGER_H
-#define WIDGETMANAGER_H
+#pragma once
 
 #include <QVector>
 
@@ -24,5 +23,3 @@ private:
 
 	QVector<BaseWidget*> _vecWidget;
 };
-
-#endif	// WIDGETMANAGER_H

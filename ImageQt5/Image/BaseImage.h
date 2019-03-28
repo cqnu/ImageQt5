@@ -1,5 +1,4 @@
-﻿#ifndef BASEIMAGE_H
-#define BASEIMAGE_H
+﻿#pragma once
 
 #include <QString>
 #include <QImage>
@@ -55,5 +54,3 @@ protected:
 	uint _greenPixelNumber[256];
 	uint _bluePixelNumber[256];
 };
-
-#endif // BASEIMAGE_H

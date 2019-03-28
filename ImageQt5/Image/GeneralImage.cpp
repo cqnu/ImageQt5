@@ -44,7 +44,7 @@ void GeneralImage::histogramStatistic()
 		}
 	}
 
-	// 灰度值0、1、2不统计, 置为0
+	// Clear the count numbers of pixels whose gray value less than 4
 	memset(_grayPixelNumber, 0, sizeof(uint) * 3);
 	memset(_redPixelNumber, 0, sizeof(uint) * 3);
 	memset(_greenPixelNumber, 0, sizeof(uint) * 3);

@@ -1,5 +1,4 @@
-﻿#ifndef VIEW_H
-#define VIEW_H
+﻿#pragma once
 
 #include <QWidget>
 class MainWindow;
@@ -65,5 +64,3 @@ private:
 
 	bool dragImage;
 };
-
-#endif // VIEW_H

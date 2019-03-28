@@ -1,5 +1,4 @@
-﻿#ifndef DOCUMENT_H
-#define DOCUMENT_H
+﻿#pragma once
 
 #include <QString>
 #include <QPair>
@@ -54,5 +53,3 @@ private:
 	BaseImage* pBaseImage;
 	float zoomFactor;
 };
-
-#endif // DOCUMENT_H

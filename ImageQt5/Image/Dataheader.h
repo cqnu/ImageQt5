@@ -1,5 +1,4 @@
-﻿#ifndef DATAHEADER_H
-#define DATAHEADER_H
+﻿#pragma once
 
 #ifndef DATA_HEADER_SIZE
 #define DATA_HEADER_SIZE	1024
@@ -21,5 +20,3 @@ public:
 	ushort Height;
 	ushort Slice;
 };
-
-#endif // DATAHEADER_H

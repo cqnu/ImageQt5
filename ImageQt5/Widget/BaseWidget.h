@@ -1,5 +1,4 @@
-#ifndef BASEWIDGET_H
-#define BASEWIDGET_H
+#pragma once
 
 #include <QWidget>
 
@@ -13,5 +12,3 @@ public:
 public:
 	virtual void reset() {}
 };
-
-#endif	// COMMONNWIDGET_H

@@ -1,7 +1,6 @@
-﻿#ifndef GENERALIMAGE_H
-#define GENERALIMAGE_H
+﻿#pragma once
 
-#include "baseimage.h"
+#include "BaseImage.h"
 
 class GeneralImage : public BaseImage
 {
@@ -30,5 +29,3 @@ private:
 	// Backup origin QImage
 	QImage* _backupImage;
 };
-
-#endif // GENERALIMAGE_H

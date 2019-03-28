@@ -1,5 +1,4 @@
-﻿#ifndef SCANIMAGE_H
-#define SCANIMAGE_H
+﻿#pragma once
 
 #include "TemplateImage.h"
 #include "Dataheader.h"
@@ -25,5 +24,3 @@ private:
 private:
 	DataHeader _dh;
 };
-
-#endif // SCANIMAGE_H

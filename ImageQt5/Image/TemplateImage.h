@@ -1,9 +1,9 @@
-﻿#ifndef TEMPLATEIMAGE_H
-#define TEMPLATEIMAGE_H
+﻿#pragma once
 
-#include "baseimage.h"
+#include "BaseImage.h"
 #include <QMessageBox>
 #include <cmath>
+#include <iostream>
 #include "GlobalFunc.h"
 
 #ifdef _MSC_VER
@@ -172,7 +172,7 @@ void TemplateImage<Type>::histogramStatistic()
 				_grayPixelNumber[index]++;
 			}
 		}
-		// 灰度值0、1、2不统计, 置为0
+		// Clear the count numbers of pixels whose gray value less than 4
 		memset(_grayPixelNumber, 0, sizeof(uint) * 3);
 
 		memcpy(_redPixelNumber, _grayPixelNumber, sizeof(uint) * 256);
@@ -185,7 +185,7 @@ void TemplateImage<Type>::histogramStatistic()
 template <class Type>
 bool TemplateImage<Type>::allocateMemory()
 {
-//	try
+	try
 	{
 		_processingData = new Type[_width * _height];
 		memcpy(_processingData, _originalData, sizeof(Type) * _width * _height);
@@ -195,9 +195,9 @@ bool TemplateImage<Type>::allocateMemory()
 
 		_pImage = new QImage(_width, _height, QImage::Format_RGB888);
 	}
-//	catch ()
+	catch (const std::bad_alloc& e)
 	{
-
+		std::cout << "Allocation failed: " << e.what() << std::endl;
 	}
 
 	return true;
@@ -242,5 +242,3 @@ float TemplateImage<Type>::getValue(const QPoint& position) const
     int index = position.y() * _width + position.x();
     return float(_processingData[index]);
 }
-
-#endif // TEMPLATEIMAGE_H
