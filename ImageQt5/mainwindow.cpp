@@ -93,6 +93,8 @@ void MainWindow::on_actionOpen_triggered()
 	if (!fileName.isEmpty())
 	{
 		pDoc->openFile(fileName);
+
+		WidgetManager::getInstance()->init();
 	}
 }
 

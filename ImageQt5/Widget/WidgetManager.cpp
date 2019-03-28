@@ -28,6 +28,14 @@ void WidgetManager::addWidget(BaseWidget* widget)
 	_vecWidget.append(widget);
 }
 
+void WidgetManager::init()
+{
+	for (auto widget : _vecWidget)
+	{
+		widget->init();
+	}
+}
+
 void WidgetManager::reset()
 {
 	for (auto widget : _vecWidget)

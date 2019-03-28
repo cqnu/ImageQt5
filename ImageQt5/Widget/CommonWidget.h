@@ -16,6 +16,8 @@ public:
 	virtual ~CommonWidget();
 
 public:
+	virtual void init();
+
 	virtual void reset();
 
 public slots:

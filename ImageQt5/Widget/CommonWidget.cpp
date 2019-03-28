@@ -44,6 +44,11 @@ CommonWidget::~CommonWidget()
 	}
 }
 
+void CommonWidget::init()
+{
+	reset();
+}
+
 void CommonWidget::reset()
 {
 	_sliderBright->setValue(0);

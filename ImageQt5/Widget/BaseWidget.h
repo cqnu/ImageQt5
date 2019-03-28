@@ -10,6 +10,8 @@ public:
 	BaseWidget(QWidget* parent = nullptr);
 
 public:
+	virtual void init() {}
+
 	virtual void reset() {}
 
 	// Set name

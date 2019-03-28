@@ -4,6 +4,7 @@
 
 #include "BaseWidget.h"
 
+class CurveSquare;
 class CurveProcessor;
 
 class CurveWidget : public BaseWidget
@@ -15,6 +16,8 @@ public:
 	virtual ~CurveWidget();
 
 public:
+	virtual void init();
+
 	virtual void reset();
 
 public slots:
@@ -28,6 +31,8 @@ private:
 private:
 	QLabel* _labelInput;
 	QLabel* _labelOutput;
+
+	CurveSquare* _square;
 
 	// Image processor
 	CurveProcessor* _processor;

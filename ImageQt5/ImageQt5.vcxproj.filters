@@ -39,22 +39,22 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Image\baseimage.cpp">
+    <ClCompile Include="Image\BaseImage.cpp">
       <Filter>Image</Filter>
     </ClCompile>
-    <ClCompile Include="Image\generalimage.cpp">
+    <ClCompile Include="Image\GeneralImage.cpp">
       <Filter>Image</Filter>
     </ClCompile>
-    <ClCompile Include="Image\scanimage.cpp">
+    <ClCompile Include="Image\ScanImage.cpp">
       <Filter>Image</Filter>
     </ClCompile>
-    <ClCompile Include="document.cpp">
+    <ClCompile Include="Document.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="globalfunc.cpp">
+    <ClCompile Include="GlobalFunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="view.cpp">
+    <ClCompile Include="View.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow.cpp">
@@ -81,9 +81,12 @@
     <ClCompile Include="Widget\CurveProcessor.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\CurveSquare.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="view.h">
+    <QtMoc Include="View.h">
       <Filter>Source Files</Filter>
     </QtMoc>
     <QtMoc Include="mainwindow.h">
@@ -96,6 +99,9 @@
       <Filter>Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\CurveWidget.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\CurveSquare.h">
       <Filter>Widget</Filter>
     </QtMoc>
   </ItemGroup>
@@ -113,22 +119,22 @@
     <ResourceCompile Include="ImageQt5.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Image\baseimage.h">
+    <ClInclude Include="Image\BaseImage.h">
       <Filter>Image</Filter>
     </ClInclude>
-    <ClInclude Include="Image\generalimage.h">
+    <ClInclude Include="Image\GeneralImage.h">
       <Filter>Image</Filter>
     </ClInclude>
-    <ClInclude Include="Image\scanimage.h">
+    <ClInclude Include="Image\ScanImage.h">
       <Filter>Image</Filter>
     </ClInclude>
-    <ClInclude Include="Image\templateimage.h">
+    <ClInclude Include="Image\TemplateImage.h">
       <Filter>Image</Filter>
     </ClInclude>
-    <ClInclude Include="document.h">
+    <ClInclude Include="Document.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="globalfunc.h">
+    <ClInclude Include="GlobalFunc.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Image\BaseProcessor.h">

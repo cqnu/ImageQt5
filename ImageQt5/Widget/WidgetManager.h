@@ -16,6 +16,8 @@ public:
 
 	void addWidget(BaseWidget* widget);
 
+	void init();
+
 	void reset();
 
 private:

@@ -6,6 +6,7 @@
 #include <QRadioButton>
 #include <QHBoxLayout>
 
+#include "CurveSquare.h"
 #include "CurveProcessor.h"
 
 CurveWidget::CurveWidget(QWidget* parent)
@@ -48,7 +49,6 @@ CurveWidget::CurveWidget(QWidget* parent)
 	QVBoxLayout* vbox = new QVBoxLayout;
 	vbox->addWidget(radio1);
 	vbox->addWidget(radio2);
-	vbox->addStretch(1);
 	QGroupBox* groupBox2 = new QGroupBox(tr(""));
 	groupBox2->setLayout(vbox);
 
@@ -62,9 +62,11 @@ CurveWidget::CurveWidget(QWidget* parent)
 	layoutBottom->addWidget(groupBox2);
 	layoutBottom->addLayout(vbox2);
 
+	_square = new CurveSquare();
+
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addLayout(layoutHead);
-	layout->addStretch(1);
+	layout->addWidget(_square);
 	layout->addLayout(layoutBottom);
 
 	setLayout(layout);
@@ -76,6 +78,48 @@ CurveWidget::~CurveWidget()
 	{
 		delete _processor;
 	}
+}
+
+void CurveWidget::init()
+{
+	_square->init();
+
+	BaseImage* image = getGlobalImage();
+
+	// Generate histogram according to current channel
+	switch (_square->getChannel())
+	{
+	case CURVE_CHANNEL_GRAY:
+	{
+		//	setActivePegArray(m_pegsIntensity);
+		//	setActiveCurveArray(pWidget->GetIntensityArray());
+		_square->generateHistogram(image->getGrayPixelArray());
+	}
+	break;
+	case CURVE_CHANNEL_RED:
+	{
+		//	setActivePegArray(m_pegsRed);
+		//	setActiveCurveArray(pWidget->GetRedArray());
+		_square->generateHistogram(image->getRedPixelArray());
+	}
+	break;
+	case CURVE_CHANNEL_GREEN:
+	{
+		//	setActivePegArray(m_pegsGreen);
+		//	setActiveCurveArray(pWidget->GetGreenArray());
+		_square->generateHistogram(image->getGreenPixelArray());
+	}
+	break;
+	case CURVE_CHANNEL_BLUE:
+	{
+		//	setActivePegArray(m_pegsBlue);
+		//	setActiveCurveArray(pWidget->GetBlueArray());
+		_square->generateHistogram(image->getBluePixelArray());
+	}
+	break;
+	}
+
+	repaint();
 }
 
 void CurveWidget::reset()
