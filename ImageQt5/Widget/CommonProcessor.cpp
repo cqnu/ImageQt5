@@ -99,11 +99,11 @@ void CommonProcessor::ProcessTemplate(TemplateImage<Type>* image)
 		}
 	}
 
-	// 拷贝到图像
+	// Copy to image
 	image->copyToImage();
 }
 
-// 处理float数组
+// Process float array
 void CommonProcessor::ProcessArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)
 {
 	assert(pArray && pByte);

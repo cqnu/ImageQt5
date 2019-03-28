@@ -40,16 +40,16 @@ public:
 
 
 
-	// 返回量化处理后的数组
+	// get uchar data
 	uchar* getBYTEImage() { return _byteImage; }
 
-	// 分配内存空间
+	// Allocate memory
 	bool allocateMemory();
 
-	// 量化图像
+	// Convert float data to uchar data
 	bool convertToByte();
 
-	// 拷贝到图像
+	// Copy to image
 	bool copyToImage();
 
 public:

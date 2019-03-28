@@ -6,6 +6,7 @@
 
 class Document;
 class View;
+class BaseWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -22,10 +23,12 @@ public:
 	void showPixelValue(QPoint pos, QRgb rgb);
 	void clearPixelValue();
 
-protected:
+private:
 	void createStatusBar();
 
-	void createDockWidget();
+	void createImageWidget();
+
+	void createDockWidget(BaseWidget* widget);
 
 	void resizeEvent(QResizeEvent*);
 

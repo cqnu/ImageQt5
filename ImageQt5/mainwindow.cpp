@@ -8,6 +8,7 @@
 #include "View.h"
 #include "Widget/WidgetManager.h"
 #include "Widget/CommonWidget.h"
+#include "Widget/CurveWidget.h"
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -16,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	ui.centralWidget->setStyleSheet("background-color:gray");
 
-	createDockWidget();
+	createImageWidget();
 
 	createStatusBar();
 
@@ -39,15 +40,23 @@ MainWindow::~MainWindow()
 	WidgetManager::getInstance()->cleanUp();
 }
 
-void MainWindow::createDockWidget()
+void MainWindow::createImageWidget()
 {
 	CommonWidget* common = new CommonWidget();
+	createDockWidget(common);
+
+	CurveWidget* curve = new CurveWidget();
+	createDockWidget(curve);
+}
+
+void MainWindow::createDockWidget(BaseWidget* widget)
+{
 	QDockWidget* dockWidget = new QDockWidget(this);
-	dockWidget->setWindowTitle("Common");
-	dockWidget->setWidget(common);
+	dockWidget->setWindowTitle(widget->getName());
+	dockWidget->setWidget(widget);
 	addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dockWidget);
 
-	WidgetManager::getInstance()->addWidget(common);
+	WidgetManager::getInstance()->addWidget(widget);
 }
 
 void MainWindow::createStatusBar()

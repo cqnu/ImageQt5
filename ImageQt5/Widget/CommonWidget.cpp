@@ -8,6 +8,8 @@
 CommonWidget::CommonWidget(QWidget* parent)
 	: BaseWidget(parent)
 {
+	setName("Common");
+
 	_processor = new CommonProcessor;
 
 	QLabel* labelBright = new QLabel("Bright");
@@ -42,6 +44,14 @@ CommonWidget::~CommonWidget()
 	}
 }
 
+void CommonWidget::reset()
+{
+	_sliderBright->setValue(0);
+	_sliderContrast->setValue(0);
+	_labelBrightNum->setText(QString::number(0));
+	_labelContrastNum->setText(QString::number(0));
+}
+
 void CommonWidget::brightValueChanged(int x)
 {
 	_labelBrightNum->setText(QString::number(x));
@@ -66,12 +76,4 @@ void CommonWidget::SetBrightnessAndContrast()
 
 		repaintView();
 	}
-}
-
-void CommonWidget::reset()
-{
-	_sliderBright->setValue(0);
-	_sliderContrast->setValue(0);
-	_labelBrightNum->setText(QString::number(0));
-	_labelContrastNum->setText(QString::number(0));
 }

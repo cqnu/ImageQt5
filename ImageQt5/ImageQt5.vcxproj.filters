@@ -75,6 +75,12 @@
     <ClCompile Include="Widget\BaseWidget.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
+    <ClCompile Include="Widget\CurveWidget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\CurveProcessor.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="view.h">
@@ -87,6 +93,9 @@
       <Filter>Widget</Filter>
     </QtMoc>
     <QtMoc Include="Widget\BaseWidget.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\CurveWidget.h">
       <Filter>Widget</Filter>
     </QtMoc>
   </ItemGroup>
@@ -132,6 +141,9 @@
       <Filter>Image</Filter>
     </ClInclude>
     <ClInclude Include="Widget\WidgetManager.h">
+      <Filter>Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\CurveProcessor.h">
       <Filter>Widget</Filter>
     </ClInclude>
   </ItemGroup>

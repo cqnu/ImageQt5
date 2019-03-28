@@ -9,37 +9,37 @@ ScanImage::ScanImage()
 ScanImage::ScanImage(const QString& pathName) :
 	TemplateImage(pathName)
 {
-	// 读取数据头
+	// Read data header
 	if (readDataHeader() == false)
 	{
 		_openSucceed = false;
 		return;
 	}
-	// 读取数据
+	// Read data
 	if (readData() == false)
 	{
 		_openSucceed = false;
 		return;
 	}
-	// 分配内存空间
+	// Allocate memory
 	if (allocateMemory() == false)
 	{
 		_openSucceed = false;
 		return;
 	}
-	// 遍历查找最大最小值
+	// Find top and bottom value in data
 	if (findTopAndBottom(_originalData, _width * _height) == false)
 	{
 		_openSucceed = false;
 		return;
 	}
-	// 量化图像
+	// Convert float data to uchar data
 	if (convertToByte() == false)
 	{
 		_openSucceed = false;
 		return;
 	}
-	// 拷贝到图像
+	// Copy to image
 	if (copyToImage() == false)
 	{
 		_openSucceed = false;
@@ -54,7 +54,7 @@ ScanImage::~ScanImage()
 
 }
 
-// 读数据头
+// Read data header
 bool ScanImage::readDataHeader()
 {
 	QFile file(_pathName);
@@ -75,14 +75,15 @@ bool ScanImage::readDataHeader()
 	qint64 expectSize = _width * _height * _slice * sizeof(float) + DATA_HEADER_SIZE;
 	if (expectSize > size)
 	{
-		QMessageBox::critical(nullptr, "打开文件错误", "数据尺寸不符合文件信息描述，请确认数据合法性！", QMessageBox::Ok);
+		QMessageBox::critical(nullptr, QObject::tr("Open image file error"),
+			QObject::tr("The data size does not match the file information description!"), QMessageBox::Ok);
 		return false;
 	}
 
 	return true;
 }
 
-// 读数据
+// Read data
 bool ScanImage::readData()
 {
 	_originalData = new float[_width * _height];
@@ -97,7 +98,8 @@ bool ScanImage::readData()
 
 	if (readSize != sizeof(float) * _width * _height)
 	{
-		QMessageBox::critical(nullptr, "打开文件错误", "数据尺寸不符合文件信息描述，请确认数据合法性！", QMessageBox::Ok);
+		QMessageBox::critical(nullptr, QObject::tr("Open image file error"),
+			QObject::tr("The data size does not match the file information description!"), QMessageBox::Ok);
 		return false;
 	}
 

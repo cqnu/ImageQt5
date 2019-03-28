@@ -46,7 +46,7 @@ protected:
 	template<typename Type>
 	void ProcessTemplate(TemplateImage<Type>* pImage)	{}
 
-	// Á¿»¯Í¼Ïñ
+	// Convert float data to uchar data
 	void ConvertToByte(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte);
 
 private:

@@ -2,13 +2,13 @@
 
 #include "../Image/BaseProcessor.h"
 
-class CommonProcessor : public BaseProcessor
+class CurveProcessor : public BaseProcessor
 {
 	DECLARE_TEMPLATE_INTERFACE
 
 public:
-	CommonProcessor();
-	~CommonProcessor();
+	CurveProcessor();
+	~CurveProcessor();
 
 protected:
 	virtual void ProcessGeneralImage(GeneralImage* pImage);
@@ -20,9 +20,9 @@ protected:
 	virtual void ProcessArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte);
 
 public:
-	void SetBrightnessAndContrast(int brightness, int contrast);
+//	void SetBrightnessAndContrast(int brightness, int contrast);
 
 private:
-	int _brightness;
-	int _contrast;
+//	int _brightness;
+//	int _contrast;
 };
