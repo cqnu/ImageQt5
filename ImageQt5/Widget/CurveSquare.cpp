@@ -8,20 +8,25 @@
 
 CurveSquare::CurveSquare(QWidget* parent)
 	: QWidget(parent)
-	, _rectSquare(30, 0, AREAWIDTH, AREAWIDTH)
+	, _size(256)
+	, _rectSquare(30, 0, _size, _size)
 	, _curveOrLine(1)
 	, _channel(0)
 	, _activePegIndex(0)
 {
-	_heightArray = new uint[AREAWIDTH];
-	memset(_heightArray, 0, sizeof(uint) * AREAWIDTH);
+	_heightArray = new uint[_size];
+	memset(_heightArray, 0, sizeof(uint) * _size);
 
-	_ownerPegs.append(Peg(0, AREAWIDTH));
-	_ownerPegs.append(Peg(AREAWIDTH, 0));
+	_ownerPegs.append(Peg(0, _size));
+	_ownerPegs.append(Peg(_size, 0));
 	_activePegs = &_ownerPegs;
 
 	// Initialize array
-	for (int i = 0; i < AREAWIDTH; i++)
+	_arrayIntensity = new uint[_size];
+	_arrayRed = new uint[_size];
+	_arrayGreen = new uint[_size];
+	_arrayBlue = new uint[_size];
+	for (int i = 0; i < _size; i++)
 	{
 		_arrayIntensity[i] = _arrayRed[i] = _arrayGreen[i] = _arrayBlue[i] = i;
 	}
@@ -35,6 +40,22 @@ CurveSquare::~CurveSquare()
 	if (_heightArray)
 	{
 		delete[] _heightArray;
+	}
+	if (_arrayIntensity)
+	{
+		delete[] _arrayIntensity;
+	}
+	if (_arrayRed)
+	{
+		delete[] _arrayRed;
+	}
+	if (_arrayGreen)
+	{
+		delete[] _arrayGreen;
+	}
+	if (_arrayBlue)
+	{
+		delete[] _arrayBlue;
 	}
 }
 
@@ -78,7 +99,9 @@ void CurveSquare::init()
 
 void CurveSquare::reset()
 {
+	removeAllPegs();
 
+	repaint();
 }
 
 QSize CurveSquare::sizeHint() const
@@ -89,6 +112,63 @@ QSize CurveSquare::sizeHint() const
 QSize CurveSquare::minimumSizeHint() const
 {
 	return QSize(256, 256);
+}
+
+void CurveSquare::resizeEvent(QResizeEvent* event)
+{
+	QWidget::resizeEvent(event);
+
+	QSize size = event->size();
+
+	int newSize = qMin(size.width(), size.height()) - 30;
+	if (_size == newSize)
+		return;
+
+	_size = newSize;
+	_rectSquare = QRect(30, 0, _size, _size);
+
+	if (_heightArray)
+	{
+		delete[] _heightArray;
+	}
+	_heightArray = new uint[_size];
+	memset(_heightArray, 0, sizeof(uint) * _size);
+
+	// Emit signal to parent widget
+	emit renew();
+
+	_ownerPegs.clear();
+	_ownerPegs.append(Peg(0, _size));
+	_ownerPegs.append(Peg(_size, 0));
+	_activePegs = &_ownerPegs;
+
+	if (_arrayIntensity)
+	{
+		delete[] _arrayIntensity;
+	}
+	if (_arrayRed)
+	{
+		delete[] _arrayRed;
+	}
+	if (_arrayGreen)
+	{
+		delete[] _arrayGreen;
+	}
+	if (_arrayBlue)
+	{
+		delete[] _arrayBlue;
+	}
+	_arrayIntensity = new uint[_size];
+	_arrayRed = new uint[_size];
+	_arrayGreen = new uint[_size];
+	_arrayBlue = new uint[_size];
+	for (int i = 0; i < _size; i++)
+	{
+		_arrayIntensity[i] = _arrayRed[i] = _arrayGreen[i] = _arrayBlue[i] = i;
+	}
+	_activeArray = _arrayIntensity;
+
+	repaint();
 }
 
 void CurveSquare::paintEvent(QPaintEvent* /*event*/)
@@ -110,7 +190,7 @@ void CurveSquare::paintHistogram()
 	QPainter painter(this);
 	painter.setPen(QPen(Qt::blue));
 
-	for (int i = 0; i < AREAWIDTH; i++)
+	for (int i = 0; i < _size; i++)
 	{
 		painter.drawLine(i + _rectSquare.left(), _rectSquare.bottom(), i + _rectSquare.left(), _rectSquare.bottom() - _heightArray[i]);
 	}
@@ -125,18 +205,18 @@ void CurveSquare::paintBackground()
 	int gap = 6;
 	QPoint point(_rectSquare.left() - gap, _rectSquare.top());
 	int colorWidth = 15;
-	for (int i = 0; i < AREAWIDTH; i++)
+	for (int i = 0; i < _size; i++)
 	{
-		int j = 255 - i * 255 / (AREAWIDTH - 1);
+		int j = 255 - i * 255 / (_size - 1);
 		QPen pen(QColor(j, j, j));
 		painter.setPen(pen);
 		painter.drawLine(point.x() - colorWidth, point.y() + i, point.x(), point.y() + i);
 	}
 
 	point = QPoint(_rectSquare.left(), _rectSquare.bottom() + gap);
-	for (int i = 0; i < AREAWIDTH; i++)
+	for (int i = 0; i < _size; i++)
 	{
-		int j = i * 255 / (AREAWIDTH - 1);
+		int j = i * 255 / (_size - 1);
 		QPen pen(QColor(j, j, j));
 		painter.setPen(pen);
 		painter.drawLine(point.x() + i, point.y(), point.x() + i, point.y() + colorWidth);
@@ -152,19 +232,19 @@ void CurveSquare::paintBackground()
 	
 	pen.setStyle(Qt::DashLine);
 	painter.setPen(pen);
-	painter.drawLine(QPoint(_rectSquare.left(), _rectSquare.top() + AREAWIDTH / 4),
-		QPoint(_rectSquare.right(), _rectSquare.top() + AREAWIDTH / 4));
-	painter.drawLine(QPoint(_rectSquare.left(), _rectSquare.top() + AREAWIDTH / 2),
-		QPoint(_rectSquare.right(), _rectSquare.top() + AREAWIDTH / 2));
-	painter.drawLine(QPoint(_rectSquare.left(), _rectSquare.top() + AREAWIDTH  * 3/ 4),
-		QPoint(_rectSquare.right(), _rectSquare.top() + AREAWIDTH * 3 / 4));
+	painter.drawLine(QPoint(_rectSquare.left(), _rectSquare.top() + _size / 4),
+		QPoint(_rectSquare.right(), _rectSquare.top() + _size / 4));
+	painter.drawLine(QPoint(_rectSquare.left(), _rectSquare.top() + _size / 2),
+		QPoint(_rectSquare.right(), _rectSquare.top() + _size / 2));
+	painter.drawLine(QPoint(_rectSquare.left(), _rectSquare.top() + _size * 3/ 4),
+		QPoint(_rectSquare.right(), _rectSquare.top() + _size * 3 / 4));
 	
-	painter.drawLine(QPoint(_rectSquare.left() + AREAWIDTH / 4, _rectSquare.top()),
-		QPoint(_rectSquare.left() + AREAWIDTH / 4, _rectSquare.bottom()));
-	painter.drawLine(QPoint(_rectSquare.left() + AREAWIDTH / 2, _rectSquare.top()),
-		QPoint(_rectSquare.left() + AREAWIDTH / 2, _rectSquare.bottom()));
-	painter.drawLine(QPoint(_rectSquare.left() + AREAWIDTH * 3 / 4, _rectSquare.top()),
-		QPoint(_rectSquare.left() + AREAWIDTH * 3 / 4, _rectSquare.bottom()));
+	painter.drawLine(QPoint(_rectSquare.left() + _size / 4, _rectSquare.top()),
+		QPoint(_rectSquare.left() + _size / 4, _rectSquare.bottom()));
+	painter.drawLine(QPoint(_rectSquare.left() + _size / 2, _rectSquare.top()),
+		QPoint(_rectSquare.left() + _size / 2, _rectSquare.bottom()));
+	painter.drawLine(QPoint(_rectSquare.left() + _size * 3 / 4, _rectSquare.top()),
+		QPoint(_rectSquare.left() + _size * 3 / 4, _rectSquare.bottom()));
 
 	QColor color;
 	switch (_channel)
@@ -235,9 +315,9 @@ void CurveSquare::paintConnection(QColor color)
 
 	// Connect all pegs
 	QVector<QLine> lines;
-	for (int i = 0; i < AREAWIDTH - 1; i++)
+	for (int i = 0; i < _size - 1; i++)
 	{
-		lines.append(QLine(getCoordinate(i, _activeArray[i]), getCoordinate(i + 1, _activeArray[i])));
+		lines.append(QLine(getCoordinate(i, _activeArray[i]), getCoordinate(i + 1, _activeArray[i + 1])));
 	}
 
 	QPainter painter(this);
@@ -250,7 +330,7 @@ void CurveSquare::paintConnection(QColor color)
 // 由x、y值计算出在控件客户区上的坐标
 QPoint CurveSquare::getCoordinate(int x, int y)
 {
-	return QPoint(x + _rectSquare.left(), AREAWIDTH - y + _rectSquare.top());
+	return QPoint(x + _rectSquare.left(), _size - y + _rectSquare.top());
 }
 
 void CurveSquare::mousePressEvent(QMouseEvent* event)
@@ -308,7 +388,29 @@ void CurveSquare::mousePressEvent(QMouseEvent* event)
 	}
 	else if(event->button() & Qt::RightButton)
 	{
-		QMessageBox::about(this, "Qt Mouse Click Event Example", "You haved clicked right");
+		PegArray& pegs = *_activePegs;
+		if (_activePegIndex != NONE_PEG)
+		{
+			// 刷新原m_nActivePegIndex所在的黑点
+			QRect rect(pegs[_activePegIndex].x() - 2, pegs[_activePegIndex].y() - 2,
+				pegs[_activePegIndex].x() + 2, pegs[_activePegIndex].y() + 2);
+			repaint(rect);
+		}
+
+		QPoint ptDummy(point.x() - _rectSquare.left(), point.y() - _rectSquare.top());
+		_activePegIndex = ptInAnyPeg(ptDummy);
+		// peg数目至少三个以上，才允许删除操作
+		if (_activePegIndex != NONE_PEG && pegs.size() >= 3)
+		{
+			QPoint ptTemp = pegs[_activePegIndex].point();
+			removePeg(_activePegIndex);
+			setArrayValue(_activePegIndex, false);
+			repaintPeg();
+			if (_activePegIndex > pegs.size() - 1)
+			{
+				_activePegIndex--;
+			}
+		}
 	}
 }
 
@@ -564,7 +666,7 @@ void CurveSquare::setLinearityArrayValue(int index, bool flag)
 		// 第一个peg之前的那些值置成与它的cy一样
 		for (int i = 0; i <= size.width(); i++)
 		{
-			_activeArray[i] = uchar(size.height());
+			_activeArray[i] = size.height();
 		}
 		// 更新第一个peg与第二个peg之间的线段
 		setLineValue(index);
@@ -572,9 +674,9 @@ void CurveSquare::setLinearityArrayValue(int index, bool flag)
 	else if (index > _activePegs->size() - 1 && !flag)
 	{
 		QSize size = getCurrentValue(index - 1);
-		for (int i = AREAWIDTH - 1; i >= size.width(); i--)
+		for (int i = _size - 1; i >= size.width(); i--)
 		{
-			_activeArray[i] = uchar(size.height());
+			_activeArray[i] = size.height();
 		}
 	}
 	else if (index == _activePegs->size() - 1)
@@ -582,9 +684,9 @@ void CurveSquare::setLinearityArrayValue(int index, bool flag)
 		if (flag)
 		{
 			QSize size = getCurrentValue(index);
-			for (int i = AREAWIDTH - 1; i >= size.width(); i--)
+			for (int i = _size - 1; i >= size.width(); i--)
 			{
-				_activeArray[i] = uchar(size.height());
+				_activeArray[i] = size.height();
 			}
 			setLineValue(index - 1);
 		}
@@ -613,7 +715,7 @@ void CurveSquare::setLinearityArrayValue(int index, bool flag)
 QSize CurveSquare::getCurrentValue(int index)
 {
 	QPoint point(_activePegs->at(index).point());
-	return QSize(point.x(), AREAWIDTH - point.y());
+	return QSize(point.x(), _size - point.y());
 }
 
 // 该函数只被setLinearityArrayValue()调用
@@ -627,7 +729,7 @@ void CurveSquare::setLineValue(int startIndex)
 
 	for (int x = sizeStart.width(); x < sizeEnd.width(); x++)
 	{
-		_activeArray[x] = uchar(sizeStart.height() + (x - sizeStart.width()) * (sizeEnd.height() - sizeStart.height()) / (sizeEnd.width() - sizeStart.width()));
+		_activeArray[x] = sizeStart.height() + (x - sizeStart.width()) * (sizeEnd.height() - sizeStart.height()) / (sizeEnd.width() - sizeStart.width());
 	}
 }
 
@@ -642,11 +744,11 @@ void CurveSquare::removeAllPegs()
 {
 	_activePegs->clear();
 
-	_activePegs->append(Peg(0, AREAWIDTH));
-	_activePegs->append(Peg(AREAWIDTH, 0));
+	_activePegs->append(Peg(0, _size));
+	_activePegs->append(Peg(_size, 0));
 	_activePegIndex = 0;
 	// Initialize array
-	for (int i = 0; i < AREAWIDTH; i++)
+	for (int i = 0; i < _size; i++)
 	{
 		_activeArray[i] = i;
 	}
@@ -655,11 +757,18 @@ void CurveSquare::removeAllPegs()
 // Generate histogram
 bool CurveSquare::generateHistogram(uint* pArray)
 {
-	memcpy(_heightArray, pArray, sizeof(uint) * 256);
+	for (int i = 0; i < _size - 1; i++)
+	{
+		float fIndex = i * 255.0f / float(_size - 1);
+		int index = floor(fIndex);
+		float fraction = fIndex - index;
+		_heightArray[i] = (int)round(pArray[index] * (1.0f - fraction) + pArray[index + 1] * fraction);
+	}
+	_heightArray[_size - 1] = pArray[255];
 
 	_minHeight = _maxHeight = _heightArray[0];
 	// find max and min value in _heightArray
-	for (int i = 1; i < 256; i++)
+	for (int i = 1; i < _size; i++)
 	{
 		if (_maxHeight < _heightArray[i])
 		{
@@ -675,12 +784,20 @@ bool CurveSquare::generateHistogram(uint* pArray)
 		return false;
 
 	// Calculate height
-	for (int i = 0; i < AREAWIDTH; i++)
+	for (int i = 0; i < _size; i++)
 	{
-		_heightArray[i] = (_heightArray[i] - _minHeight) * (AREAWIDTH - 1) / (_maxHeight - _minHeight) + 1;
+		_heightArray[i] = (_heightArray[i] - _minHeight) * (_size - 1) / (_maxHeight - _minHeight) + 1;
 	}
 
 	repaint();
 
 	return true;
+}
+
+void CurveSquare::setChannel(int channel)
+{
+	_channel = channel;
+	repaint();
+
+	// TODO
 }

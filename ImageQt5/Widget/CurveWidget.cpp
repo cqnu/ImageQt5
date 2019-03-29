@@ -22,6 +22,7 @@ CurveWidget::CurveWidget(QWidget* parent)
 	comboboxChannel->addItem(tr("Red"));
 	comboboxChannel->addItem(tr("Green"));
 	comboboxChannel->addItem(tr("Red"));
+	connect(comboboxChannel, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &CurveWidget::channelChanged);
 	QPushButton* buttonReset = new QPushButton(tr("&Reset"));
 	QPushButton* buttonReverse = new QPushButton(tr("R&everse"));
 
@@ -63,6 +64,7 @@ CurveWidget::CurveWidget(QWidget* parent)
 	layoutBottom->addLayout(vbox2);
 
 	_square = new CurveSquare();
+	connect(_square, &CurveSquare::renew, this, &CurveWidget::renewSquare);
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addLayout(layoutHead);
@@ -85,6 +87,8 @@ void CurveWidget::init()
 	_square->init();
 
 	BaseImage* image = getGlobalImage();
+	if (image == nullptr)
+		return;
 
 	// Generate histogram according to current channel
 	switch (_square->getChannel())
@@ -125,4 +129,14 @@ void CurveWidget::init()
 void CurveWidget::reset()
 {
 
+}
+
+void CurveWidget::channelChanged(int value)
+{
+	_square->setChannel(value);
+}
+
+void CurveWidget::renewSquare()
+{
+	init();
 }

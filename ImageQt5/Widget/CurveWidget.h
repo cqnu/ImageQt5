@@ -21,9 +21,12 @@ public:
 	virtual void reset();
 
 public slots:
-//	void brightValueChanged(int value);
+	void channelChanged(int value);
 
 //	void contrastValueChanged(int value);
+
+protected slots:
+	void renewSquare();
 
 private:
 //	void SetBrightnessAndContrast();

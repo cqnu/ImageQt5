@@ -17,11 +17,11 @@ CommonWidget::CommonWidget(QWidget* parent)
 	_sliderBright = new QSlider(Qt::Orientation::Horizontal);
 	_sliderBright->setMinimum(-100);
 	_sliderBright->setMaximum(100);
-	connect(_sliderBright, SIGNAL(valueChanged(int)), SLOT(brightValueChanged(int)));
+	connect(_sliderBright, &QSlider::valueChanged, this, &CommonWidget::brightValueChanged);
 	_sliderContrast = new QSlider(Qt::Orientation::Horizontal);
 	_sliderContrast->setMinimum(-100);
 	_sliderContrast->setMaximum(100);
-	connect(_sliderContrast, SIGNAL(valueChanged(int)), SLOT(contrastValueChanged(int)));
+	connect(_sliderContrast, &QSlider::valueChanged, this, &CommonWidget::contrastValueChanged);
 	_labelBrightNum = new QLabel("0");
 	_labelContrastNum = new QLabel("0");
 

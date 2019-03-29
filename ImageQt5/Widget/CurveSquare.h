@@ -6,7 +6,6 @@
 typedef QVector<Peg> PegArray;
 
 #define NONE_PEG				-1
-#define AREAWIDTH				256		// 样条曲线调整的区域大小
 #define PEG_DISTANCE			3
 #ifndef CURVE_CHANNEL
 #define CURVE_CHANNEL
@@ -38,7 +37,14 @@ public:
 
 	int getChannel() { return _channel; }
 
+	void setChannel(int channel);
+
+signals:
+	void renew();
+
 protected:
+	virtual void resizeEvent(QResizeEvent* event);
+
 	virtual void paintEvent(QPaintEvent* event);
 
 	virtual void mousePressEvent(QMouseEvent* event);
@@ -100,6 +106,8 @@ private:
 	void removeAllPegs();
 
 private:
+	int _size;
+
 	// 方形区域
 	QRect _rectSquare;
 
@@ -125,11 +133,11 @@ private:
 	PegArray _ownerPegs;
 
 	// 指向当前活动的数组
-	uchar* _activeArray;
+	uint* _activeArray;
 
 	// 用来存放曲线所对应的值
-	uchar _arrayIntensity[AREAWIDTH];
-	uchar _arrayRed[AREAWIDTH];
-	uchar _arrayGreen[AREAWIDTH];
-	uchar _arrayBlue[AREAWIDTH];
+	uint* _arrayIntensity;
+	uint* _arrayRed;
+	uint* _arrayGreen;
+	uint* _arrayBlue;
 };
