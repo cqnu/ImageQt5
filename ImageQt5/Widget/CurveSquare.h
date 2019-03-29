@@ -7,7 +7,7 @@ typedef QVector<Peg> PegArray;
 
 #define NONE_PEG				-1
 #define AREAWIDTH				256		// 样条曲线调整的区域大小
-
+#define PEG_DISTANCE			3
 #ifndef CURVE_CHANNEL
 #define CURVE_CHANNEL
 #define CURVE_CHANNEL_GRAY		0
@@ -41,6 +41,12 @@ public:
 protected:
 	virtual void paintEvent(QPaintEvent* event);
 
+	virtual void mousePressEvent(QMouseEvent* event);
+
+	virtual void mouseMoveEvent(QMouseEvent* event);
+
+	virtual void mouseReleaseEvent(QMouseEvent* event);
+
 private:
 	void paintHistogram();
 
@@ -51,7 +57,7 @@ private:
 	void paintPegs(QColor color);
 
 	// Paint single peg
-	void paintSinglePeg(const Peg& peg);
+	void paintSinglePeg(const Peg& peg, QColor color);
 
 	// Paint connection
 	void paintConnection(QColor color);
@@ -61,6 +67,37 @@ private:
 
 	// 点落在任意一个peg内(包括StartPeg和EndPeg)
 	int ptInAnyPeg(QPoint point) const;
+
+	// 增加peg前的预处理，判断是否允许在当前点插入peg; 参数为新插入点的x坐标
+	bool prepareAddPeg(int xCoordinate);
+
+	// Add peg
+	int	addPeg(const QPoint& point);
+
+	// Repaint
+	void repaintPeg();
+
+	// 插入一个新控制点时，根据控制点的横坐标进行排序
+	int sortPegs(const Peg& peg);
+
+	// 对数组的操作, 改变数组的值
+	void setArrayValue(int index = -2, bool flag = true);
+
+	// 线性的改变数组的值，其中，参数flag为true表示增加或移动peg, false表示删除peg
+	void setLinearityArrayValue(int index, bool flag = true);
+
+	// 改变一个线段的值，参数startIndex表示线段起始peg的index
+	// 该函数只被setLinearityArrayValue()调用
+	void setLineValue(int startIndex);
+
+	// 返回peg所在的输入输出值
+	QSize getCurrentValue(int index);
+
+	// Remove one peg
+	void removePeg(int index);
+
+	// Remove all pegs
+	void removeAllPegs();
 
 private:
 	// 方形区域
