@@ -1,18 +1,17 @@
 #pragma once
 
-//#include "..\PluginDefine.h"
 #include "GeneralImage.h"
 #include "TemplateImage.h"
 
 #define DECLARE_TEMPLATE_INTERFACE \
 public: \
-	virtual void ProcessUCharImage(TemplateImage<uchar>* pImage) { ProcessTemplate<uchar>(pImage); } \
-	virtual void ProcessShortImage(TemplateImage<short>* pImage) { ProcessTemplate<short>(pImage); } \
-	virtual void ProcessUShortImage(TemplateImage<ushort>* pImage) { ProcessTemplate<ushort>(pImage); } \
-	virtual void ProcessIntImage(TemplateImage<int>* pImage) { ProcessTemplate<int>(pImage); } \
-	virtual void ProcessUIntImage(TemplateImage<uint>* pImage) { ProcessTemplate<uint>(pImage); } \
-	virtual void ProcessFloatImage(TemplateImage<float>* pImage) { ProcessTemplate<float>(pImage); } \
-	virtual void ProcessDoubleImage(TemplateImage<double>* pImage) { ProcessTemplate<double>(pImage); }
+	virtual void processUCharImage(TemplateImage<uchar>* image) { processTemplate<uchar>(image); } \
+	virtual void processShortImage(TemplateImage<short>* image) { processTemplate<short>(image); } \
+	virtual void processUShortImage(TemplateImage<ushort>* image) { processTemplate<ushort>(image); } \
+	virtual void processIntImage(TemplateImage<int>* image) { processTemplate<int>(image); } \
+	virtual void processUIntImage(TemplateImage<uint>* image) { processTemplate<uint>(image); } \
+	virtual void processFloatImage(TemplateImage<float>* image) { processTemplate<float>(image); } \
+	virtual void processDoubleImage(TemplateImage<double>* image) { processTemplate<double>(image); }
 
 class BaseImage;
 class GeneralImage;
@@ -28,26 +27,26 @@ public:
 	~BaseProcessor();
 
 public:
-	static BaseProcessor* GetProcessor();
+	static BaseProcessor* getProcessor();
 
-	BaseProcessor* SetCurrentProcessor();
+	BaseProcessor* setCurrentProcessor();
 
 	// Process image
-	void Process(BaseImage* pImage);
+	void process(BaseImage* pImage);
 
 	// Process float array
-	virtual void ProcessArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)	{}
+	virtual void processArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)	{}
 
 protected:
-	virtual void ProcessGeneralImage(GeneralImage* pImage) {}
+	virtual void processGeneralImage(GeneralImage* pImage) {}
 
 //	virtual void ProcessRegionImage(RegionImage* pImage);
 
 	template<typename Type>
-	void ProcessTemplate(TemplateImage<Type>* pImage)	{}
+	void processTemplate(TemplateImage<Type>* pImage)	{}
 
 	// Convert float data to uchar data
-	void ConvertToByte(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte);
+	void convertToByte(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte);
 
 private:
 	static BaseProcessor* _currentProcessor;

@@ -134,9 +134,6 @@ void CurveSquare::resizeEvent(QResizeEvent* event)
 	_heightArray = new uint[_size];
 	memset(_heightArray, 0, sizeof(uint) * _size);
 
-	// Emit signal to parent widget
-	emit renew();
-
 	_ownerPegs.clear();
 	_ownerPegs.append(Peg(0, _size));
 	_ownerPegs.append(Peg(_size, 0));
@@ -169,6 +166,9 @@ void CurveSquare::resizeEvent(QResizeEvent* event)
 	_activeArray = _arrayIntensity;
 
 	repaint();
+
+	// Emit signal to parent widget
+	emit resize();
 }
 
 void CurveSquare::paintEvent(QPaintEvent* /*event*/)
@@ -538,6 +538,8 @@ void CurveSquare::mouseReleaseEvent(QMouseEvent* event)
 	setCursor(Qt::ArrowCursor);
 	// ¸üÐÂÍ¼Ïñ
 //	AfxBeginThread(UpdateImageThread, this);
+
+	emit update();
 }
 
 int CurveSquare::ptInAnyPeg(QPoint point) const

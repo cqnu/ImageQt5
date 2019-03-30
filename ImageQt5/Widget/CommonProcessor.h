@@ -11,16 +11,16 @@ public:
 	~CommonProcessor();
 
 protected:
-	virtual void ProcessGeneralImage(GeneralImage* pImage);
+	virtual void processGeneralImage(GeneralImage* pImage);
 
 	template<typename Type>
-	void ProcessTemplate(TemplateImage<Type>* pImage);
+	void processTemplate(TemplateImage<Type>* pImage);
 
 	// Process float array
-	virtual void ProcessArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte);
+	virtual void processArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte);
 
 public:
-	void SetBrightnessAndContrast(int brightness, int contrast);
+	void setBrightnessAndContrast(int brightness, int contrast);
 
 private:
 	int _brightness;

@@ -10,8 +10,6 @@ CommonWidget::CommonWidget(QWidget* parent)
 {
 	setName("Common");
 
-	_processor = new CommonProcessor;
-
 	QLabel* labelBright = new QLabel("Bright");
 	QLabel* labelContrast = new QLabel("Contrast");
 	_sliderBright = new QSlider(Qt::Orientation::Horizontal);
@@ -34,6 +32,8 @@ CommonWidget::CommonWidget(QWidget* parent)
 	layout->addWidget(_labelContrastNum, 1, 2);
 
 	setLayout(layout);
+
+	_processor = new CommonProcessor;
 }
 
 CommonWidget::~CommonWidget()
@@ -76,8 +76,8 @@ void CommonWidget::SetBrightnessAndContrast()
 	BaseImage* image = getGlobalImage();
 	if (image)
 	{
-		_processor->SetBrightnessAndContrast(_sliderBright->value(), _sliderContrast->value());
-		_processor->Process(image);
+		_processor->setBrightnessAndContrast(_sliderBright->value(), _sliderContrast->value());
+		_processor->process(image);
 
 		repaintView();
 	}

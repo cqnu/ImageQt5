@@ -19,61 +19,61 @@ BaseProcessor::~BaseProcessor()
 
 }
 
-BaseProcessor* BaseProcessor::GetProcessor()
+BaseProcessor* BaseProcessor::getProcessor()
 {
 	return _currentProcessor;
 }
 
-void BaseProcessor::Process(BaseImage* pImage)
+void BaseProcessor::process(BaseImage* pImage)
 {
-	SetCurrentProcessor();
+	setCurrentProcessor();
 	
 	if (typeid(*pImage) == typeid(GeneralImage))
 	{
 		GeneralImage* pGeneralImage = dynamic_cast<GeneralImage*>(pImage);
-		ProcessGeneralImage(pGeneralImage);
+		processGeneralImage(pGeneralImage);
 	}
 	else if (dynamic_cast<TemplateImage<float>*>(pImage))
 	{
 		TemplateImage<float>* pFloatImage = dynamic_cast<TemplateImage<float>*>(pImage);
 		assert(pFloatImage);
-		ProcessFloatImage(pFloatImage);
+		processFloatImage(pFloatImage);
 	}
 	else if (dynamic_cast<TemplateImage<ushort>*>(pImage))
 	{
 		TemplateImage<ushort>* pUShortImage = dynamic_cast<TemplateImage<ushort>*>(pImage);
 		assert(pUShortImage);
-		ProcessUShortImage(pUShortImage);
+		processUShortImage(pUShortImage);
 	}
 	else if (dynamic_cast<TemplateImage<uchar>*>(pImage))
 	{
 		TemplateImage<uchar>* pUCharImage = dynamic_cast<TemplateImage<uchar>*>(pImage);
 		assert(pUCharImage);
-		ProcessUCharImage(pUCharImage);
+		processUCharImage(pUCharImage);
 	}
 	else if (dynamic_cast<TemplateImage<short>*>(pImage))
 	{
 		TemplateImage<short>* pShortImage = dynamic_cast<TemplateImage<short>*>(pImage);
 		assert(pShortImage);
-		ProcessShortImage(pShortImage);
+		processShortImage(pShortImage);
 	}
 	else if (dynamic_cast<TemplateImage<int>*>(pImage))
 	{
 		TemplateImage<int>* pIntImage = dynamic_cast<TemplateImage<int>*>(pImage);
 		assert(pIntImage);
-		ProcessIntImage(pIntImage);
+		processIntImage(pIntImage);
 	}
 	else if (dynamic_cast<TemplateImage<unsigned int>*>(pImage))
 	{
 		TemplateImage<unsigned int>* pUIntImage = dynamic_cast<TemplateImage<unsigned int>*>(pImage);
 		assert(pUIntImage);
-		ProcessUIntImage(pUIntImage);
+		processUIntImage(pUIntImage);
 	}
 	else if (dynamic_cast<TemplateImage<double>*>(pImage))
 	{
 		TemplateImage<double>* pDoubleImage = dynamic_cast<TemplateImage<double>*>(pImage);
 		assert(pDoubleImage);
-		ProcessDoubleImage(pDoubleImage);
+		processDoubleImage(pDoubleImage);
 	}
 /*	else if (typeid(*pImage) == typeid(RegionImage))
 	{
@@ -91,18 +91,17 @@ void BaseProcessor::ProcessRegionImage(RegionImage* pImage)
 	Process(pRegionImage->GetImplImage());
 }*/
 
-BaseProcessor* BaseProcessor::SetCurrentProcessor()
+BaseProcessor* BaseProcessor::setCurrentProcessor()
 {
 	BaseProcessor* oldProcessor = _currentProcessor;
 	_currentProcessor = this;
 	return oldProcessor;
 }
 
-void BaseProcessor::ConvertToByte(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)
+void BaseProcessor::convertToByte(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)
 {
 	assert(pArray && pByte);
 
-	// 常数, 作为一个临时变量拿到for循环外
 	float variable;
 	if (maxValue != minValue)
 	{

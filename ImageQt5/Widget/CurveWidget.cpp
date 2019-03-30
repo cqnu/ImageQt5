@@ -14,8 +14,6 @@ CurveWidget::CurveWidget(QWidget* parent)
 {
 	setName("Curve");
 
-	_processor = new CurveProcessor;
-
 	QLabel* labelChannel = new QLabel(tr("Channel"));
 	QComboBox* comboboxChannel = new QComboBox();
 	comboboxChannel->addItem(tr("All"));
@@ -64,7 +62,8 @@ CurveWidget::CurveWidget(QWidget* parent)
 	layoutBottom->addLayout(vbox2);
 
 	_square = new CurveSquare();
-	connect(_square, &CurveSquare::renew, this, &CurveWidget::renewSquare);
+	connect(_square, &CurveSquare::resize, this, &CurveWidget::resizeSquare);
+	connect(_square, &CurveSquare::update, this, &CurveWidget::updateSquare);
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addLayout(layoutHead);
@@ -72,6 +71,10 @@ CurveWidget::CurveWidget(QWidget* parent)
 	layout->addLayout(layoutBottom);
 
 	setLayout(layout);
+
+	_processor = new CurveProcessor;
+	_processor->setArray(_square->getSize(), _square->getIntensity(), _square->getRed(), _square->getGreen(), _square->getBlue());
+	_processor->setChannel(_square->getChannel());
 }
 
 CurveWidget::~CurveWidget()
@@ -128,15 +131,38 @@ void CurveWidget::init()
 
 void CurveWidget::reset()
 {
-
+	_square->reset();
+	connectSqureWithProcessor();
 }
 
 void CurveWidget::channelChanged(int value)
 {
 	_square->setChannel(value);
+	_processor->setChannel(value);
 }
 
-void CurveWidget::renewSquare()
+void CurveWidget::resizeSquare()
 {
 	init();
+	connectSqureWithProcessor();
+}
+
+void CurveWidget::updateSquare()
+{
+//	_isProcessing = true;
+
+	BaseImage* image = getGlobalImage();
+	if (image)
+	{
+		_processor->process(image);
+
+		repaintView();
+	}
+//	_isProcessing = false;
+}
+
+void CurveWidget::connectSqureWithProcessor()
+{
+	_processor->setArray(_square->getSize(), _square->getIntensity(), _square->getRed(), _square->getGreen(), _square->getBlue());
+	_processor->setChannel(_square->getChannel());
 }

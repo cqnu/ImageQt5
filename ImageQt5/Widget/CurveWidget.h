@@ -26,10 +26,12 @@ public slots:
 //	void contrastValueChanged(int value);
 
 protected slots:
-	void renewSquare();
+	void resizeSquare();
+
+	void updateSquare();
 
 private:
-//	void SetBrightnessAndContrast();
+	void connectSqureWithProcessor();
 
 private:
 	QLabel* _labelInput;

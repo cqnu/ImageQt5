@@ -15,7 +15,7 @@ CommonProcessor::~CommonProcessor()
 
 }
 
-void CommonProcessor::ProcessGeneralImage(GeneralImage* image)
+void CommonProcessor::processGeneralImage(GeneralImage* image)
 {
 	assert(image);
 
@@ -59,7 +59,7 @@ void CommonProcessor::ProcessGeneralImage(GeneralImage* image)
 }
 
 template<typename Type>
-void CommonProcessor::ProcessTemplate(TemplateImage<Type>* image)
+void CommonProcessor::processTemplate(TemplateImage<Type>* image)
 {
 	assert(image);
 
@@ -104,7 +104,7 @@ void CommonProcessor::ProcessTemplate(TemplateImage<Type>* image)
 }
 
 // Process float array
-void CommonProcessor::ProcessArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)
+void CommonProcessor::processArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)
 {
 	assert(pArray && pByte);
 
@@ -138,7 +138,7 @@ void CommonProcessor::ProcessArray(float* pArray, int width, int height, float m
 	}*/
 }
 
-void CommonProcessor::SetBrightnessAndContrast(int brightness, int contrast)
+void CommonProcessor::setBrightnessAndContrast(int brightness, int contrast)
 {
 	_brightness = brightness;
 	_contrast = contrast;

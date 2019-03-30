@@ -7,6 +7,7 @@ typedef QVector<Peg> PegArray;
 
 #define NONE_PEG				-1
 #define PEG_DISTANCE			3
+
 #ifndef CURVE_CHANNEL
 #define CURVE_CHANNEL
 #define CURVE_CHANNEL_GRAY		0
@@ -35,12 +36,21 @@ public:
 	// Generate histogram
 	bool generateHistogram(uint* pArray);
 
+	int getSize() { return _size; }
+
 	int getChannel() { return _channel; }
 
 	void setChannel(int channel);
 
+	uint* getIntensity() { return _arrayIntensity; }
+	uint* getRed() { return _arrayRed; }
+	uint* getGreen() { return _arrayGreen; }
+	uint* getBlue() { return _arrayBlue; }
+
 signals:
-	void renew();
+	void resize();
+
+	void update();
 
 protected:
 	virtual void resizeEvent(QResizeEvent* event);
