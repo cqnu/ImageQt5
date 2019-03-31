@@ -29,8 +29,6 @@ public:
 
 	virtual QSize minimumSizeHint() const;
 
-	void init();
-
 	void reset();
 
 	// Generate histogram
@@ -50,7 +48,7 @@ public:
 signals:
 	void resize();
 
-	void update();
+	void updateImage();
 
 protected:
 	virtual void resizeEvent(QResizeEvent* event);
@@ -77,6 +75,8 @@ private:
 
 	// Paint connection
 	void paintConnection(QColor color);
+
+	void initPegsArray();
 
 	// 由x、y值计算出在控件客户区上的坐标
 	QPoint getCoordinate(int x, int y);
@@ -139,8 +139,10 @@ private:
 	// 表明当前活动的pegs链表
 	PegArray* _activePegs;
 
-	// 属于自己的pegs链表
-	PegArray _ownerPegs;
+	PegArray _pegsIntensity;	// 用来记录RGB所有peg
+	PegArray _pegsRed;			// 用来记录R所有peg
+	PegArray _pegsGreen;		// 用来记录G所有peg
+	PegArray _pegsBlue;			// 用来记录B所有peg
 
 	// 指向当前活动的数组
 	uint* _activeArray;

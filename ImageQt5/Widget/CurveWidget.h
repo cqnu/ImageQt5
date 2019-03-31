@@ -23,14 +23,16 @@ public:
 public slots:
 	void channelChanged(int value);
 
-//	void contrastValueChanged(int value);
+	void clickReset();
 
 protected slots:
 	void resizeSquare();
 
-	void updateSquare();
+	void updateImage();
 
 private:
+	void generateHistogram();
+
 	void connectSqureWithProcessor();
 
 private:

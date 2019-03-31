@@ -17,9 +17,7 @@ CurveSquare::CurveSquare(QWidget* parent)
 	_heightArray = new uint[_size];
 	memset(_heightArray, 0, sizeof(uint) * _size);
 
-	_ownerPegs.append(Peg(0, _size));
-	_ownerPegs.append(Peg(_size, 0));
-	_activePegs = &_ownerPegs;
+	initPegsArray();
 
 	// Initialize array
 	_arrayIntensity = new uint[_size];
@@ -56,44 +54,6 @@ CurveSquare::~CurveSquare()
 	if (_arrayBlue)
 	{
 		delete[] _arrayBlue;
-	}
-}
-
-void CurveSquare::init()
-{
-	BaseImage* image = getGlobalImage();
-
-	// 根据活动通道更新绘制直方图
-	switch (_channel)
-	{
-	case CURVE_CHANNEL_GRAY:
-	{
-	//	setActivePegArray(m_pegsIntensity);
-	//	setActiveCurveArray(pWidget->GetIntensityArray());
-	//	generateHistogram(image->getGrayPixelArray());	// 更新直方图
-	}
-	break;
-	case CURVE_CHANNEL_RED:
-	{
-	//	setActivePegArray(m_pegsRed);
-	//	setActiveCurveArray(pWidget->GetRedArray());
-	//	generateHistogram(image->getRedPixelArray());
-	}
-	break;
-	case CURVE_CHANNEL_GREEN:
-	{
-	//	setActivePegArray(m_pegsGreen);
-	//	setActiveCurveArray(pWidget->GetGreenArray());
-	//	generateHistogram(image->getGreenPixelArray());
-	}
-	break;
-	case CURVE_CHANNEL_BLUE:
-	{
-	//	setActivePegArray(m_pegsBlue);
-	//	setActiveCurveArray(pWidget->GetBlueArray());
-	//	generateHistogram(image->getBluePixelArray());
-	}
-	break;
 	}
 }
 
@@ -134,10 +94,7 @@ void CurveSquare::resizeEvent(QResizeEvent* event)
 	_heightArray = new uint[_size];
 	memset(_heightArray, 0, sizeof(uint) * _size);
 
-	_ownerPegs.clear();
-	_ownerPegs.append(Peg(0, _size));
-	_ownerPegs.append(Peg(_size, 0));
-	_activePegs = &_ownerPegs;
+	initPegsArray();
 
 	if (_arrayIntensity)
 	{
@@ -304,7 +261,8 @@ void CurveSquare::paintSinglePeg(const Peg& peg, QColor color)
 	int size = 2;
 	painter.drawLine(point.x() - size, point.y() - size, point.x() + size, point.y() - size);
 	painter.drawLine(point.x() + size, point.y() - size, point.x() + size, point.y() + size);
-	painter.drawLine(point.x() - size, point.y() - size, point.x() + size, point.y() + size);
+	painter.drawLine(point.x() - size, point.y() + size, point.x() + size, point.y() + size);
+	painter.drawLine(point.x() - size, point.y() - size, point.x() - size, point.y() + size);
 }
 
 // Paint connection
@@ -327,6 +285,30 @@ void CurveSquare::paintConnection(QColor color)
 	painter.drawLines(lines);
 }
 
+void CurveSquare::initPegsArray()
+{
+	Peg pegStart(0, _size);
+	Peg pegEnd(_size, 0);
+
+	_pegsIntensity.clear();
+	_pegsIntensity.append(pegStart);
+	_pegsIntensity.append(pegEnd);
+
+	_pegsRed.clear();
+	_pegsRed.append(pegStart);
+	_pegsRed.append(pegEnd);
+
+	_pegsGreen.clear();
+	_pegsGreen.append(pegStart);
+	_pegsGreen.append(pegEnd);
+
+	_pegsBlue.clear();
+	_pegsBlue.append(pegStart);
+	_pegsBlue.append(pegEnd);
+
+	_activePegs = &_pegsIntensity;
+}
+
 // 由x、y值计算出在控件客户区上的坐标
 QPoint CurveSquare::getCoordinate(int x, int y)
 {
@@ -340,24 +322,13 @@ void CurveSquare::mousePressEvent(QMouseEvent* event)
 	{
 		if (_rectSquare.contains(point))
 		{
-			QPoint ptDummy(point.x() - _rectSquare.left(), point.y() - _rectSquare.top());
+			setCursor(Qt::SizeAllCursor);
 
 			PegArray& pegs = *_activePegs;
-		//	grabMouse();
-			setCursor(Qt::SizeAllCursor);
-			// nTemp用来纪录上一次的m_nActivePegIndex值
-			int temp = _activePegIndex;
+
+			QPoint ptDummy(point.x() - _rectSquare.left(), point.y() - _rectSquare.top());
 			_activePegIndex = ptInAnyPeg(ptDummy);
-			if (_activePegIndex != NONE_PEG)
-			{
-				// 点落在已有的peg上,则刷新原m_nActivePegIndex所在的黑点
-				if (temp != -1)
-				{
-					QRect rect(pegs[temp].x() - 2, pegs[temp].y() - 2, pegs[temp].x() + 2, pegs[temp].y() + 2);
-					repaint(rect);
-				}
-			}
-			else
+			if (_activePegIndex == NONE_PEG)
 			{
 				// 点没落在任何peg上
 				if (prepareAddPeg(ptDummy.x()))
@@ -367,21 +338,6 @@ void CurveSquare::mousePressEvent(QMouseEvent* event)
 					// 改变数组m_Array值
 					setArrayValue(_activePegIndex, true);
 					repaintPeg();
-					// 判断新插入的peg在temp位置前还是后
-					if (temp >= _activePegIndex)
-					{
-						temp++;
-					}
-				}
-				else
-				{
-				//	releaseMouse();
-				}
-				// 刷新旧的小方块
-				if (temp != NONE_PEG && temp < pegs.size())
-				{
-					QRect rect(pegs[temp].x() - 2, pegs[temp].y() - 2, pegs[temp].x() + 2, pegs[temp].y() + 2);
-					repaint(rect);
 				}
 			}
 		}
@@ -402,7 +358,6 @@ void CurveSquare::mousePressEvent(QMouseEvent* event)
 		// peg数目至少三个以上，才允许删除操作
 		if (_activePegIndex != NONE_PEG && pegs.size() >= 3)
 		{
-			QPoint ptTemp = pegs[_activePegIndex].point();
 			removePeg(_activePegIndex);
 			setArrayValue(_activePegIndex, false);
 			repaintPeg();
@@ -463,7 +418,6 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 	{
 		if (ptDummy.x() < pegs[1].x() - PEG_DISTANCE)
 		{
-			QPoint ptTemp = pegs[0].point();
 			pegs[0].setPoint(ptDummy);
 			repaint();
 			// 刷新StartPeg原来所在的小方形
@@ -476,7 +430,6 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 	{
 		if (ptDummy.x() > pegs[_activePegIndex - 1].x() + PEG_DISTANCE)
 		{
-			QPoint ptTemp = pegs[_activePegIndex].point();
 			pegs[_activePegIndex].setPoint(ptDummy);
 			repaintPeg();
 			// 刷新EndPeg原来所在的小方形
@@ -492,11 +445,10 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 		{
 			int nFlag = 0;				// 标志是否发生peg合并事件
 
-			QPoint ptTemp = pegs[_activePegIndex].point();
 			pegs[_activePegIndex].setPoint(ptDummy);
 
-			////////////////////////////// 处理合并peg事件 ////////////////////////////////
-			// 与前面的peg合并
+			////////////////////////////// Merge pegs ////////////////////////////////
+			// Merge with previous peg
 			if ((pegs[_activePegIndex].x() - pegs[_activePegIndex - 1].x() < 12) &&
 				(abs(pegs[_activePegIndex].y() - pegs[_activePegIndex - 1].y()) < 12))
 			{
@@ -504,7 +456,7 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 				removePeg(_activePegIndex);
 				nFlag = 1;
 			}
-			// 与后面的peg合并
+			// Merge with next peg
 			else if ((pegs[_activePegIndex + 1].x() - pegs[_activePegIndex].x() < 12) &&
 				(abs(pegs[_activePegIndex + 1].y() - pegs[_activePegIndex].y()) < 12))
 			{
@@ -512,7 +464,7 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 				removePeg(_activePegIndex);
 				nFlag = 2;
 			}
-			// 仅刷新与之相邻的两个peg所构成的最小矩形
+
 			repaintPeg();
 
 			setArrayValue(_activePegIndex, true);
@@ -520,7 +472,6 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 			{
 				// nFlag==1对应减1, nFlag==2对应减0
 				_activePegIndex -= (2 - nFlag);
-			//	releaseMouse();
 				return;
 			}
 		}
@@ -539,7 +490,7 @@ void CurveSquare::mouseReleaseEvent(QMouseEvent* event)
 	// 更新图像
 //	AfxBeginThread(UpdateImageThread, this);
 
-	emit update();
+	emit updateImage();
 }
 
 int CurveSquare::ptInAnyPeg(QPoint point) const
@@ -783,7 +734,10 @@ bool CurveSquare::generateHistogram(uint* pArray)
 	}
 	// In case all pixels value are zero
 	if (_minHeight == 0 && _maxHeight == 0)
+	{
+		repaint();
 		return false;
+	}
 
 	// Calculate height
 	for (int i = 0; i < _size; i++)
@@ -798,8 +752,48 @@ bool CurveSquare::generateHistogram(uint* pArray)
 
 void CurveSquare::setChannel(int channel)
 {
+	if (_channel == channel)
+		return;
+
+	int oldChannel = _channel;
 	_channel = channel;
 	repaint();
 
-	// TODO
+	switch (_channel)
+	{
+	case CURVE_CHANNEL_GRAY:
+		_activePegs = &_pegsIntensity;
+		_activeArray = _arrayIntensity;
+		break;
+	case CURVE_CHANNEL_RED:
+		_activePegs = &_pegsRed;
+		_activeArray = _arrayRed;
+		break;
+	case CURVE_CHANNEL_GREEN:
+		_activePegs = &_pegsGreen;
+		_activeArray = _arrayGreen;
+		break;
+	case CURVE_CHANNEL_BLUE:
+		_activePegs = &_pegsBlue;
+		_activeArray = _arrayBlue;
+		break;
+	}
+
+	_activePegIndex = 0;
+
+	if (oldChannel == 0)
+	{
+		// 把R、G、B三个通道赋同样的值
+		_pegsRed = _pegsIntensity;
+		_pegsGreen = _pegsIntensity;
+		_pegsBlue = _pegsIntensity;
+
+		memcpy(_arrayRed, _arrayIntensity, sizeof(uint) * _size);
+		memcpy(_arrayGreen, _arrayIntensity, sizeof(uint) * _size);
+		memcpy(_arrayBlue, _arrayIntensity, sizeof(uint) * _size);
+	}
+	else if (_channel == CURVE_CHANNEL_GRAY)
+	{
+		emit updateImage();
+	}
 }

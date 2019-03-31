@@ -38,8 +38,7 @@ void CurveProcessor::processGeneralImage(GeneralImage* image)
 				uchar* pPixel = pImageData + j * pitch + i;
 				uchar* pBackupPixel = pBackupImageData + j * pitch + i;
 				// Interpolation
-				uchar temp = interpolation(*pBackupPixel, _arrayIntensity, _arrayNum, variable);
-				*(pPixel) = temp;
+				*(pPixel) = interpolation(*pBackupPixel, _arrayIntensity, _arrayNum, variable);
 			}
 
 		//	PIProgressSetPercent((j + 1), nHeight);

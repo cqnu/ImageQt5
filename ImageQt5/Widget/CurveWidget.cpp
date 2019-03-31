@@ -19,9 +19,10 @@ CurveWidget::CurveWidget(QWidget* parent)
 	comboboxChannel->addItem(tr("All"));
 	comboboxChannel->addItem(tr("Red"));
 	comboboxChannel->addItem(tr("Green"));
-	comboboxChannel->addItem(tr("Red"));
+	comboboxChannel->addItem(tr("Blue"));
 	connect(comboboxChannel, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &CurveWidget::channelChanged);
 	QPushButton* buttonReset = new QPushButton(tr("&Reset"));
+	connect(buttonReset, &QPushButton::clicked, this, &CurveWidget::clickReset);
 	QPushButton* buttonReverse = new QPushButton(tr("R&everse"));
 
 	QHBoxLayout* layoutHead = new QHBoxLayout();
@@ -63,7 +64,7 @@ CurveWidget::CurveWidget(QWidget* parent)
 
 	_square = new CurveSquare();
 	connect(_square, &CurveSquare::resize, this, &CurveWidget::resizeSquare);
-	connect(_square, &CurveSquare::update, this, &CurveWidget::updateSquare);
+	connect(_square, &CurveSquare::updateImage, this, &CurveWidget::updateImage);
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addLayout(layoutHead);
@@ -87,8 +88,52 @@ CurveWidget::~CurveWidget()
 
 void CurveWidget::init()
 {
-	_square->init();
+	generateHistogram();
+}
 
+void CurveWidget::reset()
+{
+	_square->reset();
+	connectSqureWithProcessor();
+}
+
+void CurveWidget::channelChanged(int value)
+{
+	_square->setChannel(value);
+	_processor->setChannel(value);
+
+	generateHistogram();
+}
+
+void CurveWidget::clickReset()
+{
+	reset();
+
+	updateImage();
+}
+
+void CurveWidget::resizeSquare()
+{
+	init();
+	connectSqureWithProcessor();
+}
+
+void CurveWidget::updateImage()
+{
+//	_isProcessing = true;
+
+	BaseImage* image = getGlobalImage();
+	if (image)
+	{
+		_processor->process(image);
+
+		repaintView();
+	}
+//	_isProcessing = false;
+}
+
+void CurveWidget::generateHistogram()
+{
 	BaseImage* image = getGlobalImage();
 	if (image == nullptr)
 		return;
@@ -125,40 +170,6 @@ void CurveWidget::init()
 	}
 	break;
 	}
-
-	repaint();
-}
-
-void CurveWidget::reset()
-{
-	_square->reset();
-	connectSqureWithProcessor();
-}
-
-void CurveWidget::channelChanged(int value)
-{
-	_square->setChannel(value);
-	_processor->setChannel(value);
-}
-
-void CurveWidget::resizeSquare()
-{
-	init();
-	connectSqureWithProcessor();
-}
-
-void CurveWidget::updateSquare()
-{
-//	_isProcessing = true;
-
-	BaseImage* image = getGlobalImage();
-	if (image)
-	{
-		_processor->process(image);
-
-		repaintView();
-	}
-//	_isProcessing = false;
 }
 
 void CurveWidget::connectSqureWithProcessor()
