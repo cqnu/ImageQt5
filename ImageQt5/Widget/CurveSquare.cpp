@@ -10,7 +10,7 @@ CurveSquare::CurveSquare(QWidget* parent)
 	: QWidget(parent)
 	, _size(256)
 	, _rectSquare(30, 0, _size, _size)
-	, _curveOrLine(1)
+	, _curveOrLinear(true)
 	, _channel(0)
 	, _activePegIndex(0)
 {
@@ -592,11 +592,14 @@ void CurveSquare::setArrayValue(int index, bool flag)
 	if (index == NONE_PEG)
 		return;
 
-//	UpdateData(TRUE);
-
-	// 计算改变的区间内的新值
-	if (_curveOrLine == 1)		// 直线的情况
+	if (_curveOrLinear)	
 	{
+		// Curve
+		setCurveArrayValue();
+	}
+	else
+	{
+		// Linear
 		if (index == -2)
 		{
 			// 此处为后续增加的代码, 仅为了代码重用
@@ -607,16 +610,13 @@ void CurveSquare::setArrayValue(int index, bool flag)
 		}
 		else
 		{
+			// Calculator array value in modified interval
 			setLinearityArrayValue(index, flag);
 		}
 	}
-	else	// 曲线的情况
-	{
-	//	setCurveArrayValue();
-	}
 }
 
-// 线性的改变数组的值
+// Use piecewise linear function to set array value
 void CurveSquare::setLinearityArrayValue(int index, bool flag)
 {
 	if (index == 0)
@@ -696,6 +696,63 @@ void CurveSquare::setLineValue(int startIndex)
 	{
 		_activeArray[x] = sizeStart.height() + (x - sizeStart.width()) * (sizeEnd.height() - sizeStart.height()) / (sizeEnd.width() - sizeStart.width());
 	}
+}
+
+// Use spline function to set array value
+void CurveSquare::setCurveArrayValue()
+{
+	int num = int(_activePegs->size());
+	if (num == 2)
+	{
+		// Don't use spline within two pegs
+		setLinearityArrayValue(0, true);
+		setLinearityArrayValue(1, true);
+		return;
+	}
+	float* x = new float[num];
+	float* y = new float[num];
+	for (int i = 0; i < num; i++)
+	{
+		*(x + i) = (float)getCurrentValue(i).width();
+		*(y + i) = (float)getCurrentValue(i).height();
+	}
+
+	// m为要插值点的范围
+	int m = getCurrentValue(num - 1).width() - getCurrentValue(0).width() - 1;
+	float* t = new float[m];
+	for (int i = 0; i < m; i++)
+	{
+		*(t + i) = (float)getCurrentValue(0).width() + 1 + i;
+	}
+	float* z = new float[m];
+	spline(x, y, num, t, m, z);
+
+	// Calculate result
+	for (int i = 0; i < m; i++)
+	{
+		if (*(z + i) < 0)
+		{
+			*(z + i) = 1;
+		}
+		else if (*(z + i) > _size)
+		{
+			*(z + i) = _size - 1;
+		}
+		_activeArray[getCurrentValue(0).width() + 1 + i] = uint(*(z + i));
+	}
+	// Deal with these points before the first peg and after the last peg
+	for (int i = 0; i < getCurrentValue(0).width() + 1; i++)
+	{
+		_activeArray[i] = (uint)getCurrentValue(0).height();
+	}
+	for (int i = 0; getCurrentValue(num - 1).width() + i < _size; i++)
+	{
+		_activeArray[getCurrentValue(num - 1).width() + i] = (uint)getCurrentValue(num - 1).height();
+	}
+	delete[] x;
+	delete[] y;
+	delete[] t;
+	delete[] z;
 }
 
 // Remove one peg
@@ -795,7 +852,7 @@ void CurveSquare::setChannel(int channel)
 
 	if (oldChannel == 0)
 	{
-		// 把R、G、B三个通道赋同样的值
+		// Assign the same value to RGB channels
 		_pegsRed = _pegsIntensity;
 		_pegsGreen = _pegsIntensity;
 		_pegsBlue = _pegsIntensity;
@@ -808,4 +865,14 @@ void CurveSquare::setChannel(int channel)
 	{
 		emit updateImage();
 	}
+}
+
+void CurveSquare::setCurveOrLinear(bool curveOrLinear)
+{
+	_curveOrLinear = curveOrLinear;
+
+	setArrayValue();
+	repaintPeg();
+
+	emit updateImage();
 }

@@ -42,6 +42,8 @@ public:
 
 	void setChannel(int channel);
 
+	void setCurveOrLinear(bool curveOrLinear);
+
 	uint* getIntensity() { return _arrayIntensity; }
 	uint* getRed() { return _arrayRed; }
 	uint* getGreen() { return _arrayGreen; }
@@ -103,17 +105,20 @@ private:
 	// 对数组的操作, 改变数组的值
 	void setArrayValue(int index = -2, bool flag = true);
 
-	// 线性的改变数组的值，其中，参数flag为true表示增加或移动peg, false表示删除peg
+	// Use piecewise linear function to set array value, if flag equal true means adding or moving peg, false means deleting peg
 	void setLinearityArrayValue(int index, bool flag = true);
 
 	// 改变一个线段的值，参数startIndex表示线段起始peg的index
-	// 该函数只被setLinearityArrayValue()调用
+	// This function is only called by setLinearityArrayValue()
 	void setLineValue(int startIndex);
 
-	// 返回peg所在的输入输出值
+	// Use spline function to set array value
+	void setCurveArrayValue();
+
+	// Get input&output value of current peg
 	QSize getCurrentValue(int index);
 
-	// 返回鼠标所在点的输入输出值
+	// Get input&output value of current position
 	QSize getCurrentMouseValue(const QPoint& point);
 
 	// Remove one peg
@@ -125,17 +130,17 @@ private:
 private:
 	int _size;
 
-	// 方形区域
+	// Square rect
 	QRect _rectSquare;
 
 	// 其中存放的是量化后的每条线对应相对的高度
 	uint* _heightArray;
 
-	// m_pHeightArray中最小值和最大值
+	// min& max in _heightArray
 	uint _minHeight, _maxHeight;
 
-	// 曲线或折线
-	int _curveOrLine;
+	// Curve or line
+	bool _curveOrLinear;
 
 	// Channel
 	int _channel;
@@ -143,18 +148,19 @@ private:
 	// Index of active peg
 	int	_activePegIndex;
 
-	// 表明当前活动的pegs链表
+	// Active peg array
 	PegArray* _activePegs;
 
-	PegArray _pegsIntensity;	// 用来记录RGB所有peg
-	PegArray _pegsRed;			// 用来记录R所有peg
-	PegArray _pegsGreen;		// 用来记录G所有peg
-	PegArray _pegsBlue;			// 用来记录B所有peg
+	// Record peg array of each channel
+	PegArray _pegsIntensity;
+	PegArray _pegsRed;
+	PegArray _pegsGreen;
+	PegArray _pegsBlue;
 
-	// 指向当前活动的数组
+	// Point to active array
 	uint* _activeArray;
 
-	// 用来存放曲线所对应的值
+	// Record array value of each channel
 	uint* _arrayIntensity;
 	uint* _arrayRed;
 	uint* _arrayGreen;

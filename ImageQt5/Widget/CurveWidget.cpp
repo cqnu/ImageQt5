@@ -3,7 +3,6 @@
 #include <QComboBox>
 #include <QPushButton>
 #include <QGroupBox>
-#include <QRadioButton>
 #include <QHBoxLayout>
 
 #include "CurveSquare.h"
@@ -11,6 +10,7 @@
 
 CurveWidget::CurveWidget(QWidget* parent)
 	: BaseWidget(parent)
+	, _square(nullptr)
 {
 	setName("Curve");
 
@@ -44,12 +44,14 @@ CurveWidget::CurveWidget(QWidget* parent)
 	QGroupBox* groupBox1 = new QGroupBox(tr(""));
 	groupBox1->setLayout(grid);
 
-	QRadioButton* radio1 = new QRadioButton(tr("&Curve"));
-	QRadioButton* radio2 = new QRadioButton(tr("&Line"));
-	radio1->setChecked(true);
+	_radioCurve = new QRadioButton(tr("&Curve"));
+	_radioLinear = new QRadioButton(tr("&Line"));
+	connect(_radioCurve, &QRadioButton::toggled, this, &CurveWidget::toggleCurveRadio);
+	connect(_radioLinear, &QRadioButton::toggled, this, &CurveWidget::toggleLinearRadio);
+	_radioCurve->setChecked(true);
 	QVBoxLayout* vbox = new QVBoxLayout;
-	vbox->addWidget(radio1);
-	vbox->addWidget(radio2);
+	vbox->addWidget(_radioCurve);
+	vbox->addWidget(_radioLinear);
 	QGroupBox* groupBox2 = new QGroupBox(tr(""));
 	groupBox2->setLayout(vbox);
 
@@ -119,6 +121,22 @@ void CurveWidget::clickReverse()
 	_square->reverse();
 }
 
+void CurveWidget::toggleCurveRadio()
+{
+	if (_square && _radioCurve->isChecked())
+	{
+		_square->setCurveOrLinear(true);
+	}
+}
+
+void CurveWidget::toggleLinearRadio()
+{
+	if (_square && _radioLinear->isChecked())
+	{
+		_square->setCurveOrLinear(false);
+	}
+}
+
 void CurveWidget::resizeSquare()
 {
 	init();
@@ -156,29 +174,21 @@ void CurveWidget::generateHistogram()
 	{
 	case CURVE_CHANNEL_GRAY:
 	{
-		//	setActivePegArray(m_pegsIntensity);
-		//	setActiveCurveArray(pWidget->GetIntensityArray());
 		_square->generateHistogram(image->getGrayPixelArray());
 	}
 	break;
 	case CURVE_CHANNEL_RED:
 	{
-		//	setActivePegArray(m_pegsRed);
-		//	setActiveCurveArray(pWidget->GetRedArray());
 		_square->generateHistogram(image->getRedPixelArray());
 	}
 	break;
 	case CURVE_CHANNEL_GREEN:
 	{
-		//	setActivePegArray(m_pegsGreen);
-		//	setActiveCurveArray(pWidget->GetGreenArray());
 		_square->generateHistogram(image->getGreenPixelArray());
 	}
 	break;
 	case CURVE_CHANNEL_BLUE:
 	{
-		//	setActivePegArray(m_pegsBlue);
-		//	setActiveCurveArray(pWidget->GetBlueArray());
 		_square->generateHistogram(image->getBluePixelArray());
 	}
 	break;

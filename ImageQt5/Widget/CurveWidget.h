@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QLabel>
+#include <QRadioButton>
 
 #include "BaseWidget.h"
 
@@ -27,6 +28,9 @@ public slots:
 
 	void clickReverse();
 
+	void toggleCurveRadio();
+	void toggleLinearRadio();
+
 protected slots:
 	void resizeSquare();
 
@@ -42,6 +46,9 @@ private:
 private:
 	QLabel* _labelInput;
 	QLabel* _labelOutput;
+
+	QRadioButton* _radioCurve;
+	QRadioButton* _radioLinear;
 
 	CurveSquare* _square;
 
