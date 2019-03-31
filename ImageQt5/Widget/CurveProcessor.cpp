@@ -100,6 +100,6 @@ uchar CurveProcessor::interpolation(uchar target, uint* array, int arrayNum, flo
 	}
 	else
 	{
-		return uchar(round((array[integer] + (array[integer + 1] - array[integer]) * fraction) * variable));
+		return uchar(round((array[integer] * (1.0f - fraction) + array[integer + 1] * fraction) * variable));
 	}
 }

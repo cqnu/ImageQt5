@@ -31,6 +31,8 @@ public:
 
 	void reset();
 
+	void reverse();
+
 	// Generate histogram
 	bool generateHistogram(uint* pArray);
 
@@ -49,6 +51,8 @@ signals:
 	void resize();
 
 	void updateImage();
+
+	void updateLabelText(QString input, QString output);
 
 protected:
 	virtual void resizeEvent(QResizeEvent* event);
@@ -108,6 +112,9 @@ private:
 
 	// 返回peg所在的输入输出值
 	QSize getCurrentValue(int index);
+
+	// 返回鼠标所在点的输入输出值
+	QSize getCurrentMouseValue(const QPoint& point);
 
 	// Remove one peg
 	void removePeg(int index);

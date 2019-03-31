@@ -25,10 +25,14 @@ public slots:
 
 	void clickReset();
 
+	void clickReverse();
+
 protected slots:
 	void resizeSquare();
 
 	void updateImage();
+
+	void updateLabelText(QString input, QString output);
 
 private:
 	void generateHistogram();

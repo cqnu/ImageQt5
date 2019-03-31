@@ -24,6 +24,7 @@ CurveWidget::CurveWidget(QWidget* parent)
 	QPushButton* buttonReset = new QPushButton(tr("&Reset"));
 	connect(buttonReset, &QPushButton::clicked, this, &CurveWidget::clickReset);
 	QPushButton* buttonReverse = new QPushButton(tr("R&everse"));
+	connect(buttonReverse, &QPushButton::clicked, this, &CurveWidget::clickReverse);
 
 	QHBoxLayout* layoutHead = new QHBoxLayout();
 	layoutHead->addWidget(labelChannel);
@@ -65,6 +66,7 @@ CurveWidget::CurveWidget(QWidget* parent)
 	_square = new CurveSquare();
 	connect(_square, &CurveSquare::resize, this, &CurveWidget::resizeSquare);
 	connect(_square, &CurveSquare::updateImage, this, &CurveWidget::updateImage);
+	connect(_square, &CurveSquare::updateLabelText, this, &CurveWidget::updateLabelText);
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addLayout(layoutHead);
@@ -112,6 +114,11 @@ void CurveWidget::clickReset()
 	updateImage();
 }
 
+void CurveWidget::clickReverse()
+{
+	_square->reverse();
+}
+
 void CurveWidget::resizeSquare()
 {
 	init();
@@ -130,6 +137,12 @@ void CurveWidget::updateImage()
 		repaintView();
 	}
 //	_isProcessing = false;
+}
+
+void CurveWidget::updateLabelText(QString input, QString output)
+{
+	_labelInput->setText(input);
+	_labelOutput->setText(output);
 }
 
 void CurveWidget::generateHistogram()

@@ -64,6 +64,24 @@ void CurveSquare::reset()
 	repaint();
 }
 
+void CurveSquare::reverse()
+{
+	PegArray& pegs = *_activePegs;
+	for (int i = 0; i < pegs.size(); i++)
+	{
+		QPoint point(pegs[i].x(), _size - pegs[i].y());
+		pegs[i].setPoint(point);
+	}
+	// 翻转数组
+	for (int i = 0; i < _size; i++)
+	{
+		_activeArray[i] = _size - _activeArray[i] - 1;
+	}
+	repaint();
+
+	emit updateImage();
+}
+
 QSize CurveSquare::sizeHint() const
 {
 	return QSize(256, 256);
@@ -374,55 +392,46 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 	QPoint point = event->pos();
 	QPoint ptDummy(point.x() - _rectSquare.left(), point.y() - _rectSquare.top());
 
-	if ((event->buttons() & Qt::LeftButton) == false)
+	// 之所以没有直接用m_rectSquare，而是把m_rectSquare.right+1&bottom+1，是为了能够使输入输出能达到255
+	QRect rect(_rectSquare.left(), _rectSquare.top(), _rectSquare.width() + 1, _rectSquare.height() + 1);
+	if (rect.contains(point))
 	{
-		// 之所以没有直接用m_rectSquare，而是把m_rectSquare.right+1&bottom+1，是为了能够使输入输出能达到255
-		QRect rect(_rectSquare.left(), _rectSquare.top(), _rectSquare.width() + 1, _rectSquare.height() + 1);
-		if (rect.contains(point))
-		{
-			// 显示鼠标所在点的输入输出值
-		//	QSize size = getCurrentMouseValue(point);
-		//	CString strTemp;
-		//	strTemp.Format(_T("%d"), size.cx);
-		//	GetDlgItem(ID_STATIC_CURVE_INPUT)->SetWindowText(strTemp);
-		//	strTemp.Format(_T("%d"), size.cy);
-		//	GetDlgItem(ID_STATIC_CURVE_OUTPUT)->SetWindowText(strTemp);
+		// Display input&output value of current position
+		QSize size = getCurrentMouseValue(point);
+		QString input = QString("%1").arg(size.width());
+		QString output = QString("%1").arg(size.height());
+		emit updateLabelText(input, output);
 
-			// 鼠标左键没有按下时，仅改变光标形状
-			if (ptInAnyPeg(ptDummy) != NONE_PEG)
-			{
-				setCursor(Qt::SizeAllCursor);
-			}
-			else
-			{
-				setCursor(Qt::ArrowCursor);
-			}
+		if (ptInAnyPeg(ptDummy) != NONE_PEG)
+		{
+			setCursor(Qt::SizeAllCursor);
 		}
 		else
 		{
-			// 鼠标移出m_rectSquare，则把静态控件置为空
-		//	GetDlgItem(ID_STATIC_CURVE_INPUT)->SetWindowText(_T(""));
-		//	GetDlgItem(ID_STATIC_CURVE_OUTPUT)->SetWindowText(_T(""));
+			setCursor(Qt::ArrowCursor);
 		}
-		return;
 	}
+	else
+	{
+		// Point is out of _rectSquare
+		emit updateLabelText("", "");
+	}
+
+	if ((event->buttons() & Qt::LeftButton) == false)
+		return;
 
 	// 不允许把peg拉出m_rectSquare外
 	if (!_rectSquare.contains(point))
 		return;
 
 	PegArray& pegs = *_activePegs;
-	////////////////////////////// 处理peg移动事件 ////////////////////////////////
-	// 特殊处理首尾两个peg
+	// Deal with the first and last pegs
 	if (_activePegIndex == 0)
 	{
 		if (ptDummy.x() < pegs[1].x() - PEG_DISTANCE)
 		{
 			pegs[0].setPoint(ptDummy);
-			repaint();
-			// 刷新StartPeg原来所在的小方形
-			QRect rect(pegs[0].rect(_rectSquare.left(), _rectSquare.top()));
-			repaint(rect);
+			repaintPeg();
 			setArrayValue(_activePegIndex, true);
 		}
 	}
@@ -432,9 +441,6 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 		{
 			pegs[_activePegIndex].setPoint(ptDummy);
 			repaintPeg();
-			// 刷新EndPeg原来所在的小方形
-			QRect rect(pegs[pegs.size() - 1].rect(_rectSquare.left(), _rectSquare.top()));
-			repaint(rect);
 			setArrayValue(_activePegIndex, true);
 		}
 	}
@@ -664,11 +670,17 @@ void CurveSquare::setLinearityArrayValue(int index, bool flag)
 	}
 }
 
-// 返回peg所在的输入输出值
+// Get input&output value of current peg
 QSize CurveSquare::getCurrentValue(int index)
 {
 	QPoint point(_activePegs->at(index).point());
 	return QSize(point.x(), _size - point.y());
+}
+
+// Get input&output value of current position
+QSize CurveSquare::getCurrentMouseValue(const QPoint& point)
+{
+	return QSize((point.x() - _rectSquare.left()) * 255 / _size, 255 - (point.y() - _rectSquare.top()) * 255 / _size);
 }
 
 // 该函数只被setLinearityArrayValue()调用
