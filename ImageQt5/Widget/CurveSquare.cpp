@@ -570,6 +570,7 @@ int CurveSquare::addPeg(const QPoint& point)
 void CurveSquare::repaintPeg()
 {
 	QRect rect(_rectSquare);
+	rect.adjust(-2, -2, 3, 3);
 	repaint(rect);
 }
 
@@ -841,7 +842,6 @@ void CurveSquare::setChannel(int channel)
 
 	int oldChannel = _channel;
 	_channel = channel;
-	repaint();
 
 	switch (_channel)
 	{
@@ -880,6 +880,8 @@ void CurveSquare::setChannel(int channel)
 	{
 		emit updateImage();
 	}
+
+	repaint();
 }
 
 void CurveSquare::setCurveOrLinear(bool curveOrLinear)
