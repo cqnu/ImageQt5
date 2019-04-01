@@ -10,48 +10,35 @@ class Peg
 public:
 	Peg() {}
 
-	Peg(QPoint point) { _point = point; }
+	Peg(QPoint point) { _point = QPointF(qreal(point.x()) / _size, qreal(point.y()) / _size); }
 
-	Peg(int x, int y) { _point = QPoint(x, y); }
+	Peg(int x, int y) { _point = QPointF(qreal(x) / _size, qreal(y) / _size); }
 
 public:
-	int x() const { return _point.x(); }
+	int x() const { return _point.x() * _size; }
 
-	int y() const { return _point.y(); }
+	int y() const { return _point.y() * _size; }
 
-	QPoint point() const { return _point; }
+	QPoint point() const { return QPoint(_point.x() * _size, _point.y() * _size); }
 
 	// Get point with offset
-	QPoint point(int xOffset, int yOffset) const
+	QPoint point(const QPoint& point) const
 	{
-		return QPoint(_point.x() + xOffset, _point.y() + yOffset);
-	}
-
-	QPoint point(QPoint point) const
-	{
-		return QPoint(_point.x() + point.x(), _point.y() + point.y());
+		return QPoint(_point.x() * _size + point.x(), _point.y() * _size + point.y());
 	}
 
 	// Get rect
 	QRect rect() const
 	{
-		return QRect(_point.x() - PEG_RADIUS, _point.y() - PEG_RADIUS, _point.x() + PEG_RADIUS, _point.y() + PEG_RADIUS);
+		return QRect(x() - PEG_RADIUS, y() - PEG_RADIUS, x() + PEG_RADIUS, y() + PEG_RADIUS);
 	}
 
-	QRect rect(int xOffset, int yOffset) const
-	{
-		return QRect(_point.x() + xOffset - PEG_RADIUS, _point.y() + yOffset - PEG_RADIUS,
-			_point.x() + xOffset + PEG_RADIUS, _point.y() + yOffset + PEG_RADIUS);
-	}
+	void setPoint(const QPoint& point)	{ _point = QPointF(qreal(point.x()) / _size, qreal(point.y()) / _size); }
 
-	void setPoint(QPoint point)	{ _point = point; }
-
-	void setPoint(QPoint point, int xOffset, int yOffset)
-	{
-		_point.setX(point.x() - xOffset);
-		_point.setY(point.y() - yOffset);
-	}
+	static void setSize(int size) { _size = size; }
 
 private:
-	QPoint _point;
+	QPointF _point;
+
+	static int _size;
 };

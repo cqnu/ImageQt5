@@ -56,7 +56,9 @@ CurveWidget::CurveWidget(QWidget* parent)
 	groupBox2->setLayout(vbox);
 
 	QPushButton* buttonSave = new QPushButton(tr("&Save"));
+	connect(buttonSave, &QPushButton::clicked, this, &CurveWidget::clickSave);
 	QPushButton* buttonLoad = new QPushButton(tr("L&oad"));
+	connect(buttonLoad, &QPushButton::clicked, this, &CurveWidget::clickLoad);
 	QVBoxLayout* vbox2 = new QVBoxLayout;
 	vbox2->addWidget(buttonSave);
 	vbox2->addWidget(buttonLoad);
@@ -135,6 +137,16 @@ void CurveWidget::toggleLinearRadio()
 	{
 		_square->setCurveOrLinear(false);
 	}
+}
+
+void CurveWidget::clickSave()
+{
+
+}
+
+void CurveWidget::clickLoad()
+{
+
 }
 
 void CurveWidget::resizeSquare()

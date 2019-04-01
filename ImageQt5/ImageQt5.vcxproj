@@ -128,6 +128,7 @@
     <ClCompile Include="Widget\CurveProcessor.cpp" />
     <ClCompile Include="Widget\CurveSquare.cpp" />
     <ClCompile Include="Widget\CurveWidget.cpp" />
+    <ClCompile Include="Widget\Peg.cpp" />
     <ClCompile Include="Widget\WidgetManager.cpp" />
   </ItemGroup>
   <ItemGroup>

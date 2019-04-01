@@ -66,11 +66,10 @@ void CurveSquare::reset()
 
 void CurveSquare::reverse()
 {
-	PegArray& pegs = *_activePegs;
-	for (int i = 0; i < pegs.size(); i++)
+	for (int i = 0; i < _activePegs->size(); i++)
 	{
-		QPoint point(pegs[i].x(), _size - pegs[i].y());
-		pegs[i].setPoint(point);
+		QPoint point(_activePegs->at(i).x(), _size - _activePegs->at(i).y());
+		_activePegs->operator[](i).setPoint(point);
 	}
 	// 翻转数组
 	for (int i = 0; i < _size; i++)
@@ -112,7 +111,7 @@ void CurveSquare::resizeEvent(QResizeEvent* event)
 	_heightArray = new uint[_size];
 	memset(_heightArray, 0, sizeof(uint) * _size);
 
-	initPegsArray();
+	Peg::setSize(_size);
 
 	if (_arrayIntensity)
 	{
@@ -134,11 +133,23 @@ void CurveSquare::resizeEvent(QResizeEvent* event)
 	_arrayRed = new uint[_size];
 	_arrayGreen = new uint[_size];
 	_arrayBlue = new uint[_size];
-	for (int i = 0; i < _size; i++)
+	if (_channel == CURVE_CHANNEL_GRAY)
 	{
-		_arrayIntensity[i] = _arrayRed[i] = _arrayGreen[i] = _arrayBlue[i] = i;
+		_activeArray = _arrayIntensity;
 	}
-	_activeArray = _arrayIntensity;
+	else if (_channel == CURVE_CHANNEL_RED)
+	{
+		_activeArray = _arrayRed;
+	}
+	else if (_channel == CURVE_CHANNEL_GREEN)
+	{
+		_activeArray = _arrayGreen;
+	}
+	else if (_channel == CURVE_CHANNEL_BLUE)
+	{
+		_activeArray = _arrayBlue;
+	}
+	calcArrayValue();
 
 	repaint();
 
@@ -305,6 +316,7 @@ void CurveSquare::paintConnection(QColor color)
 
 void CurveSquare::initPegsArray()
 {
+	Peg::setSize(_size);
 	Peg pegStart(0, _size);
 	Peg pegEnd(_size, 0);
 
@@ -342,8 +354,6 @@ void CurveSquare::mousePressEvent(QMouseEvent* event)
 		{
 			setCursor(Qt::SizeAllCursor);
 
-			PegArray& pegs = *_activePegs;
-
 			QPoint ptDummy(point.x() - _rectSquare.left(), point.y() - _rectSquare.top());
 			_activePegIndex = ptInAnyPeg(ptDummy);
 			if (_activePegIndex == NONE_PEG)
@@ -354,7 +364,7 @@ void CurveSquare::mousePressEvent(QMouseEvent* event)
 					// 增加新的peg，并刷新
 					_activePegIndex = addPeg(ptDummy);
 					// 改变数组m_Array值
-					setArrayValue(_activePegIndex, true);
+					calcArrayValue(_activePegIndex, true);
 					repaintPeg();
 				}
 			}
@@ -377,7 +387,7 @@ void CurveSquare::mousePressEvent(QMouseEvent* event)
 		if (_activePegIndex != NONE_PEG && pegs.size() >= 3)
 		{
 			removePeg(_activePegIndex);
-			setArrayValue(_activePegIndex, false);
+			calcArrayValue(_activePegIndex, false);
 			repaintPeg();
 			if (_activePegIndex > pegs.size() - 1)
 			{
@@ -432,7 +442,7 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 		{
 			pegs[0].setPoint(ptDummy);
 			repaintPeg();
-			setArrayValue(_activePegIndex, true);
+			calcArrayValue(_activePegIndex, true);
 		}
 	}
 	else if (_activePegIndex == pegs.size() - 1)
@@ -441,7 +451,7 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 		{
 			pegs[_activePegIndex].setPoint(ptDummy);
 			repaintPeg();
-			setArrayValue(_activePegIndex, true);
+			calcArrayValue(_activePegIndex, true);
 		}
 	}
 	else if (_activePegIndex != -1)
@@ -449,7 +459,7 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 		if ((ptDummy.x() > pegs[_activePegIndex - 1].x() + PEG_DISTANCE) &&
 			(ptDummy.x() < pegs[_activePegIndex + 1].x() - PEG_DISTANCE))
 		{
-			int nFlag = 0;				// 标志是否发生peg合并事件
+			int flag = 0;				// 标志是否发生peg合并事件
 
 			pegs[_activePegIndex].setPoint(ptDummy);
 
@@ -460,7 +470,7 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 			{
 				QPoint tempPoint = pegs[_activePegIndex].point();
 				removePeg(_activePegIndex);
-				nFlag = 1;
+				flag = 1;
 			}
 			// Merge with next peg
 			else if ((pegs[_activePegIndex + 1].x() - pegs[_activePegIndex].x() < 12) &&
@@ -468,16 +478,16 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 			{
 				QPoint tempPoint = pegs[_activePegIndex].point();
 				removePeg(_activePegIndex);
-				nFlag = 2;
+				flag = 2;
 			}
 
 			repaintPeg();
 
-			setArrayValue(_activePegIndex, true);
-			if (nFlag)
+			calcArrayValue(_activePegIndex, true);
+			if (flag)
 			{
 				// nFlag==1对应减1, nFlag==2对应减0
-				_activePegIndex -= (2 - nFlag);
+				_activePegIndex -= (2 - flag);
 				return;
 			}
 		}
@@ -511,7 +521,7 @@ int CurveSquare::ptInAnyPeg(QPoint point) const
 	return NONE_PEG;
 }
 
-// 增加peg前的预处理
+// Preprocess before adding new peg
 bool CurveSquare::prepareAddPeg(int xCoordinate)
 {
 	PegArray& pegs = *_activePegs;
@@ -566,7 +576,6 @@ void CurveSquare::repaintPeg()
 int CurveSquare::sortPegs(const Peg& peg)
 {
 	PegArray& pegs = *_activePegs;
-	// 只有两个peg(首尾两个peg)时，不需排序
 	if (pegs.size() == 2)
 		return 0;
 
@@ -587,7 +596,24 @@ int CurveSquare::sortPegs(const Peg& peg)
 	return pegs.size() - 1;
 }
 
-void CurveSquare::setArrayValue(int index, bool flag)
+void CurveSquare::calcArrayValue()
+{
+	if (_curveOrLinear)
+	{
+		// Curve
+		setCurveArrayValue();
+	}
+	else
+	{
+		// Linear
+		for (int i = 0; i < _activePegs->size(); i++)
+		{
+			setLinearArrayValue(i);
+		}
+	}
+}
+
+void CurveSquare::calcArrayValue(int index, bool flag)
 {
 	if (index == NONE_PEG)
 		return;
@@ -600,24 +626,13 @@ void CurveSquare::setArrayValue(int index, bool flag)
 	else
 	{
 		// Linear
-		if (index == -2)
-		{
-			// 此处为后续增加的代码, 仅为了代码重用
-			for (int i = 0; i < _activePegs->size(); i++)
-			{
-				setLinearityArrayValue(i);
-			}
-		}
-		else
-		{
-			// Calculator array value in modified interval
-			setLinearityArrayValue(index, flag);
-		}
+		// Calculator array value in modified interval
+		setLinearArrayValue(index, flag);
 	}
 }
 
 // Use piecewise linear function to set array value
-void CurveSquare::setLinearityArrayValue(int index, bool flag)
+void CurveSquare::setLinearArrayValue(int index, bool flag)
 {
 	if (index == 0)
 	{
@@ -627,8 +642,8 @@ void CurveSquare::setLinearityArrayValue(int index, bool flag)
 		{
 			_activeArray[i] = size.height();
 		}
-		// 更新第一个peg与第二个peg之间的线段
-		setLineValue(index);
+		// Update array value between first peg and second peg
+		setLinearValue(index);
 	}
 	else if (index > _activePegs->size() - 1 && !flag)
 	{
@@ -647,25 +662,25 @@ void CurveSquare::setLinearityArrayValue(int index, bool flag)
 			{
 				_activeArray[i] = size.height();
 			}
-			setLineValue(index - 1);
+			setLinearValue(index - 1);
 		}
 		else
 		{
 			// 删除倒数第二个peg时的情况
-			setLineValue(index - 1);
+			setLinearValue(index - 1);
 		}
 	}
 	else
 	{
 		if (flag)
 		{
-			setLineValue(index - 1);
-			setLineValue(index);
+			setLinearValue(index - 1);
+			setLinearValue(index);
 		}
 		else
 		{
 			// 删除peg的时候
-			setLineValue(index - 1);
+			setLinearValue(index - 1);
 		}
 	}
 }
@@ -683,8 +698,8 @@ QSize CurveSquare::getCurrentMouseValue(const QPoint& point)
 	return QSize((point.x() - _rectSquare.left()) * 255 / _size, 255 - (point.y() - _rectSquare.top()) * 255 / _size);
 }
 
-// 该函数只被setLinearityArrayValue()调用
-void CurveSquare::setLineValue(int startIndex)
+// This function is only called by setLinearArrayValue()
+void CurveSquare::setLinearValue(int startIndex)
 {
 	if (startIndex < 0 || startIndex > _activePegs->size() - 2)
 		return;
@@ -705,8 +720,8 @@ void CurveSquare::setCurveArrayValue()
 	if (num == 2)
 	{
 		// Don't use spline within two pegs
-		setLinearityArrayValue(0, true);
-		setLinearityArrayValue(1, true);
+		setLinearArrayValue(0, true);
+		setLinearArrayValue(1, true);
 		return;
 	}
 	float* x = new float[num];
@@ -871,7 +886,7 @@ void CurveSquare::setCurveOrLinear(bool curveOrLinear)
 {
 	_curveOrLinear = curveOrLinear;
 
-	setArrayValue();
+	calcArrayValue();
 	repaintPeg();
 
 	emit updateImage();

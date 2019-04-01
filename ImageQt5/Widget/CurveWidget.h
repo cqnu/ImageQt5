@@ -31,6 +31,10 @@ public slots:
 	void toggleCurveRadio();
 	void toggleLinearRadio();
 
+	void clickSave();
+
+	void clickLoad();
+
 protected slots:
 	void resizeSquare();
 

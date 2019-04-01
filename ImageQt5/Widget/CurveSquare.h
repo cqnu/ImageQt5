@@ -84,13 +84,14 @@ private:
 
 	void initPegsArray();
 
-	// 由x、y值计算出在控件客户区上的坐标
+	// Calculate window coordinate according to x and y
 	QPoint getCoordinate(int x, int y);
 
-	// 点落在任意一个peg内(包括StartPeg和EndPeg)
+	// Determine if the mouse is in any peg
 	int ptInAnyPeg(QPoint point) const;
 
-	// 增加peg前的预处理，判断是否允许在当前点插入peg; 参数为新插入点的x坐标
+	// Preprocess before adding new peg
+	// 判断是否允许在当前点插入peg; 参数为新插入点的x坐标
 	bool prepareAddPeg(int xCoordinate);
 
 	// Add peg
@@ -99,18 +100,19 @@ private:
 	// Repaint
 	void repaintPeg();
 
-	// 插入一个新控制点时，根据控制点的横坐标进行排序
+	// Sort pegs according to x coordinate
 	int sortPegs(const Peg& peg);
 
 	// 对数组的操作, 改变数组的值
-	void setArrayValue(int index = -2, bool flag = true);
+	void calcArrayValue();
+	void calcArrayValue(int index, bool flag);
 
 	// Use piecewise linear function to set array value, if flag equal true means adding or moving peg, false means deleting peg
-	void setLinearityArrayValue(int index, bool flag = true);
+	void setLinearArrayValue(int index, bool flag = true);
 
 	// 改变一个线段的值，参数startIndex表示线段起始peg的index
-	// This function is only called by setLinearityArrayValue()
-	void setLineValue(int startIndex);
+	// This function is only called by setLinearArrayValue()
+	void setLinearValue(int startIndex);
 
 	// Use spline function to set array value
 	void setCurveArrayValue();
