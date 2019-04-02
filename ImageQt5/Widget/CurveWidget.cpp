@@ -4,8 +4,9 @@
 #include <QPushButton>
 #include <QGroupBox>
 #include <QHBoxLayout>
+#include <QFileDialog>
+#include <QTextStream>
 
-#include "CurveSquare.h"
 #include "CurveProcessor.h"
 
 CurveWidget::CurveWidget(QWidget* parent)
@@ -15,12 +16,12 @@ CurveWidget::CurveWidget(QWidget* parent)
 	setName("Curve");
 
 	QLabel* labelChannel = new QLabel(tr("Channel"));
-	QComboBox* comboboxChannel = new QComboBox();
-	comboboxChannel->addItem(tr("All"));
-	comboboxChannel->addItem(tr("Red"));
-	comboboxChannel->addItem(tr("Green"));
-	comboboxChannel->addItem(tr("Blue"));
-	connect(comboboxChannel, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &CurveWidget::channelChanged);
+	_comboboxChannel = new QComboBox();
+	_comboboxChannel->addItem(tr("All"));
+	_comboboxChannel->addItem(tr("Red"));
+	_comboboxChannel->addItem(tr("Green"));
+	_comboboxChannel->addItem(tr("Blue"));
+	connect(_comboboxChannel, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &CurveWidget::channelChanged);
 	QPushButton* buttonReset = new QPushButton(tr("&Reset"));
 	connect(buttonReset, &QPushButton::clicked, this, &CurveWidget::clickReset);
 	QPushButton* buttonReverse = new QPushButton(tr("R&everse"));
@@ -28,7 +29,7 @@ CurveWidget::CurveWidget(QWidget* parent)
 
 	QHBoxLayout* layoutHead = new QHBoxLayout();
 	layoutHead->addWidget(labelChannel);
-	layoutHead->addWidget(comboboxChannel);
+	layoutHead->addWidget(_comboboxChannel);
 	layoutHead->addWidget(buttonReset);
 	layoutHead->addWidget(buttonReverse);
 
@@ -141,12 +142,77 @@ void CurveWidget::toggleLinearRadio()
 
 void CurveWidget::clickSave()
 {
+	QString fileName = QFileDialog::getSaveFileName(this, tr("Save Curve"), "/", tr("Curve file (*.cur)"));
+	if (!fileName.isEmpty())
+	{
+		QFile file(fileName);
+		if (file.open(QIODevice::WriteOnly))
+		{
+			QTextStream stream(&file);
+			stream << _square->getChannel() << endl;
+			stream << int(_square->getCurveOrLinear()) << endl;
+			savePegArray(stream, _square->getIntensityPegsArray());
+			savePegArray(stream, _square->getRedPegsArray());
+			savePegArray(stream, _square->getGreenPegsArray());
+			savePegArray(stream, _square->getBluePegsArray());
+		}
+	}
+}
 
+void CurveWidget::savePegArray(QTextStream& stream, const PegArray& pegs)
+{
+	stream << pegs.size() << endl;
+	for (int i = 0; i < pegs.size(); i++)
+	{
+		stream << pegs[i].realX() << " " << pegs[i].realY() << endl;
+	}
 }
 
 void CurveWidget::clickLoad()
 {
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Load Curve"), "/", tr("Curve file (*.cur)"));
+	if (!fileName.isEmpty())
+	{
+		QFile file(fileName);
+		if (file.open(QIODevice::ReadOnly))
+		{
+			QTextStream stream(&file);
+			int channel, curveOrLinear;
+			stream >> channel;
+			stream >> curveOrLinear;
+			_square->setCurveOrLinear(curveOrLinear);
+			_radioCurve->setChecked(curveOrLinear);
+			_radioLinear->setChecked(!curveOrLinear);
 
+			_square->setChannel(CURVE_CHANNEL_GRAY);
+			loadPegArray(stream, _square->getIntensityPegsArray());
+			_square->setChannel(CURVE_CHANNEL_RED);
+			loadPegArray(stream, _square->getRedPegsArray());
+			_square->setChannel(CURVE_CHANNEL_GREEN);
+			loadPegArray(stream, _square->getGreenPegsArray());
+			_square->setChannel(CURVE_CHANNEL_BLUE);
+			loadPegArray(stream, _square->getBluePegsArray());
+
+			_square->setChannel(channel);
+			_comboboxChannel->setCurrentIndex(channel);
+
+			updateImage();
+		}
+	}
+}
+
+void CurveWidget::loadPegArray(QTextStream& stream, PegArray& pegs)
+{
+	int size;
+	stream >> size;
+	pegs.clear();
+	for (int i = 0; i < size; i++)
+	{
+		qreal x, y;
+		stream >> x >> y;
+		pegs.append(Peg(x, y));
+	}
+	_square->calcArrayValue();
 }
 
 void CurveWidget::resizeSquare()

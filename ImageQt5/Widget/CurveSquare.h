@@ -44,10 +44,24 @@ public:
 
 	void setCurveOrLinear(bool curveOrLinear);
 
+	bool getCurveOrLinear() { return _curveOrLinear; }
+
+	PegArray& getIntensityPegsArray() { return _pegsIntensity; }
+
+	PegArray& getRedPegsArray() { return _pegsRed; }
+
+	PegArray& getGreenPegsArray() { return _pegsGreen; }
+
+	PegArray& getBluePegsArray() { return _pegsBlue; }
+
 	uint* getIntensity() { return _arrayIntensity; }
 	uint* getRed() { return _arrayRed; }
 	uint* getGreen() { return _arrayGreen; }
 	uint* getBlue() { return _arrayBlue; }
+
+	// Calculate array value
+	void calcArrayValue();
+	void calcArrayValue(int index, bool flag);
 
 signals:
 	void resize();
@@ -102,10 +116,6 @@ private:
 
 	// Sort pegs according to x coordinate
 	int sortPegs(const Peg& peg);
-
-	// 对数组的操作, 改变数组的值
-	void calcArrayValue();
-	void calcArrayValue(int index, bool flag);
 
 	// Use piecewise linear function to set array value, if flag equal true means adding or moving peg, false means deleting peg
 	void setLinearArrayValue(int index, bool flag = true);

@@ -88,7 +88,7 @@ void MainWindow::clearPixelValue()
 
 void MainWindow::on_actionOpen_triggered()
 {
-	QString fileName = QFileDialog::getOpenFileName(this, QStringLiteral("Open Image"),
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image"),
 		"/", QStringLiteral("Image file (*.dr *.jpg *.png *.bmp *.tif *.gif)"));
 	if (!fileName.isEmpty())
 	{

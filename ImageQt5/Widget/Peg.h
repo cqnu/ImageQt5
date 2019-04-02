@@ -14,9 +14,13 @@ public:
 
 	Peg(int x, int y) { _point = QPointF(qreal(x) / _size, qreal(y) / _size); }
 
-public:
-	int x() const { return _point.x() * _size; }
+	Peg(qreal x, qreal y) { _point = QPointF(x, y); }
 
+public:
+	qreal realX() const { return _point.x(); }
+	qreal realY() const { return _point.y(); }
+
+	int x() const { return _point.x() * _size; }
 	int y() const { return _point.y() * _size; }
 
 	QPoint point() const { return QPoint(_point.x() * _size, _point.y() * _size); }

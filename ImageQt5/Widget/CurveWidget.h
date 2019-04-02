@@ -4,9 +4,11 @@
 #include <QRadioButton>
 
 #include "BaseWidget.h"
+#include "CurveSquare.h"
 
-class CurveSquare;
 class CurveProcessor;
+class QTextStream;
+class QComboBox;
 
 class CurveWidget : public BaseWidget
 {
@@ -47,10 +49,15 @@ private:
 
 	void connectSqureWithProcessor();
 
+	void savePegArray(QTextStream& stream, const PegArray& pegs);
+
+	void loadPegArray(QTextStream& stream, PegArray& pegs);
+
 private:
 	QLabel* _labelInput;
 	QLabel* _labelOutput;
 
+	QComboBox* _comboboxChannel;
 	QRadioButton* _radioCurve;
 	QRadioButton* _radioLinear;
 
