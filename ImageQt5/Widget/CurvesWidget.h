@@ -6,17 +6,17 @@
 #include "BaseWidget.h"
 #include "CurveSquare.h"
 
-class CurveProcessor;
+class CurvesProcessor;
 class QTextStream;
 class QComboBox;
 
-class CurveWidget : public BaseWidget
+class CurvesWidget : public BaseWidget
 {
 	Q_OBJECT
 
 public:
-	CurveWidget(QWidget* parent = nullptr);
-	virtual ~CurveWidget();
+	CurvesWidget(QWidget* parent = nullptr);
+	virtual ~CurvesWidget();
 
 public:
 	virtual void init();
@@ -64,5 +64,5 @@ private:
 	CurveSquare* _square;
 
 	// Image processor
-	CurveProcessor* _processor;
+	CurvesProcessor* _processor;
 };

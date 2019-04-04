@@ -1,4 +1,4 @@
-#include "CurveWidget.h"
+#include "CurvesWidget.h"
 
 #include <QComboBox>
 #include <QPushButton>
@@ -7,13 +7,13 @@
 #include <QFileDialog>
 #include <QTextStream>
 
-#include "CurveProcessor.h"
+#include "CurvesProcessor.h"
 
-CurveWidget::CurveWidget(QWidget* parent)
+CurvesWidget::CurvesWidget(QWidget* parent)
 	: BaseWidget(parent)
 	, _square(nullptr)
 {
-	setName("Curve");
+	setName("Curves");
 
 	QLabel* labelChannel = new QLabel(tr("Channel"));
 	_comboboxChannel = new QComboBox();
@@ -21,11 +21,11 @@ CurveWidget::CurveWidget(QWidget* parent)
 	_comboboxChannel->addItem(tr("Red"));
 	_comboboxChannel->addItem(tr("Green"));
 	_comboboxChannel->addItem(tr("Blue"));
-	connect(_comboboxChannel, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &CurveWidget::channelChanged);
+	connect(_comboboxChannel, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &CurvesWidget::channelChanged);
 	QPushButton* buttonReset = new QPushButton(tr("&Reset"));
-	connect(buttonReset, &QPushButton::clicked, this, &CurveWidget::clickReset);
+	connect(buttonReset, &QPushButton::clicked, this, &CurvesWidget::clickReset);
 	QPushButton* buttonReverse = new QPushButton(tr("R&everse"));
-	connect(buttonReverse, &QPushButton::clicked, this, &CurveWidget::clickReverse);
+	connect(buttonReverse, &QPushButton::clicked, this, &CurvesWidget::clickReverse);
 
 	QHBoxLayout* layoutHead = new QHBoxLayout();
 	layoutHead->addWidget(labelChannel);
@@ -47,8 +47,8 @@ CurveWidget::CurveWidget(QWidget* parent)
 
 	_radioCurve = new QRadioButton(tr("&Curve"));
 	_radioLinear = new QRadioButton(tr("&Line"));
-	connect(_radioCurve, &QRadioButton::toggled, this, &CurveWidget::toggleCurveRadio);
-	connect(_radioLinear, &QRadioButton::toggled, this, &CurveWidget::toggleLinearRadio);
+	connect(_radioCurve, &QRadioButton::toggled, this, &CurvesWidget::toggleCurveRadio);
+	connect(_radioLinear, &QRadioButton::toggled, this, &CurvesWidget::toggleLinearRadio);
 	_radioCurve->setChecked(true);
 	QVBoxLayout* vbox = new QVBoxLayout;
 	vbox->addWidget(_radioCurve);
@@ -57,9 +57,9 @@ CurveWidget::CurveWidget(QWidget* parent)
 	groupBox2->setLayout(vbox);
 
 	QPushButton* buttonSave = new QPushButton(tr("&Save"));
-	connect(buttonSave, &QPushButton::clicked, this, &CurveWidget::clickSave);
+	connect(buttonSave, &QPushButton::clicked, this, &CurvesWidget::clickSave);
 	QPushButton* buttonLoad = new QPushButton(tr("L&oad"));
-	connect(buttonLoad, &QPushButton::clicked, this, &CurveWidget::clickLoad);
+	connect(buttonLoad, &QPushButton::clicked, this, &CurvesWidget::clickLoad);
 	QVBoxLayout* vbox2 = new QVBoxLayout;
 	vbox2->addWidget(buttonSave);
 	vbox2->addWidget(buttonLoad);
@@ -69,9 +69,9 @@ CurveWidget::CurveWidget(QWidget* parent)
 	layoutBottom->addLayout(vbox2);
 
 	_square = new CurveSquare();
-	connect(_square, &CurveSquare::resize, this, &CurveWidget::resizeSquare);
-	connect(_square, &CurveSquare::updateImage, this, &CurveWidget::updateImage);
-	connect(_square, &CurveSquare::updateLabelText, this, &CurveWidget::updateLabelText);
+	connect(_square, &CurveSquare::resize, this, &CurvesWidget::resizeSquare);
+	connect(_square, &CurveSquare::updateImage, this, &CurvesWidget::updateImage);
+	connect(_square, &CurveSquare::updateLabelText, this, &CurvesWidget::updateLabelText);
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addLayout(layoutHead);
@@ -80,12 +80,12 @@ CurveWidget::CurveWidget(QWidget* parent)
 
 	setLayout(layout);
 
-	_processor = new CurveProcessor;
+	_processor = new CurvesProcessor;
 	_processor->setArray(_square->getSize(), _square->getIntensity(), _square->getRed(), _square->getGreen(), _square->getBlue());
 	_processor->setChannel(_square->getChannel());
 }
 
-CurveWidget::~CurveWidget()
+CurvesWidget::~CurvesWidget()
 {
 	if (_processor)
 	{
@@ -93,18 +93,18 @@ CurveWidget::~CurveWidget()
 	}
 }
 
-void CurveWidget::init()
+void CurvesWidget::init()
 {
 	generateHistogram();
 }
 
-void CurveWidget::reset()
+void CurvesWidget::reset()
 {
 	_square->reset();
 	connectSqureWithProcessor();
 }
 
-void CurveWidget::channelChanged(int value)
+void CurvesWidget::channelChanged(int value)
 {
 	_square->setChannel(value);
 	_processor->setChannel(value);
@@ -112,19 +112,19 @@ void CurveWidget::channelChanged(int value)
 	generateHistogram();
 }
 
-void CurveWidget::clickReset()
+void CurvesWidget::clickReset()
 {
 	reset();
 
 	updateImage();
 }
 
-void CurveWidget::clickReverse()
+void CurvesWidget::clickReverse()
 {
 	_square->reverse();
 }
 
-void CurveWidget::toggleCurveRadio()
+void CurvesWidget::toggleCurveRadio()
 {
 	if (_square && _radioCurve->isChecked())
 	{
@@ -132,7 +132,7 @@ void CurveWidget::toggleCurveRadio()
 	}
 }
 
-void CurveWidget::toggleLinearRadio()
+void CurvesWidget::toggleLinearRadio()
 {
 	if (_square && _radioLinear->isChecked())
 	{
@@ -140,7 +140,7 @@ void CurveWidget::toggleLinearRadio()
 	}
 }
 
-void CurveWidget::clickSave()
+void CurvesWidget::clickSave()
 {
 	QString fileName = QFileDialog::getSaveFileName(this, tr("Save Curve"), "/", tr("Curve file (*.cur)"));
 	if (!fileName.isEmpty())
@@ -159,7 +159,7 @@ void CurveWidget::clickSave()
 	}
 }
 
-void CurveWidget::savePegArray(QTextStream& stream, const PegArray& pegs)
+void CurvesWidget::savePegArray(QTextStream& stream, const PegArray& pegs)
 {
 	stream << pegs.size() << endl;
 	for (int i = 0; i < pegs.size(); i++)
@@ -168,7 +168,7 @@ void CurveWidget::savePegArray(QTextStream& stream, const PegArray& pegs)
 	}
 }
 
-void CurveWidget::clickLoad()
+void CurvesWidget::clickLoad()
 {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Load Curve"), "/", tr("Curve file (*.cur)"));
 	if (!fileName.isEmpty())
@@ -201,7 +201,7 @@ void CurveWidget::clickLoad()
 	}
 }
 
-void CurveWidget::loadPegArray(QTextStream& stream, PegArray& pegs)
+void CurvesWidget::loadPegArray(QTextStream& stream, PegArray& pegs)
 {
 	int size;
 	stream >> size;
@@ -215,13 +215,13 @@ void CurveWidget::loadPegArray(QTextStream& stream, PegArray& pegs)
 	_square->calcArrayValue();
 }
 
-void CurveWidget::resizeSquare()
+void CurvesWidget::resizeSquare()
 {
 	init();
 	connectSqureWithProcessor();
 }
 
-void CurveWidget::updateImage()
+void CurvesWidget::updateImage()
 {
 //	_isProcessing = true;
 
@@ -235,13 +235,13 @@ void CurveWidget::updateImage()
 //	_isProcessing = false;
 }
 
-void CurveWidget::updateLabelText(QString input, QString output)
+void CurvesWidget::updateLabelText(QString input, QString output)
 {
 	_labelInput->setText(input);
 	_labelOutput->setText(output);
 }
 
-void CurveWidget::generateHistogram()
+void CurvesWidget::generateHistogram()
 {
 	BaseImage* image = getGlobalImage();
 	if (image == nullptr)
@@ -273,7 +273,7 @@ void CurveWidget::generateHistogram()
 	}
 }
 
-void CurveWidget::connectSqureWithProcessor()
+void CurvesWidget::connectSqureWithProcessor()
 {
 	_processor->setArray(_square->getSize(), _square->getIntensity(), _square->getRed(), _square->getGreen(), _square->getBlue());
 	_processor->setChannel(_square->getChannel());

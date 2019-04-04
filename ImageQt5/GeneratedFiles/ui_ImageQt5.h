@@ -35,8 +35,6 @@ public:
     QMenu *menuFile_F;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
-    QDockWidget *dockWidget;
-    QWidget *dockWidgetContents;
     QDockWidget *dockWidget_3;
     QWidget *dockWidgetContents_3;
 
@@ -80,14 +78,6 @@ public:
         statusBar = new QStatusBar(mainwindow);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
         mainwindow->setStatusBar(statusBar);
-        dockWidget = new QDockWidget(mainwindow);
-        dockWidget->setObjectName(QString::fromUtf8("dockWidget"));
-        dockWidget->setMinimumSize(QSize(400, 34));
-        dockWidget->setAllowedAreas(Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea);
-        dockWidgetContents = new QWidget();
-        dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
-        dockWidget->setWidget(dockWidgetContents);
-        mainwindow->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockWidget);
         dockWidget_3 = new QDockWidget(mainwindow);
         dockWidget_3->setObjectName(QString::fromUtf8("dockWidget_3"));
         dockWidgetContents_3 = new QWidget();
@@ -131,7 +121,6 @@ public:
         actionQuit->setShortcut(QApplication::translate("mainwindow", "Ctrl+Q", nullptr));
 #endif // QT_NO_SHORTCUT
         menuFile_F->setTitle(QApplication::translate("mainwindow", "File", nullptr));
-        dockWidget->setWindowTitle(QApplication::translate("mainwindow", "Histogram", nullptr));
         dockWidget_3->setWindowTitle(QApplication::translate("mainwindow", "Toolbox", nullptr));
     } // retranslateUi
 

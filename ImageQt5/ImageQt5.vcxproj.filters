@@ -75,16 +75,19 @@
     <ClCompile Include="Widget\BaseWidget.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
-    <ClCompile Include="Widget\CurveWidget.cpp">
-      <Filter>Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="Widget\CurveProcessor.cpp">
-      <Filter>Widget</Filter>
-    </ClCompile>
     <ClCompile Include="Widget\CurveSquare.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
     <ClCompile Include="Widget\Peg.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\CurvesWidget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\LevelsWidget.cpp">
+      <Filter>Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\CurvesProcessor.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,10 +104,13 @@
     <QtMoc Include="Widget\BaseWidget.h">
       <Filter>Widget</Filter>
     </QtMoc>
-    <QtMoc Include="Widget\CurveWidget.h">
+    <QtMoc Include="Widget\CurveSquare.h">
       <Filter>Widget</Filter>
     </QtMoc>
-    <QtMoc Include="Widget\CurveSquare.h">
+    <QtMoc Include="Widget\CurvesWidget.h">
+      <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget\LevelsWidget.h">
       <Filter>Widget</Filter>
     </QtMoc>
   </ItemGroup>
@@ -152,10 +158,10 @@
     <ClInclude Include="Widget\WidgetManager.h">
       <Filter>Widget</Filter>
     </ClInclude>
-    <ClInclude Include="Widget\CurveProcessor.h">
+    <ClInclude Include="Widget\Peg.h">
       <Filter>Widget</Filter>
     </ClInclude>
-    <ClInclude Include="Widget\Peg.h">
+    <ClInclude Include="Widget\CurvesProcessor.h">
       <Filter>Widget</Filter>
     </ClInclude>
   </ItemGroup>

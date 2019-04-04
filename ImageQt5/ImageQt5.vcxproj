@@ -125,9 +125,10 @@
     <ClCompile Include="Widget\BaseWidget.cpp" />
     <ClCompile Include="Widget\CommonProcessor.cpp" />
     <ClCompile Include="Widget\CommonWidget.cpp" />
-    <ClCompile Include="Widget\CurveProcessor.cpp" />
+    <ClCompile Include="Widget\CurvesProcessor.cpp" />
     <ClCompile Include="Widget\CurveSquare.cpp" />
-    <ClCompile Include="Widget\CurveWidget.cpp" />
+    <ClCompile Include="Widget\CurvesWidget.cpp" />
+    <ClCompile Include="Widget\LevelsWidget.cpp" />
     <ClCompile Include="Widget\Peg.cpp" />
     <ClCompile Include="Widget\WidgetManager.cpp" />
   </ItemGroup>
@@ -160,12 +161,16 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
     </QtMoc>
     <ClInclude Include="Widget\CommonProcessor.h" />
-    <QtMoc Include="Widget\CurveWidget.h">
+    <QtMoc Include="Widget\CurvesWidget.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
     </QtMoc>
-    <ClInclude Include="Widget\CurveProcessor.h" />
+    <ClInclude Include="Widget\CurvesProcessor.h" />
     <QtMoc Include="Widget\CurveSquare.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
+    <QtMoc Include="Widget\LevelsWidget.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
     </QtMoc>

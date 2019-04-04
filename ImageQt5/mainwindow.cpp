@@ -8,7 +8,8 @@
 #include "View.h"
 #include "Widget/WidgetManager.h"
 #include "Widget/CommonWidget.h"
-#include "Widget/CurveWidget.h"
+#include "Widget/CurvesWidget.h"
+#include "Widget/LevelsWidget.h"
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -45,8 +46,11 @@ void MainWindow::createImageWidget()
 	CommonWidget* common = new CommonWidget();
 	createDockWidget(common);
 
-	CurveWidget* curve = new CurveWidget();
-	createDockWidget(curve);
+	CurvesWidget* curves = new CurvesWidget();
+	createDockWidget(curves);
+
+	LevelsWidget* levels = new LevelsWidget();
+	createDockWidget(levels);
 }
 
 void MainWindow::createDockWidget(BaseWidget* widget)

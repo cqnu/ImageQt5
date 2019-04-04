@@ -10,13 +10,13 @@
 #define CURVE_CHANNEL_BLUE		3
 #endif
 
-class CurveProcessor : public BaseProcessor
+class CurvesProcessor : public BaseProcessor
 {
 	DECLARE_TEMPLATE_INTERFACE
 
 public:
-	CurveProcessor();
-	~CurveProcessor();
+	CurvesProcessor();
+	~CurvesProcessor();
 
 protected:
 	virtual void processGeneralImage(GeneralImage* pImage);

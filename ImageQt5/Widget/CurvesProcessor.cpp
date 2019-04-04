@@ -1,17 +1,17 @@
 
-#include "CurveProcessor.h"
+#include "CurvesProcessor.h"
 
-CurveProcessor::CurveProcessor()
+CurvesProcessor::CurvesProcessor()
 {
 
 }
 
-CurveProcessor::~CurveProcessor()
+CurvesProcessor::~CurvesProcessor()
 {
 
 }
 
-void CurveProcessor::processGeneralImage(GeneralImage* image)
+void CurvesProcessor::processGeneralImage(GeneralImage* image)
 {
 	assert(image);
 
@@ -66,19 +66,19 @@ void CurveProcessor::processGeneralImage(GeneralImage* image)
 }
 
 template<typename Type>
-void CurveProcessor::processTemplate(TemplateImage<Type>* image)
+void CurvesProcessor::processTemplate(TemplateImage<Type>* image)
 {
 	assert(image);
 
 }
 
 // Process float array
-void CurveProcessor::processArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)
+void CurvesProcessor::processArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)
 {
 	assert(pArray && pByte);
 }
 
-void CurveProcessor::setArray(int arrayNum, uint* arrayIntensity, uint* arrayRed, uint* arrayGreen, uint* arrayBlue)
+void CurvesProcessor::setArray(int arrayNum, uint* arrayIntensity, uint* arrayRed, uint* arrayGreen, uint* arrayBlue)
 {
 	_arrayNum = arrayNum;
 
@@ -89,7 +89,7 @@ void CurveProcessor::setArray(int arrayNum, uint* arrayIntensity, uint* arrayRed
 }
 
 // Interpolation
-uchar CurveProcessor::interpolation(uchar target, uint* array, int arrayNum, float variable)
+uchar CurvesProcessor::interpolation(uchar target, uint* array, int arrayNum, float variable)
 {
 	float percentage = target / variable;
 	int integer = int(percentage);
