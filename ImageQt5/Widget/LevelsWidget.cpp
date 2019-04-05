@@ -2,7 +2,7 @@
 
 #include <QLineEdit>
 #include <QHBoxLayout>
-//#include "LevelsProcessor.h"
+#include "LevelsProcessor.h"
 #include "GlobalFunc.h"
 
 LevelsWidget::LevelsWidget(QWidget* parent)
@@ -23,7 +23,7 @@ LevelsWidget::LevelsWidget(QWidget* parent)
 
 	setLayout(hbox);
 
-//	_processor = new LevelsProcessor;
+	_processor = new LevelsProcessor;
 }
 
 LevelsWidget::~LevelsWidget()

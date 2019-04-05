@@ -28,5 +28,5 @@ private:
 	QLineEdit* _editMax;
 
 	// Image processor
-//	LevelsProcessor* _processor;
+	LevelsProcessor* _processor;
 };

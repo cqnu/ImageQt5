@@ -52,7 +52,7 @@ void CommonProcessor::processGeneralImage(GeneralImage* image)
 			}
 		}
 
-	//	PIProgressSetPercent((j + 1), nHeight);
+	//	PIProgressSetPercent((j + 1), height);
 	}
 
 //	PIProgressDone();

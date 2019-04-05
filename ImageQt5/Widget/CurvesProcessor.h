@@ -19,10 +19,10 @@ public:
 	~CurvesProcessor();
 
 protected:
-	virtual void processGeneralImage(GeneralImage* pImage);
+	virtual void processGeneralImage(GeneralImage* image);
 
 	template<typename Type>
-	void processTemplate(TemplateImage<Type>* pImage);
+	void processTemplate(TemplateImage<Type>* image);
 
 	// Process float array
 	virtual void processArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte);

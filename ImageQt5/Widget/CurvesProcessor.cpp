@@ -41,7 +41,7 @@ void CurvesProcessor::processGeneralImage(GeneralImage* image)
 				*(pPixel) = interpolation(*pBackupPixel, _arrayIntensity, _arrayNum, variable);
 			}
 
-		//	PIProgressSetPercent((j + 1), nHeight);
+		//	PIProgressSetPercent((j + 1), height);
 		}
 	}
 	else
@@ -58,7 +58,7 @@ void CurvesProcessor::processGeneralImage(GeneralImage* image)
 				*(pPixel + 2) = interpolation(*(pBackupPixel + 2), _arrayRed, _arrayNum, variable);
 			}
 
-		//	PIProgressSetPercent((j + 1), nHeight);
+		//	PIProgressSetPercent((j + 1), height);
 		}
 	}
 
