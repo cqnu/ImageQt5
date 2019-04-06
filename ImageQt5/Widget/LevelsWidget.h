@@ -3,6 +3,7 @@
 #include "BaseWidget.h"
 
 class LevelsProcessor;
+class HistogramWidget;
 class QLineEdit;
 
 class LevelsWidget : public BaseWidget
@@ -23,6 +24,7 @@ public slots:
 private:
 
 private:
+	HistogramWidget* _histogram;
 	QLineEdit* _editMin;
 	QLineEdit* _editMid;
 	QLineEdit* _editMax;

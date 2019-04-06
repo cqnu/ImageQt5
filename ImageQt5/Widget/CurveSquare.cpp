@@ -2,8 +2,7 @@
 
 #include <QPainter>
 #include <QMouseEvent>
-#include <QMessageBox>
-#include <QtGlobal>
+//#include <QtGlobal>
 #include "../GlobalFunc.h"
 
 CurveSquare::CurveSquare(QWidget* parent)
@@ -71,7 +70,7 @@ void CurveSquare::reverse()
 		QPoint point(_activePegs->at(i).x(), _size - _activePegs->at(i).y());
 		_activePegs->operator[](i).setPoint(point);
 	}
-	// 翻转数组
+	// Reverse array
 	for (int i = 0; i < _size; i++)
 	{
 		_activeArray[i] = _size - _activeArray[i] - 1;
@@ -493,7 +492,7 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 		}
 	}
 
-	// 更新图像
+	// Update image
 //	if (!m_bIsProcessing)
 //	{
 //		AfxBeginThread(UpdateImageThread, this);
@@ -503,7 +502,7 @@ void CurveSquare::mouseMoveEvent(QMouseEvent* event)
 void CurveSquare::mouseReleaseEvent(QMouseEvent* event)
 {
 	setCursor(Qt::ArrowCursor);
-	// 更新图像
+	// Update image
 //	AfxBeginThread(UpdateImageThread, this);
 
 	emit updateImage();

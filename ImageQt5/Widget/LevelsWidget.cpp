@@ -3,12 +3,15 @@
 #include <QLineEdit>
 #include <QHBoxLayout>
 #include "LevelsProcessor.h"
+#include "HistogramWidget.h"
 #include "GlobalFunc.h"
 
 LevelsWidget::LevelsWidget(QWidget* parent)
 	: BaseWidget(parent)
 {
 	setName("Levels");
+
+	_histogram = new HistogramWidget();
 
 	_editMin = new QLineEdit();
 	_editMid = new QLineEdit();
@@ -21,16 +24,20 @@ LevelsWidget::LevelsWidget(QWidget* parent)
 	hbox->addStretch();
 	hbox->addWidget(_editMax);
 
-	setLayout(hbox);
+	QVBoxLayout* layout = new QVBoxLayout();
+	layout->addWidget(_histogram);
+	layout->addLayout(hbox);
+
+	setLayout(layout);
 
 	_processor = new LevelsProcessor;
 }
 
 LevelsWidget::~LevelsWidget()
 {
-//	if (_processor)
+	if (_processor)
 	{
-//		delete _processor;
+		delete _processor;
 	}
 }
 
