@@ -3,7 +3,10 @@
 #include <QWidget>
 
 #define HS_MARGIN				10
+#define HS_HEIGHT				110
 #define CURSOR_SIZE				9
+
+class HistogramProcessor;
 
 class HistogramWidget : public QWidget
 {
@@ -17,6 +20,8 @@ public:
 	virtual QSize sizeHint() const;
 
 	virtual QSize minimumSizeHint() const;
+
+	void init();
 
 	void reset();
 
@@ -43,14 +48,35 @@ private:
 
 	void paintHistogram();
 
-private:
-	int _width, _height;
+	// 调节窗宽
+	void setBottomAndTop(bool* pArray, int arrayNum);
 
+	// 色阶调整
+	void levelAdjust(float bottom, float top, float mid);
+
+	// 分配内存空间
+	void allocateMemory();
+
+	void generateHistogram();
+
+	// 统计被选中的范围
+	void calcSelectArea();
+
+	// 统计临时被选中的范围
+	void calcSelectTempArea();
+
+	// 返回游标所在矩形
+	QRect getCursorRect(int index);
+
+	// Change index to height
+	int indexToHeight(int i);
+
+private:
 	// 其中存放的是量化后的每条线对应相对的高度
-	uint* m_pHeightArray;
+	uint* _heightArray;
 
 	// m_pHeightArray中最小值和最大值
-	uint m_nMinHeight, m_nMaxHeight;
+	uint _minHeight, _maxHeight;
 
 	// Selected start point and finish point
 	int _start, _finish;
@@ -69,4 +95,15 @@ private:
 
 	// Drag flag
 	int _drag;
+
+	// 色阶调整对应的控件
+	float _bottom;
+	float _top;
+	float _mid;
+
+	// 图像中的最大最小值
+	float _minValue, _maxValue;
+
+	// Image processor
+	HistogramProcessor* _processor;
 };

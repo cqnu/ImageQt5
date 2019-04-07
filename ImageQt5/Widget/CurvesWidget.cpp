@@ -217,7 +217,7 @@ void CurvesWidget::loadPegArray(QTextStream& stream, PegArray& pegs)
 
 void CurvesWidget::resizeSquare()
 {
-	init();
+	generateHistogram();
 	connectSqureWithProcessor();
 }
 

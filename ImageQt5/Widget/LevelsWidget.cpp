@@ -43,7 +43,7 @@ LevelsWidget::~LevelsWidget()
 
 void LevelsWidget::init()
 {
-
+	_histogram->init();
 }
 
 void LevelsWidget::reset()
