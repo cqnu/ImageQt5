@@ -25,7 +25,7 @@ void HistogramProcessor::processGeneralImage(GeneralImage* image)
 	int pitch = entityImage->bytesPerLine();
 	int depth = entityImage->depth() / 8;
 
-	// 统计非零个数
+	// Statistical non-zero number
 	int count = 0;
 	int min = _arrayNum - 1;
 	int max = 0;
@@ -99,6 +99,62 @@ void HistogramProcessor::processTemplate(TemplateImage<Type>* image)
 	Type maxValue = image->getMaximumValue();
 	Type minValue = image->getMinimumValue();
 
+	// Statistical non-zero number
+	int count = 0;
+	int min = _arrayNum - 1;
+	int max = 0;
+	for (int i = 0; i < _arrayNum; i++)
+	{
+		if (_array[i] == true)
+		{
+			if (min > i)
+			{
+				min = i;
+			}
+			if (max < i)
+			{
+				max = i;
+			}
+			count++;
+		}
+	}
+	if (count == 0)
+	{
+		// Convert data to byte
+		image->convertToByte();
+		image->copyToImage();
+		return;
+	}
+
+	float actualMin = float(min * float(maxValue - minValue) / (_arrayNum - 1) + minValue);
+	float actualMax = float(max * float(maxValue - minValue) / (_arrayNum - 1) + minValue);
+
+	for (int i = 0; i < width * height; i++)
+	{
+		if (pProcessingData[i] >= actualMax)
+		{
+			pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] = 255;
+		}
+		else if (pProcessingData[i] <= actualMin)
+		{
+			pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] = 0;
+		}
+		else
+		{
+			int index = round(float(pProcessingData[i] - minValue) * (_arrayNum - 1) / float(maxValue - minValue));
+			if (_array[index])
+			{
+				pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] =
+					round(float((pProcessingData[i] - actualMin) * 255.0f / (actualMax - actualMin)));
+			}
+			else
+			{
+				pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] = 0;
+			}
+		}
+	}
+
+	image->copyToImage();
 }
 
 // Process float array

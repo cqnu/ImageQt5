@@ -28,7 +28,7 @@ void CommonProcessor::processGeneralImage(GeneralImage* image)
 	int pitch = entityImage->bytesPerLine();
 	int depth = entityImage->depth() / 8;
 
-//	PIProgressInit(VS_PROGRESS_STATUS_BAR, _T("亮度&对比度"));
+//	PIProgressInit(VS_PROGRESS_STATUS_BAR, _T("Brightness&Contrast"));
 
 	for (int j = 0; j < height; j++)
 	{

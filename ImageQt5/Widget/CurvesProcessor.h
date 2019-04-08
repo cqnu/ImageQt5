@@ -33,8 +33,11 @@ public:
 	void setArray(int arrayNum, uint* arrayIntensity, uint* arrayRed, uint* arrayGreen, uint* arrayBlue);
 
 private:
-	// ²åÖµ¼ÆËã
+	// Interpolation
 	uchar interpolation(uchar target, uint* array, int arrayNum, float variable);
+
+	template <typename Type>
+	uchar interpolation(Type target, uint* array, int arrayNum, float variable1, float variable2);
 
 private:
 	int _channel;
