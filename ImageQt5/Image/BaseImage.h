@@ -19,6 +19,10 @@ public:
 
 	virtual int slice() const		{ return 1; }
 
+	// Get min and max value of image
+	virtual float getMinValue() = 0;
+	virtual float getMaxValue() = 0;
+
 	bool isOpenSucceed()			{ return _openSucceed; }
 
 	// Get each channel's pixel array

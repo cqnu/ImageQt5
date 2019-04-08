@@ -35,10 +35,6 @@ public:
 
 	void setMaximumValue(Type maxValue) { _maxValue = maxValue; }
 
-	// Histogram statistic
-	virtual void histogramStatistic();
-
-
 
 	// get uchar data
 	uchar* getBYTEImage() { return _byteImage; }
@@ -53,13 +49,19 @@ public:
 	bool copyToImage();
 
 public:
-    virtual float getValue(const QPoint& position) const;
+	// Histogram statistic
+	virtual void histogramStatistic();
+
+	virtual float getValue(const QPoint& position) const;
+
+	virtual int slice() const { return _slice; }
+
+	virtual float getMinValue() { return float(_minValue); }
+
+	virtual float getMaxValue() { return float(_maxValue); }
 
 protected:
 	TemplateImage(const QString& pathName);
-
-public:
-	virtual int slice() const			{ return _slice; }
 
 protected:
 	Type* _originalData;

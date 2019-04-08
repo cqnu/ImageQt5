@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <QMouseEvent>
+#include <QApplication>
 #include "../GlobalFunc.h"
 #include "HistogramProcessor.h"
 
@@ -14,17 +15,18 @@
 HistogramWidget::HistogramWidget(QWidget* parent)
 	: QWidget(parent)
 	, _heightArray(nullptr)
-	, _histogramWidth(180)
+	, _minHeight(0)
+	, _maxHeight(0)
 	, _select(nullptr)
 	, _selectTemp(nullptr)
 	, _drag(DRAG_NONE)
+	, _bottom(0)
+	, _top(0)
+	, _mid(1.0f)
+	, _minValue(0)
+	, _maxValue(0)
 {
 	allocateMemory();
-
-	// Initialize cursor position
-	_cursorPos[0] = 0;
-	_cursorPos[1] = _histogramWidth / 2;
-	_cursorPos[2] = _histogramWidth;
 }
 
 HistogramWidget::~HistogramWidget()
@@ -68,23 +70,30 @@ void HistogramWidget::resizeEvent(QResizeEvent* event)
 	QWidget::resizeEvent(event);
 
 	QSize size = event->size();
-	_histogramWidth = size.width() - HS_MARGIN * 2;
+	int oldWidth = _rectHistogram.width();
+	_rectHistogram = QRect(HS_MARGIN, 0, size.width() - HS_MARGIN * 2, size.height() - HS_MARGIN * 2);
 
-	allocateMemory();
+	allocateMemory(oldWidth);
 
 	generateHistogram();
 
-	if (_bottom != _top)
+	if (_maxValue != _minValue)
 	{
 		float factor = (_bottom - _minValue) / (_maxValue - _minValue);
 		factor = factor < 0 ? 0 : factor;
-		_cursorPos[0] = round(factor * _histogramWidth);
+		_cursorPos[0] = round(factor * _rectHistogram.width());
 
 		factor = (_top - _minValue) / (_maxValue - _minValue);
 		factor = factor > 1 ? 1 : factor;
-		_cursorPos[2] = round(factor * _histogramWidth);
+		_cursorPos[2] = round(factor * _rectHistogram.width());
 
 		_cursorPos[1] = round((_cursorPos[2] - _cursorPos[0]) / (1.0f + _mid)) + _cursorPos[0];
+	}
+	else
+	{
+		_cursorPos[0] = 0;
+		_cursorPos[1] = round(float(_rectHistogram.width()) / (1.0f + _mid));
+		_cursorPos[2] = _rectHistogram.width();
 	}
 	
 	repaint();
@@ -101,35 +110,36 @@ void HistogramWidget::paintEvent(QPaintEvent* /*event*/)
 
 void HistogramWidget::paintCursor()
 {
-	int height = rect().height();
+	int left = _rectHistogram.left();
+	int height = _rectHistogram.bottom();
 
 	QPoint pt[3];
-	pt[0].setX(_cursorPos[0] + HS_MARGIN);
-	pt[0].setY(height - 20);
-	pt[1].setX(_cursorPos[0] + HS_MARGIN - CURSOR_SIZE);
+	pt[0].setX(_cursorPos[0] + left);
+	pt[0].setY(height);
+	pt[1].setX(_cursorPos[0] + left - CURSOR_SIZE);
 	pt[1].setY(pt[0].y() + CURSOR_SIZE);
-	pt[2].setX(_cursorPos[0] + HS_MARGIN + CURSOR_SIZE);
+	pt[2].setX(_cursorPos[0] + left + CURSOR_SIZE);
 	pt[2].setY(pt[0].y() + CURSOR_SIZE);
 	QPolygon polygon;
 	polygon << pt[0] << pt[1] << pt[2];
 	QPainter painter(this);
 	painter.drawPolygon(polygon);
 
-	pt[0].setX(_cursorPos[1] + HS_MARGIN);
-	pt[0].setY(height - 20);
-	pt[1].setX(_cursorPos[1] + HS_MARGIN - CURSOR_SIZE);
+	pt[0].setX(_cursorPos[1] + left);
+	pt[0].setY(height);
+	pt[1].setX(_cursorPos[1] + left - CURSOR_SIZE);
 	pt[1].setY(pt[0].y() + CURSOR_SIZE);
-	pt[2].setX(_cursorPos[1] + HS_MARGIN + CURSOR_SIZE);
+	pt[2].setX(_cursorPos[1] + left + CURSOR_SIZE);
 	pt[2].setY(pt[0].y() + CURSOR_SIZE);
 	polygon.clear();
 	polygon << pt[0] << pt[1] << pt[2];
 	painter.drawPolygon(polygon);
 
-	pt[0].setX(_cursorPos[2] + HS_MARGIN);
-	pt[0].setY(height - 20);
-	pt[1].setX(_cursorPos[2] + HS_MARGIN - CURSOR_SIZE);
+	pt[0].setX(_cursorPos[2] + left);
+	pt[0].setY(height);
+	pt[1].setX(_cursorPos[2] + left - CURSOR_SIZE);
 	pt[1].setY(pt[0].y() + CURSOR_SIZE);
-	pt[2].setX(_cursorPos[2] + HS_MARGIN + CURSOR_SIZE);
+	pt[2].setX(_cursorPos[2] + left + CURSOR_SIZE);
 	pt[2].setY(pt[0].y() + CURSOR_SIZE);
 	polygon.clear();
 	polygon << pt[0] << pt[1] << pt[2];
@@ -141,30 +151,28 @@ void HistogramWidget::paintHistogram()
 	if (getGlobalDocument() == nullptr)
 		return;
 	
-	// 绘制直方图
 	if (_maxHeight == 0)
 		return;
 
-	QPainter painter(this);
-	painter.setPen(QPen(Qt::blue));
-
 	QRect rect = this->rect();
 
-	// 绘制背景
+	// Draw background
 	QPen newHighlightPen(qRgb(92, 92, 92));
+	QPainter painter(this);
 	painter.setPen(newHighlightPen);
-	for (int i = 0; i < _histogramWidth; i++)
+	for (int i = 0; i < _rectHistogram.width(); i++)
 	{
 		if (_select[i] || _selectTemp[i])
 		{
-			painter.drawLine(i + rect.left(), rect.top() + HS_HEIGHT + 20 - 1, i + rect.left(), rect.top() + 10);
+			painter.drawLine(i + _rectHistogram.left(), _rectHistogram.top(),
+				i + _rectHistogram.left(), _rectHistogram.bottom());
 		}
 	}
 
-	// 绘制前景
+	// Draw histogram
 	QPen newPen(qRgb(0, 255, 0));
 	QPen newPen2(qRgb(81, 183, 255));
-	for (int i = 0; i < _histogramWidth; i++)
+	for (int i = 0; i < _rectHistogram.width(); i++)
 	{
 		if (_select[i] || _selectTemp[i])
 		{
@@ -175,8 +183,8 @@ void HistogramWidget::paintHistogram()
 			painter.setPen(newPen);
 		}
 
-		painter.drawLine(i + rect.left(), rect.top() + HS_HEIGHT + HS_MARGIN * 2 - 2,
-						i + rect.left(), rect.top() + HS_HEIGHT + HS_MARGIN * 2 - indexToHeight(i) - 2);
+		painter.drawLine(i + _rectHistogram.left(), _rectHistogram.bottom(),
+						i + _rectHistogram.left(), _rectHistogram.bottom() - indexToHeight(i));
 	}
 }
 
@@ -185,7 +193,15 @@ void HistogramWidget::mousePressEvent(QMouseEvent* event)
 	QPoint point = event->pos();
 	if (event->button() == Qt::LeftButton)
 	{
-		
+		if (QApplication::keyboardModifiers() != Qt::ControlModifier)
+		{
+			memset(_select, 0, sizeof(bool) * _rectHistogram.width());
+		}
+
+		_start = _finish = point.x();
+		_drag = DRAG_HISTOGRAM;
+
+		repaint();
 	}
 }
 
@@ -195,43 +211,88 @@ void HistogramWidget::mouseMoveEvent(QMouseEvent* event)
 
 	if ((event->buttons() & Qt::LeftButton) == false)
 		return;
-	
+
+	_finish = qMax(point.x(), _rectHistogram.left());
+	_finish = qMin(_finish, _rectHistogram.right() - 1);
+
+	// 统计临时被选中的范围
+	calcSelectTempArea();
+
+	repaint();
 }
 
 void HistogramWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-	setCursor(Qt::ArrowCursor);
-	// Update image
-//	AfxBeginThread(UpdateImageThread, this);
+	// 统计被选中的范围
+	calcSelectArea();
+
+	// 调节窗宽
+//	setBottomAndTop(_select, _rectHistogram.width());
 
 	emit updateImage();
 }
 
-void HistogramWidget::allocateMemory()
+void HistogramWidget::allocateMemory(int oldWidth)
 {
 	if (_heightArray)
 	{
 		delete _heightArray;
 	}
-	if (_select)
-	{
-		delete _select;
-	}
-	if (_selectTemp)
-	{
-		delete _selectTemp;
-	}
-
 	_heightArray = new uint[256];
-	_select = new bool[_histogramWidth];
-	_selectTemp = new bool[_histogramWidth];
-	memset(_select, 0, sizeof(bool) * _histogramWidth);
-	memset(_selectTemp, 0, sizeof(bool) * _histogramWidth);
+	memset(_heightArray, 0, sizeof(uint) * 256);
+
+	if (_rectHistogram.width() != oldWidth)
+	{
+		if (oldWidth != 0 && _select && _selectTemp)
+		{
+			memcpy(_selectTemp, _select, sizeof(bool) * oldWidth);
+		}
+
+		if (_select)
+		{
+			delete _select;
+		}
+		int histogramWidth = _rectHistogram.width();
+		_select = new bool[histogramWidth];
+		memset(_select, 0, sizeof(bool) * histogramWidth);
+		if (_selectTemp)
+		{
+			// Copy select array from _selectTemp
+			copySelectArray(_selectTemp, oldWidth);
+		}
+
+		if (_selectTemp)
+		{
+			delete _selectTemp;
+		}
+		_selectTemp = new bool[histogramWidth];
+		memset(_selectTemp, 0, sizeof(bool) * histogramWidth);
+	}
 
 //	if (m_pWindowProcessor)
 //	{
 //		m_pWindowProcessor->SetWindowArray(m_pSelect, &m_nHistogramWidth);
 //	}
+}
+
+void HistogramWidget::copySelectArray(bool* array, int arrayNum)
+{
+	int histogramWidth = _rectHistogram.width();
+	assert(histogramWidth > 1);
+	// Make sure width has been changed
+	if (histogramWidth != arrayNum)
+	{
+		for (int i = 0; i < histogramWidth; i++)
+		{
+			// Interpolation
+			int index = round(float(i) * (arrayNum - 1) / (histogramWidth - 1));
+			_select[i] = array[index];
+		}
+	}
+	else
+	{
+		memcpy(_select, array, sizeof(bool) * arrayNum);
+	}
 }
 
 void HistogramWidget::generateHistogram()
@@ -243,7 +304,7 @@ void HistogramWidget::generateHistogram()
 	memcpy(_heightArray, image->getGrayPixelArray(), sizeof(uint) * 256);
 
 	_minHeight = _maxHeight = _heightArray[0];
-	// 查找m_pHeightArray中的最大值和最小值
+	// Find max and min value in _heightArray
 	for (int i = 0; i < 256; i++)
 	{
 		if (_maxHeight < _heightArray[i])
@@ -262,16 +323,48 @@ void HistogramWidget::generateHistogram()
 	// 相对高度量化为绝对高度
 	for (int i = 0; i < 256; i++)
 	{
-		_heightArray[i] = (_heightArray[i] - _minHeight) * (HS_HEIGHT - 1) / (_maxHeight - _minHeight) + 1;
+		_heightArray[i] = (_heightArray[i] - _minHeight) * (_rectHistogram.height() - 1) / (_maxHeight - _minHeight) + 1;
 	}
 
 	repaint();
 }
 
-// 索引号转为高度
+void HistogramWidget::calcSelectArea()
+{
+	for (int i = 0; i < _rectHistogram.width(); i++)
+	{
+		if (_selectTemp[i])
+		{
+			_select[i] = true;
+		}
+	}
+
+	// Rest temp select array
+	memset(_selectTemp, 0, sizeof(bool) * _rectHistogram.width());
+}
+
+// 统计临时被选中的范围
+void HistogramWidget::calcSelectTempArea()
+{
+	int bottom = qMin(_start, _finish) - _rectHistogram.left();
+	int top = qMax(_start, _finish) - _rectHistogram.left();
+
+	for (int i = 0; i < _rectHistogram.width(); i++)
+	{
+		if (i >= bottom && i <= top)
+		{
+			_selectTemp[i] = true;
+		}
+		else
+		{
+			_selectTemp[i] = false;
+		}
+	}
+}
+// Change index to height
 int HistogramWidget::indexToHeight(int i)
 {
-	float pos = float(i) * (256.0f - 1.0f) / (_histogramWidth - 1);
+	float pos = float(i) * 255.0f / (_rectHistogram.width() - 1);
 	int integer = int(floor(pos));
 	float fraction = pos - floor(pos);
 
@@ -281,7 +374,7 @@ int HistogramWidget::indexToHeight(int i)
 	}
 	else
 	{
-		float fHeight = (1.0f - fraction) * _heightArray[integer] + fraction * _heightArray[integer + 1];
-		return round(fHeight);
+		float height = (1.0f - fraction) * _heightArray[integer] + fraction * _heightArray[integer + 1];
+		return round(height);
 	}
 }

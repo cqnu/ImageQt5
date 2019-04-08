@@ -18,6 +18,10 @@ public:
 
     virtual float getValue(const QPoint& position) const;
 
+	virtual float getMinValue() { return 0.0f; }
+
+	virtual float getMaxValue() { return 255.0f; }
+
 private:
 	// 得到图像中最大最小的像素值
 	void getImageBottomAndTop();

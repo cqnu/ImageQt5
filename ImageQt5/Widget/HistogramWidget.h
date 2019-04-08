@@ -3,7 +3,6 @@
 #include <QWidget>
 
 #define HS_MARGIN				10
-#define HS_HEIGHT				110
 #define CURSOR_SIZE				9
 
 class HistogramProcessor;
@@ -54,8 +53,10 @@ private:
 	// 色阶调整
 	void levelAdjust(float bottom, float top, float mid);
 
-	// 分配内存空间
-	void allocateMemory();
+	// Allocate memory
+	void allocateMemory(int oldWidth = 0);
+
+	void copySelectArray(bool* array, int arrayNum);
 
 	void generateHistogram();
 
@@ -87,8 +88,8 @@ private:
 	// 临时被选中的范围数组
 	bool* _selectTemp;
 
-	// Width of histogram
-	int _histogramWidth;
+	// Width and height of histogram
+	QRect _rectHistogram;
 
 	// Cursor postion
 	int _cursorPos[3];
@@ -101,7 +102,7 @@ private:
 	float _top;
 	float _mid;
 
-	// 图像中的最大最小值
+	// Min and max value of image
 	float _minValue, _maxValue;
 
 	// Image processor

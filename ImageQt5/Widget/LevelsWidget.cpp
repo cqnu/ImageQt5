@@ -43,6 +43,17 @@ LevelsWidget::~LevelsWidget()
 
 void LevelsWidget::init()
 {
+	BaseImage* image = getGlobalImage();
+	assert(image);
+
+	float minValue = image->getMinValue();
+	float maxValue = image->getMaxValue();
+	float mid = 1.0f;
+
+	_editMin->setText(QString::number(minValue));
+	_editMid->setText(QString::number(mid));
+	_editMax->setText(QString::number(maxValue));
+
 	_histogram->init();
 }
 
