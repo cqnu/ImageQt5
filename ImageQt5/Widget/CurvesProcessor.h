@@ -25,7 +25,7 @@ protected:
 	void processTemplate(TemplateImage<Type>* image);
 
 	// Process float array
-	virtual void processArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte);
+	virtual void processArray(float* array, int width, int height, float minValue, float maxValue, uchar* pByte);
 
 public:
 	void setChannel(int channel) { _channel = channel; }

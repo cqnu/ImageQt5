@@ -11,18 +11,18 @@ public:
 	~HistogramProcessor();
 
 protected:
-	virtual void ProcessGeneralImage(GeneralImage* pImage);
+	virtual void processGeneralImage(GeneralImage* image);
 
 	template<typename Type>
-	void ProcessTemplate(TemplateImage<Type>* pImage);
+	void processTemplate(TemplateImage<Type>* image);
 
 	// Process float array
-	virtual void ProcessArray(float* pArray, int width, int height, float fMinValue, float fMaxValue, uchar* pByte);
+	virtual void processArray(float* array, int width, int height, float minValue, float maxValue, uchar* pByte);
 
 public:
-//	void setPara(float bottom, float mid, float top);
+	void setWindowArray(bool* array, int arrayNum);
 
 private:
-	// Pointer to levels widget
-//	float _bottom, _mid, _top;
+	bool* _array;
+	int _arrayNum;
 };

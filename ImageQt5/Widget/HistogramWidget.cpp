@@ -27,6 +27,8 @@ HistogramWidget::HistogramWidget(QWidget* parent)
 	, _maxValue(0)
 {
 	allocateMemory();
+
+	_processor = new HistogramProcessor();
 }
 
 HistogramWidget::~HistogramWidget()
@@ -104,6 +106,9 @@ void HistogramWidget::resizeEvent(QResizeEvent* event)
 
 void HistogramWidget::paintEvent(QPaintEvent* /*event*/)
 {
+	QPainter painter(this);
+	painter.drawRect(_rectHistogram);
+
 	paintCursor();
 	paintHistogram();
 }
@@ -223,13 +228,28 @@ void HistogramWidget::mouseMoveEvent(QMouseEvent* event)
 
 void HistogramWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-	// 统计被选中的范围
+	// Calculate selected area
 	calcSelectArea();
 
 	// 调节窗宽
-//	setBottomAndTop(_select, _rectHistogram.width());
+	setBottomAndTop(_select, _rectHistogram.width());
 
 	emit updateImage();
+}
+
+// 调节窗宽
+void HistogramWidget::setBottomAndTop(bool* array, int arrayNum)
+{
+	BaseImage* image = getGlobalImage();
+	if (image)
+	{
+		_processor->setWindowArray(array, arrayNum);
+
+		// 调节窗宽
+		_processor->process(image);
+
+		repaintView();
+	}
 }
 
 void HistogramWidget::allocateMemory(int oldWidth)

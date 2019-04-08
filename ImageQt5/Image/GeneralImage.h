@@ -13,6 +13,9 @@ public:
 	// Get backup QImage pointer
 	QImage* getBackupImage() const { return _backupImage; }
 
+	// Restore image by using backup image
+	void restoreImage();
+
 	// Histogram statistic
 	virtual void histogramStatistic();
 

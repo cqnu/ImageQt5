@@ -24,8 +24,6 @@ public:
 
 	void reset();
 
-	void reverse();
-
 signals:
 	void resize();
 
@@ -47,11 +45,8 @@ private:
 
 	void paintHistogram();
 
-	// 调节窗宽
+	// Set image window
 	void setBottomAndTop(bool* pArray, int arrayNum);
-
-	// 色阶调整
-	void levelAdjust(float bottom, float top, float mid);
 
 	// Allocate memory
 	void allocateMemory(int oldWidth = 0);
@@ -60,38 +55,35 @@ private:
 
 	void generateHistogram();
 
-	// 统计被选中的范围
+	// Calculate selected area
 	void calcSelectArea();
 
-	// 统计临时被选中的范围
+	// Calculate temporary selected area
 	void calcSelectTempArea();
-
-	// 返回游标所在矩形
-	QRect getCursorRect(int index);
 
 	// Change index to height
 	int indexToHeight(int i);
 
 private:
-	// 其中存放的是量化后的每条线对应相对的高度
+	// Height array of each line
 	uint* _heightArray;
 
-	// m_pHeightArray中最小值和最大值
+	// Min and max value in _heightArray
 	uint _minHeight, _maxHeight;
 
 	// Selected start point and finish point
 	int _start, _finish;
 
-	// 被选中的范围数组
+	// Selected array
 	bool* _select;
 
-	// 临时被选中的范围数组
+	// Temporary selected array
 	bool* _selectTemp;
 
 	// Width and height of histogram
 	QRect _rectHistogram;
 
-	// Cursor postion
+	// Cursor position
 	int _cursorPos[3];
 
 	// Drag flag

@@ -22,6 +22,11 @@ public:
 public slots:
 
 private:
+	// Levels adjust
+	void levelsAdjust(float bottom, float top, float mid);
+
+	// Get rect of cursor
+	QRect getCursorRect(int index);
 
 private:
 	HistogramWidget* _histogram;

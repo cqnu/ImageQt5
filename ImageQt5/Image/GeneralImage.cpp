@@ -24,6 +24,16 @@ GeneralImage::~GeneralImage()
 
 }
 
+void GeneralImage::restoreImage()
+{
+	assert(_backupImage);
+
+	_width = _backupImage->width();
+	_height = _backupImage->height();
+	delete _pImage;
+	_pImage = new QImage(*_backupImage);
+}
+
 // Histogram statistic
 void GeneralImage::histogramStatistic()
 {

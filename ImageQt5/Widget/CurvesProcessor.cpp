@@ -73,9 +73,9 @@ void CurvesProcessor::processTemplate(TemplateImage<Type>* image)
 }
 
 // Process float array
-void CurvesProcessor::processArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)
+void CurvesProcessor::processArray(float* array, int width, int height, float minValue, float maxValue, uchar* pByte)
 {
-	assert(pArray && pByte);
+	assert(array && pByte);
 }
 
 void CurvesProcessor::setArray(int arrayNum, uint* arrayIntensity, uint* arrayRed, uint* arrayGreen, uint* arrayBlue)
