@@ -12,10 +12,16 @@ LevelsWidget::LevelsWidget(QWidget* parent)
 	setName("Levels");
 
 	_histogram = new HistogramWidget();
+	connect(_histogram, &HistogramWidget::updateBottom, this, &LevelsWidget::updateBottom);
+	connect(_histogram, &HistogramWidget::updateMid, this, &LevelsWidget::updateMid);
+	connect(_histogram, &HistogramWidget::updateTop, this, &LevelsWidget::updateTop);
 
 	_editMin = new QLineEdit();
+	_editMin->setText("0");
 	_editMid = new QLineEdit();
+	_editMid->setText("1.0");
 	_editMax = new QLineEdit();
+	_editMax->setText("255");
 
 	QHBoxLayout* hbox = new QHBoxLayout;
 	hbox->addWidget(_editMin);
@@ -60,4 +66,19 @@ void LevelsWidget::init()
 void LevelsWidget::reset()
 {
 
+}
+
+void LevelsWidget::updateBottom(float bottom)
+{
+	_editMin->setText(QString::number(bottom));
+}
+
+void LevelsWidget::updateMid(float mid)
+{
+	_editMid->setText(QString::number(mid));
+}
+
+void LevelsWidget::updateTop(float top)
+{
+	_editMax->setText(QString::number(top));
 }

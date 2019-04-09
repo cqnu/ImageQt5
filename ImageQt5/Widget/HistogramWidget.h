@@ -25,9 +25,11 @@ public:
 	void reset();
 
 signals:
-	void resize();
+	void updateBottom(float bottom);
 
-	void updateImage();
+	void updateMid(float mid);
+
+	void updateTop(float top);
 
 protected:
 	virtual void resizeEvent(QResizeEvent* event);
@@ -60,6 +62,9 @@ private:
 
 	// Calculate temporary selected area
 	void calcSelectTempArea();
+
+	// Get rect of cursor
+	QRect getCursorRect(int index);
 
 	// Change index to height
 	int indexToHeight(int i);

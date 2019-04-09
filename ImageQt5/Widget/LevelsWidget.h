@@ -20,13 +20,15 @@ public:
 	virtual void reset();
 
 public slots:
+	void updateBottom(float bottom);
+
+	void updateMid(float mid);
+
+	void updateTop(float top);
 
 private:
 	// Levels adjust
 	void levelsAdjust(float bottom, float top, float mid);
-
-	// Get rect of cursor
-	QRect getCursorRect(int index);
 
 private:
 	HistogramWidget* _histogram;

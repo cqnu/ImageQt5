@@ -21,10 +21,10 @@ HistogramWidget::HistogramWidget(QWidget* parent)
 	, _selectTemp(nullptr)
 	, _drag(DRAG_NONE)
 	, _bottom(0)
-	, _top(0)
+	, _top(255)
 	, _mid(1.0f)
 	, _minValue(0)
-	, _maxValue(0)
+	, _maxValue(255)
 {
 	allocateMemory();
 
@@ -50,6 +50,20 @@ HistogramWidget::~HistogramWidget()
 void HistogramWidget::init()
 {
 	generateHistogram();
+
+	BaseImage* image = getGlobalImage();
+	if (image)
+	{
+		_minValue = image->getMinValue();
+		_maxValue = image->getMaxValue();
+		_bottom = _minValue;
+		_top = _maxValue;
+		_mid = 1.0f;
+
+		_cursorPos[0] = 0;
+		_cursorPos[1] = round(float(_rectHistogram.width()) / (1.0f + _mid));
+		_cursorPos[2] = _rectHistogram.width();
+	}
 }
 
 void HistogramWidget::reset()
@@ -99,9 +113,6 @@ void HistogramWidget::resizeEvent(QResizeEvent* event)
 	}
 	
 	repaint();
-
-	// Emit signal to parent widget
-	emit resize();
 }
 
 void HistogramWidget::paintEvent(QPaintEvent* /*event*/)
@@ -198,15 +209,31 @@ void HistogramWidget::mousePressEvent(QMouseEvent* event)
 	QPoint point = event->pos();
 	if (event->button() == Qt::LeftButton)
 	{
-		if (QApplication::keyboardModifiers() != Qt::ControlModifier)
+		if (_rectHistogram.contains(point))
 		{
-			memset(_select, 0, sizeof(bool) * _rectHistogram.width());
+			if (QApplication::keyboardModifiers() != Qt::ControlModifier)
+			{
+				memset(_select, 0, sizeof(bool) * _rectHistogram.width());
+			}
+
+			_start = _finish = point.x();
+			_drag = DRAG_HISTOGRAM;
+
+			repaint();
 		}
+		else
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				if (getCursorRect(i).contains(point))
+				{
+					_drag = i;
+					_start = _finish = point.x();
 
-		_start = _finish = point.x();
-		_drag = DRAG_HISTOGRAM;
-
-		repaint();
+					break;
+				}
+			}
+		}
 	}
 }
 
@@ -217,35 +244,93 @@ void HistogramWidget::mouseMoveEvent(QMouseEvent* event)
 	if ((event->buttons() & Qt::LeftButton) == false)
 		return;
 
-	_finish = qMax(point.x(), _rectHistogram.left());
-	_finish = qMin(_finish, _rectHistogram.right() - 1);
+	if (_drag == DRAG_NONE)
+		return;
 
-	// 统计临时被选中的范围
-	calcSelectTempArea();
+	if (_drag == DRAG_HISTOGRAM)
+	{
+		_finish = qMax(point.x(), _rectHistogram.left());
+		_finish = qMin(_finish, _rectHistogram.right() - 1);
 
-	repaint();
+		// Calculate temporary selected area
+		calcSelectTempArea();
+
+		repaint();
+	}
+	else
+	{
+		int offset = point.x() - _start;
+		if (_drag == DRAG_CURSOR0)
+		{
+			if (_cursorPos[0] + offset < 0 || _cursorPos[0] + offset >= _cursorPos[1] - 6)
+				return;
+		}
+		else if (_drag == DRAG_CURSOR1)
+		{
+			if (_cursorPos[1] + offset < _cursorPos[0] + 6 || _cursorPos[1] + offset >= _cursorPos[2] - 6)
+				return;
+		}
+		else if (_drag == DRAG_CURSOR2)
+		{
+			if (_cursorPos[2] + offset < _cursorPos[1] + 6 || _cursorPos[2] + offset >= _rectHistogram.width())
+				return;
+		}
+		_start = point.x();
+		_cursorPos[_drag] += offset;
+
+		// Update middle cursor
+		if (_drag != DRAG_CURSOR1)
+		{
+			_cursorPos[1] = round((_cursorPos[2] - _cursorPos[0]) / (1.0f + _mid)) + _cursorPos[0];
+		}
+		repaint();
+	}
 }
 
 void HistogramWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-	// Calculate selected area
-	calcSelectArea();
+	if (_drag == DRAG_HISTOGRAM)
+	{
+		// Calculate selected area
+		calcSelectArea();
 
-	// 调节窗宽
-	setBottomAndTop(_select, _rectHistogram.width());
+		// Set image window
+		setBottomAndTop(_select, _rectHistogram.width());
+	}
+	else
+	{
+		// Update edit text
+		if (_drag == DRAG_CURSOR0)
+		{
+			float factor = float(_cursorPos[0]) / float(_rectHistogram.width());
+			factor = factor < 0 ? 0 : factor;
+			_bottom = factor * (_maxValue - _minValue) + _minValue;
+			emit updateBottom(_bottom);
+		}
+		else if (_drag == DRAG_CURSOR1)
+		{
+			_mid = float(_cursorPos[2] - _cursorPos[1]) / float(_cursorPos[1] - _cursorPos[0]);
+			emit updateMid(_mid);
+		}
+		else if (_drag == DRAG_CURSOR2)
+		{
+			float fFactor = float(_cursorPos[2]) / float(_rectHistogram.width());
+			fFactor = fFactor > 1 ? 1 : fFactor;
+			_top = fFactor * (_maxValue - _minValue) + _minValue;
+			emit updateTop(_top);
+		}
+	}
 
-	emit updateImage();
+	_drag = DRAG_NONE;
 }
 
-// 调节窗宽
+// Set image window
 void HistogramWidget::setBottomAndTop(bool* array, int arrayNum)
 {
 	BaseImage* image = getGlobalImage();
 	if (image)
 	{
 		_processor->setWindowArray(array, arrayNum);
-
-		// 调节窗宽
 		_processor->process(image);
 
 		repaintView();
@@ -381,6 +466,20 @@ void HistogramWidget::calcSelectTempArea()
 		}
 	}
 }
+
+// Get rect of cursor
+QRect HistogramWidget::getCursorRect(int index)
+{
+	QRect rect;
+	rect.setLeft(_cursorPos[index] + _rectHistogram.left() - CURSOR_SIZE);
+	rect.setRight(_cursorPos[index] + _rectHistogram.left() + CURSOR_SIZE);
+	rect.setTop(_rectHistogram.bottom());
+	rect.setBottom(_rectHistogram.bottom() + CURSOR_SIZE);
+
+	rect.adjust(-4, -4, 4, 4);
+	return rect;
+}
+
 // Change index to height
 int HistogramWidget::indexToHeight(int i)
 {
