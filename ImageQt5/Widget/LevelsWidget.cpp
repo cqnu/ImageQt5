@@ -65,20 +65,46 @@ void LevelsWidget::init()
 
 void LevelsWidget::reset()
 {
+	_editMin->setText("0");
+	_editMid->setText("1.0");
+	_editMax->setText("255");
 
+	_histogram->reset();
 }
 
 void LevelsWidget::updateBottom(float bottom)
 {
 	_editMin->setText(QString::number(bottom));
+
+	levelsAdjust();
 }
 
 void LevelsWidget::updateMid(float mid)
 {
 	_editMid->setText(QString::number(mid));
+
+	levelsAdjust();
 }
 
 void LevelsWidget::updateTop(float top)
 {
 	_editMax->setText(QString::number(top));
+
+	levelsAdjust();
+}
+
+// Levels adjust
+void LevelsWidget::levelsAdjust()
+{
+	BaseImage* image = getGlobalImage();
+	if (image)
+	{
+		float bottom = _editMin->text().toFloat();
+		float mid = _editMid->text().toFloat();
+		float top = _editMax->text().toFloat();
+		_processor->setPara(bottom, mid, top);
+		_processor->process(image);
+
+		repaintView();
+	}
 }

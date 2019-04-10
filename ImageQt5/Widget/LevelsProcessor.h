@@ -11,13 +11,13 @@ public:
 	~LevelsProcessor();
 
 protected:
-	virtual void ProcessGeneralImage(GeneralImage* pImage);
+	virtual void processGeneralImage(GeneralImage* pImage);
 
 	template<typename Type>
-	void ProcessTemplate(TemplateImage<Type>* pImage);
+	void processTemplate(TemplateImage<Type>* pImage);
 
 	// Process float array
-	virtual void ProcessArray(float* pArray, int width, int height, float fMinValue, float fMaxValue, uchar* pByte);
+	virtual void processArray(float* pArray, int width, int height, float fMinValue, float fMaxValue, uchar* pByte);
 
 public:
 	void setPara(float bottom, float mid, float top);

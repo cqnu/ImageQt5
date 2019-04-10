@@ -34,6 +34,37 @@ void GeneralImage::restoreImage()
 	_pImage = new QImage(*_backupImage);
 }
 
+uchar GeneralImage::calcNewColor(uchar color, float bottom, float mid, float top, int minColor, int maxColor)
+{
+	if (color <= bottom)
+	{
+		return minColor;
+	}
+	else if (color >= top)
+	{
+		return maxColor;
+	}
+	else
+	{
+		if (mid == 1)
+		{
+			return uchar((color - bottom)*(maxColor - minColor) / (top - bottom) + minColor);
+		}
+		else
+		{
+			int midColor = round(maxColor * mid / (1 + mid));
+			if (color < (top + bottom) / 2)
+			{
+				return uchar((color - bottom)*(midColor - minColor) / ((top + bottom) / 2 - bottom) + minColor);
+			}
+			else
+			{
+				return uchar((color - (top + bottom) / 2)*(maxColor - midColor) / (top - (top + bottom) / 2) + midColor);
+			}
+		}
+	}
+}
+
 // Histogram statistic
 void GeneralImage::histogramStatistic()
 {

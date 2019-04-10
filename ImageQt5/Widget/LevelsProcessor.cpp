@@ -14,7 +14,7 @@ LevelsProcessor::~LevelsProcessor()
 
 }
 
-void LevelsProcessor::ProcessGeneralImage(GeneralImage* image)
+void LevelsProcessor::processGeneralImage(GeneralImage* image)
 {
 	assert(image);
 
@@ -27,69 +27,62 @@ void LevelsProcessor::ProcessGeneralImage(GeneralImage* image)
 	int pitch = entityImage->bytesPerLine();
 	int depth = entityImage->depth() / 8;
 
-	float bottom = _bottom;
-	float mid = _mid;
-	float top = _top;
-	int nChannel = 0;
+	int channel = 0;
 
-	int nMinColor = 0;
-	int nMaxColor = 255;
+	int minColor = 0;
+	int maxColor = 255;
 
 	for (int j = 0; j < height; j++)
 	{
 		for (int i = 0; i < width; i++)
 		{
-		/*	uchar* pPixel = pImageData + j * pitch + i * depth;
+			uchar* pPixel = pImageData + j * pitch + i * depth;
 			uchar* pBackupPixel = pBackupImageData + j * pitch + i * depth;
-			switch (nChannel)
+			switch (channel)
 			{
 			case 0:
-				*(pPixel) = pImage->CalcNewColor(*(pBackupPixel), bottom, top, mid, nMinColor, nMaxColor);
-				*(pPixel + 1) = pImage->CalcNewColor(*(pBackupPixel + 1), bottom, top, mid, nMinColor, nMaxColor);
-				*(pPixel + 2) = pImage->CalcNewColor(*(pBackupPixel + 2), bottom, top, mid, nMinColor, nMaxColor);
+				*(pPixel) = image->calcNewColor(*(pBackupPixel), _bottom, _mid, _top, minColor, maxColor);
+				*(pPixel + 1) = image->calcNewColor(*(pBackupPixel + 1), _bottom, _mid, _top, minColor, maxColor);
+				*(pPixel + 2) = image->calcNewColor(*(pBackupPixel + 2), _bottom, _mid, _top, minColor, maxColor);
 				break;
 			case 1:
-				*(pPixel + 2) = pImage->CalcNewColor(*(pBackupPixel + 2), bottom, top, mid, nMinColor, nMaxColor);
+				*(pPixel + 2) = image->calcNewColor(*(pBackupPixel + 2), _bottom, _mid, _top, minColor, maxColor);
 				break;
 			case 2:
-				*(pPixel + 1) = pImage->CalcNewColor(*(pBackupPixel + 1), bottom, top, mid, nMinColor, nMaxColor);
+				*(pPixel + 1) = image->calcNewColor(*(pBackupPixel + 1), _bottom, _mid, _top, minColor, maxColor);
 				break;
 			case 3:
-				*(pPixel) = pImage->CalcNewColor(*(pBackupPixel), bottom, top, mid, nMinColor, nMaxColor);
+				*(pPixel) = image->calcNewColor(*(pBackupPixel), _bottom, _mid, _top, minColor, maxColor);
 				break;
-			}*/
+			}
 		}
 	}
 }
 
 template<typename Type>
-void LevelsProcessor::ProcessTemplate(TemplateImage<Type>* image)
+void LevelsProcessor::processTemplate(TemplateImage<Type>* image)
 {
-	assert(pImage);
+	assert(image);
 
 	int width = image->width();
 	int height = image->height();
-	Type* pProcessingData = image->GetProcessingData();
+	Type* pProcessingData = image->getProcessingData();
 	uchar* pBYTEImage = image->getBYTEImage();
 	Type maxValue = image->getMaximumValue();
 	Type minValue = image->getMinimumValue();
 
-	float bottom = _bottom;
-	float mid = _mid;
-	float top = _top;
 	int channel = 0;
 
-	// 常数, 作为一个临时变量拿到for循环外
-	float variable1 = 255.0f / (float)(top - bottom);
-	int midColor = round(255 * mid / (1 + mid));
-	float variable2 = (float)(midColor) / (float)((bottom + top) / 2.0f - bottom);
-	float variable3 = (float)(255.0f - midColor) / (float)(top - (bottom + top) / 2.0f);
+	float variable1 = 255.0f / (float)(_top - _bottom);
+	int midColor = round(255 * _mid / (1 + _mid));
+	float variable2 = (float)(midColor) / (float)((_bottom + _top) / 2.0f - _bottom);
+	float variable3 = (float)(255.0f - midColor) / (float)(_top - (_bottom + _top) / 2.0f);
 
-/*	for (int i = 0; i < width * height; i++)
+	for (int i = 0; i < width * height; i++)
 	{
-		if (pProcessingData[i] <= fBottom)
+		if (pProcessingData[i] <= _bottom)
 		{
-			switch (nChannel)
+			switch (channel)
 			{
 			case 0:
 				pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] = 0;
@@ -105,9 +98,9 @@ void LevelsProcessor::ProcessTemplate(TemplateImage<Type>* image)
 				break;
 			}
 		}
-		else if (pProcessingData[i] >= fTop)
+		else if (pProcessingData[i] >= _top)
 		{
-			switch (nChannel)
+			switch (channel)
 			{
 			case 0:
 				pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] = 255;
@@ -125,62 +118,62 @@ void LevelsProcessor::ProcessTemplate(TemplateImage<Type>* image)
 		}
 		else
 		{
-			if (fMid == 1)
+			if (_mid == 1)
 			{
-				switch (nChannel)
+				switch (channel)
 				{
 				case 0:
 					pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] =
-						BYTE((pProcessingData[i] - fBottom) * fVariable1);
+						uchar((pProcessingData[i] - _bottom) * variable1);
 					break;
 				case 1:
-					pBYTEImage[3 * i + 2] = BYTE((pProcessingData[i] - fBottom) * fVariable1);
+					pBYTEImage[3 * i + 2] = uchar((pProcessingData[i] - _bottom) * variable1);
 					break;
 				case 2:
-					pBYTEImage[3 * i + 1] = BYTE((pProcessingData[i] - fBottom) * fVariable1);
+					pBYTEImage[3 * i + 1] = uchar((pProcessingData[i] - _bottom) * variable1);
 					break;
 				case 3:
-					pBYTEImage[3 * i] = BYTE((pProcessingData[i] - fBottom) * fVariable1);
+					pBYTEImage[3 * i] = uchar((pProcessingData[i] - _bottom) * variable1);
 					break;
 				}
 			}
-			else	// 参数fMid不为1的情况
+			else	// if mid is not equal to 1
 			{
-				if (pProcessingData[i] < (fBottom + fTop) / 2)
+				if (pProcessingData[i] < (_bottom + _top) / 2)
 				{
-					switch (nChannel)
+					switch (channel)
 					{
 					case 0:
 						pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] =
-							BYTE((pProcessingData[i] - fBottom) * fVariable2);
+							uchar((pProcessingData[i] - _bottom) * variable2);
 						break;
 					case 1:
-						pBYTEImage[3 * i + 2] = BYTE((pProcessingData[i] - fBottom) * fVariable2);
+						pBYTEImage[3 * i + 2] = uchar((pProcessingData[i] - _bottom) * variable2);
 						break;
 					case 2:
-						pBYTEImage[3 * i + 1] = BYTE((pProcessingData[i] - fBottom) * fVariable2);
+						pBYTEImage[3 * i + 1] = uchar((pProcessingData[i] - _bottom) * variable2);
 						break;
 					case 3:
-						pBYTEImage[3 * i] = BYTE((pProcessingData[i] - fBottom) * fVariable2);
+						pBYTEImage[3 * i] = uchar((pProcessingData[i] - _bottom) * variable2);
 						break;
 					}
 				}
 				else
 				{
-					switch (nChannel)
+					switch (channel)
 					{
 					case 0:
 						pBYTEImage[3 * i] = pBYTEImage[3 * i + 1] = pBYTEImage[3 * i + 2] =
-							BYTE((pProcessingData[i] - (fBottom + fTop) / 2) * fVariable3 + nMidColor);
+							uchar((pProcessingData[i] - (_bottom + _top) / 2) * variable3 + midColor);
 						break;
 					case 1:
-						pBYTEImage[3 * i + 2] = BYTE((pProcessingData[i] - (fBottom + fTop) / 2) * fVariable3 + nMidColor);
+						pBYTEImage[3 * i + 2] = uchar((pProcessingData[i] - (_bottom + _top) / 2) * variable3 + midColor);
 						break;
 					case 2:
-						pBYTEImage[3 * i + 1] = BYTE((pProcessingData[i] - (fBottom + fTop) / 2) * fVariable3 + nMidColor);
+						pBYTEImage[3 * i + 1] = uchar((pProcessingData[i] - (_bottom + _top) / 2) * variable3 + midColor);
 						break;
 					case 3:
-						pBYTEImage[3 * i] = BYTE((pProcessingData[i] - (fBottom + fTop) / 2) * fVariable3 + nMidColor);
+						pBYTEImage[3 * i] = uchar((pProcessingData[i] - (_bottom + _top) / 2) * variable3 + midColor);
 						break;
 					}
 				}
@@ -188,29 +181,25 @@ void LevelsProcessor::ProcessTemplate(TemplateImage<Type>* image)
 		}
 	}
 
-	// 拷贝到图像
-	pImage->CopyToImage();*/
+	image->copyToImage();
 }
 
 // Process float array
-void LevelsProcessor::ProcessArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)
+void LevelsProcessor::processArray(float* pArray, int width, int height, float minValue, float maxValue, uchar* pByte)
 {
 	assert(pArray && pByte);
 
-	float bottom = _bottom;
-	float mid = _mid;
-	float top = _top;
 	int channel = 0;
 
-/*	// 常数, 作为一个临时变量拿到for循环外
-	float fVariable1 = 255.0f / (float)(fTop - fBottom);
-	int nMidColor = FloatToInt(255 * fMid / (1 + fMid));
-	float fVariable2 = (float)(nMidColor) / (float)((fBottom + fTop) / 2.0f - fBottom);
-	float fVariable3 = (float)(255.0f - nMidColor) / (float)(fTop - (fBottom + fTop) / 2.0f);
+
+/*	float variable1 = 255.0f / (float)(_top - _bottom);
+	int midColor = FloatToInt(255 * _mid / (1 + _mid));
+	float fVariable2 = (float)(midColor) / (float)((_bottom + _top) / 2.0f - _bottom);
+	float fVariable3 = (float)(255.0f - midColor) / (float)(_top - (_bottom + fTop) / 2.0f);
 
 	for (int i = 0; i < width * height; i++)
 	{
-		if (pArray[i] <= fBottom)
+		if (pArray[i] <= _bottom)
 		{
 			switch (nChannel)
 			{
@@ -228,7 +217,7 @@ void LevelsProcessor::ProcessArray(float* pArray, int width, int height, float m
 				break;
 			}
 		}
-		else if (pArray[i] >= fTop)
+		else if (pArray[i] >= _top)
 		{
 			switch (nChannel)
 			{
@@ -248,43 +237,41 @@ void LevelsProcessor::ProcessArray(float* pArray, int width, int height, float m
 		}
 		else
 		{
-			if (fMid == 1)
+			if (_mid == 1)
 			{
-				switch (nChannel)
+				switch (channel)
 				{
 				case 0:
-					pByte[3 * i] = pByte[3 * i + 1] = pByte[3 * i + 2] =
-						BYTE((pArray[i] - fBottom) * fVariable1);
+					pByte[3 * i] = pByte[3 * i + 1] = pByte[3 * i + 2] = uchar((pArray[i] - fBottom) * fVariable1);
 					break;
 				case 1:
-					pByte[3 * i + 2] = BYTE((pArray[i] - fBottom) * fVariable1);
+					pByte[3 * i + 2] = uchar((pArray[i] - fBottom) * fVariable1);
 					break;
 				case 2:
-					pByte[3 * i + 1] = BYTE((pArray[i] - fBottom) * fVariable1);
+					pByte[3 * i + 1] = uchar((pArray[i] - fBottom) * fVariable1);
 					break;
 				case 3:
-					pByte[3 * i] = BYTE((pArray[i] - fBottom) * fVariable1);
+					pByte[3 * i] = uchar((pArray[i] - fBottom) * fVariable1);
 					break;
 				}
 			}
-			else	// 参数fMid不为1的情况
+			else	// if mid is not equal to 1
 			{
-				if (pArray[i] < (fBottom + fTop) / 2)
+				if (pArray[i] < (_bottom + _top) / 2)
 				{
-					switch (nChannel)
+					switch (channel)
 					{
 					case 0:
-						pByte[3 * i] = pByte[3 * i + 1] = pByte[3 * i + 2] =
-							BYTE((pArray[i] - fBottom) * fVariable2);
+						pByte[3 * i] = pByte[3 * i + 1] = pByte[3 * i + 2] = uchar((pArray[i] - fBottom) * fVariable2);
 						break;
 					case 1:
-						pByte[3 * i + 2] = BYTE((pArray[i] - fBottom) * fVariable2);
+						pByte[3 * i + 2] = uchar((pArray[i] - fBottom) * fVariable2);
 						break;
 					case 2:
-						pByte[3 * i + 1] = BYTE((pArray[i] - fBottom) * fVariable2);
+						pByte[3 * i + 1] = uchar((pArray[i] - fBottom) * fVariable2);
 						break;
 					case 3:
-						pByte[3 * i] = BYTE((pArray[i] - fBottom) * fVariable2);
+						pByte[3 * i] = uchar((pArray[i] - fBottom) * fVariable2);
 						break;
 					}
 				}

@@ -96,8 +96,8 @@ private:
 
 	// 色阶调整对应的控件
 	float _bottom;
-	float _top;
 	float _mid;
+	float _top;
 
 	// Min and max value of image
 	float _minValue, _maxValue;

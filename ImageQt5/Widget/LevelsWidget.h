@@ -28,7 +28,7 @@ public slots:
 
 private:
 	// Levels adjust
-	void levelsAdjust(float bottom, float top, float mid);
+	void levelsAdjust();
 
 private:
 	HistogramWidget* _histogram;

@@ -21,8 +21,8 @@ HistogramWidget::HistogramWidget(QWidget* parent)
 	, _selectTemp(nullptr)
 	, _drag(DRAG_NONE)
 	, _bottom(0)
-	, _top(255)
 	, _mid(1.0f)
+	, _top(255)
 	, _minValue(0)
 	, _maxValue(255)
 {
@@ -68,6 +68,19 @@ void HistogramWidget::init()
 
 void HistogramWidget::reset()
 {
+	_bottom = 0;
+	_mid = 1.0f;
+	_top = 255;
+	_minValue = 0;
+	_maxValue = 255;
+
+	_cursorPos[0] = 0;
+	_cursorPos[1] = round(float(_rectHistogram.width()) / (1.0f + _mid));
+	_cursorPos[2] = _rectHistogram.width();
+
+	memset(_select, 0, _rectHistogram.width());
+	memset(_selectTemp, 0, _rectHistogram.width());
+
 	repaint();
 }
 
@@ -186,7 +199,7 @@ void HistogramWidget::paintHistogram()
 	}
 
 	// Draw histogram
-	QPen newPen(qRgb(0, 255, 0));
+	QPen newPen(qRgb(0, 0, 255));
 	QPen newPen2(qRgb(81, 183, 255));
 	for (int i = 0; i < _rectHistogram.width(); i++)
 	{
