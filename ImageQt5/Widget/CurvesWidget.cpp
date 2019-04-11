@@ -50,7 +50,7 @@ CurvesWidget::CurvesWidget(QWidget* parent)
 	connect(_radioCurve, &QRadioButton::toggled, this, &CurvesWidget::toggleCurveRadio);
 	connect(_radioLinear, &QRadioButton::toggled, this, &CurvesWidget::toggleLinearRadio);
 	_radioCurve->setChecked(true);
-	QVBoxLayout* vbox = new QVBoxLayout;
+	QVBoxLayout* vbox = new QVBoxLayout();
 	vbox->addWidget(_radioCurve);
 	vbox->addWidget(_radioLinear);
 	QGroupBox* groupBox2 = new QGroupBox(tr(""));
@@ -60,7 +60,7 @@ CurvesWidget::CurvesWidget(QWidget* parent)
 	connect(buttonSave, &QPushButton::clicked, this, &CurvesWidget::clickSave);
 	QPushButton* buttonLoad = new QPushButton(tr("L&oad"));
 	connect(buttonLoad, &QPushButton::clicked, this, &CurvesWidget::clickLoad);
-	QVBoxLayout* vbox2 = new QVBoxLayout;
+	QVBoxLayout* vbox2 = new QVBoxLayout();
 	vbox2->addWidget(buttonSave);
 	vbox2->addWidget(buttonLoad);
 	QHBoxLayout* layoutBottom = new QHBoxLayout();

@@ -24,7 +24,12 @@ public:
 
 	void reset();
 
+public slots:
+	void clickReset();
+
 signals:
+	void resetControl();
+
 	void updateBottom(float bottom);
 
 	void updateMid(float mid);

@@ -1,5 +1,7 @@
 #include "HistogramWidget.h"
 
+#include <QPushButton>
+#include <QVBoxLayout>
 #include <QPainter>
 #include <QMouseEvent>
 #include <QApplication>
@@ -26,6 +28,17 @@ HistogramWidget::HistogramWidget(QWidget* parent)
 	, _minValue(0)
 	, _maxValue(255)
 {
+	QPushButton* buttonReset = new QPushButton(tr("&Reset"));
+	buttonReset->setMaximumWidth(80);
+	connect(buttonReset, &QPushButton::clicked, this, &HistogramWidget::clickReset);
+	QHBoxLayout* hbox = new QHBoxLayout();
+	hbox->addStretch();
+	hbox->addWidget(buttonReset);
+	QVBoxLayout* vbox = new QVBoxLayout();
+	vbox->addLayout(hbox);
+	vbox->addStretch();
+	setLayout(vbox);
+
 	allocateMemory();
 
 	_processor = new HistogramProcessor();
@@ -81,7 +94,14 @@ void HistogramWidget::reset()
 	memset(_select, 0, _rectHistogram.width());
 	memset(_selectTemp, 0, _rectHistogram.width());
 
+//	setBottomAndTop(_select, _rectHistogram.width());
+
 	repaint();
+}
+
+void HistogramWidget::clickReset()
+{
+	emit resetControl();
 }
 
 QSize HistogramWidget::sizeHint() const
