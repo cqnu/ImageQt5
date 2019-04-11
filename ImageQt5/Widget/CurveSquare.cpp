@@ -56,6 +56,13 @@ CurveSquare::~CurveSquare()
 	}
 }
 
+void CurveSquare::init()
+{
+	removeAllPegs();
+
+	repaint();
+}
+
 void CurveSquare::reset()
 {
 	removeAllPegs();

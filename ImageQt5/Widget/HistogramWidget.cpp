@@ -76,6 +76,11 @@ void HistogramWidget::init()
 		_cursorPos[0] = 0;
 		_cursorPos[1] = round(float(_rectHistogram.width()) / (1.0f + _mid));
 		_cursorPos[2] = _rectHistogram.width();
+
+		memset(_select, 0, _rectHistogram.width());
+		memset(_selectTemp, 0, _rectHistogram.width());
+
+		repaint();
 	}
 }
 
@@ -93,8 +98,6 @@ void HistogramWidget::reset()
 
 	memset(_select, 0, _rectHistogram.width());
 	memset(_selectTemp, 0, _rectHistogram.width());
-
-//	setBottomAndTop(_select, _rectHistogram.width());
 
 	repaint();
 }

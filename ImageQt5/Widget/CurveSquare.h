@@ -29,6 +29,8 @@ public:
 
 	virtual QSize minimumSizeHint() const;
 
+	void init();
+
 	void reset();
 
 	void reverse();

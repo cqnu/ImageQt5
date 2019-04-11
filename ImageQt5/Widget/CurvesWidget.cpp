@@ -95,6 +95,9 @@ CurvesWidget::~CurvesWidget()
 
 void CurvesWidget::init()
 {
+	_square->setChannel(CURVE_CHANNEL_GRAY);
+	_square->init();
+	_comboboxChannel->setCurrentIndex(CURVE_CHANNEL_GRAY);
 	generateHistogram();
 }
 
