@@ -30,7 +30,8 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen"/>
+    <addaction name="actionOpenImage"/>
+    <addaction name="actionOpenRaw"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
@@ -39,7 +40,14 @@
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
    <addaction name="menuFile_F"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -59,14 +67,14 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_3"/>
   </widget>
-  <action name="actionOpen">
+  <action name="actionOpenImage">
    <property name="icon">
     <iconset>
      <normalon>:/ImageQt5/Resources/open.png</normalon>
     </iconset>
    </property>
    <property name="text">
-    <string>Open...</string>
+    <string>Open Image...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -109,6 +117,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionOpenRaw">
+   <property name="text">
+    <string>Open Raw...</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

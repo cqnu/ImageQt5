@@ -25,14 +25,17 @@ QT_BEGIN_NAMESPACE
 class Ui_mainwindow
 {
 public:
-    QAction *actionOpen;
+    QAction *actionOpenImage;
     QAction *actionSave;
     QAction *actionSaveAs;
     QAction *actionClose;
     QAction *actionQuit;
+    QAction *actionOpenRaw;
+    QAction *actionAbout;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menuFile_F;
+    QMenu *menuHelp;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
     QDockWidget *dockWidget_3;
@@ -44,11 +47,11 @@ public:
             mainwindow->setObjectName(QString::fromUtf8("mainwindow"));
         mainwindow->resize(800, 600);
         mainwindow->setAutoFillBackground(true);
-        actionOpen = new QAction(mainwindow);
-        actionOpen->setObjectName(QString::fromUtf8("actionOpen"));
+        actionOpenImage = new QAction(mainwindow);
+        actionOpenImage->setObjectName(QString::fromUtf8("actionOpenImage"));
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/ImageQt5/Resources/open.png"), QSize(), QIcon::Normal, QIcon::On);
-        actionOpen->setIcon(icon);
+        actionOpenImage->setIcon(icon);
         actionSave = new QAction(mainwindow);
         actionSave->setObjectName(QString::fromUtf8("actionSave"));
         QIcon icon1;
@@ -63,6 +66,10 @@ public:
         actionClose->setObjectName(QString::fromUtf8("actionClose"));
         actionQuit = new QAction(mainwindow);
         actionQuit->setObjectName(QString::fromUtf8("actionQuit"));
+        actionOpenRaw = new QAction(mainwindow);
+        actionOpenRaw->setObjectName(QString::fromUtf8("actionOpenRaw"));
+        actionAbout = new QAction(mainwindow);
+        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
         centralWidget = new QWidget(mainwindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         mainwindow->setCentralWidget(centralWidget);
@@ -71,6 +78,8 @@ public:
         menuBar->setGeometry(QRect(0, 0, 800, 21));
         menuFile_F = new QMenu(menuBar);
         menuFile_F->setObjectName(QString::fromUtf8("menuFile_F"));
+        menuHelp = new QMenu(menuBar);
+        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
         mainwindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(mainwindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -86,7 +95,9 @@ public:
         mainwindow->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockWidget_3);
 
         menuBar->addAction(menuFile_F->menuAction());
-        menuFile_F->addAction(actionOpen);
+        menuBar->addAction(menuHelp->menuAction());
+        menuFile_F->addAction(actionOpenImage);
+        menuFile_F->addAction(actionOpenRaw);
         menuFile_F->addSeparator();
         menuFile_F->addAction(actionSave);
         menuFile_F->addAction(actionSaveAs);
@@ -94,6 +105,7 @@ public:
         menuFile_F->addAction(actionClose);
         menuFile_F->addSeparator();
         menuFile_F->addAction(actionQuit);
+        menuHelp->addAction(actionAbout);
 
         retranslateUi(mainwindow);
 
@@ -103,9 +115,9 @@ public:
     void retranslateUi(QMainWindow *mainwindow)
     {
         mainwindow->setWindowTitle(QApplication::translate("mainwindow", "ImageQt5", nullptr));
-        actionOpen->setText(QApplication::translate("mainwindow", "Open...", nullptr));
+        actionOpenImage->setText(QApplication::translate("mainwindow", "Open Image...", nullptr));
 #ifndef QT_NO_SHORTCUT
-        actionOpen->setShortcut(QApplication::translate("mainwindow", "Ctrl+O", nullptr));
+        actionOpenImage->setShortcut(QApplication::translate("mainwindow", "Ctrl+O", nullptr));
 #endif // QT_NO_SHORTCUT
         actionSave->setText(QApplication::translate("mainwindow", "Save", nullptr));
 #ifndef QT_NO_SHORTCUT
@@ -120,7 +132,10 @@ public:
 #ifndef QT_NO_SHORTCUT
         actionQuit->setShortcut(QApplication::translate("mainwindow", "Ctrl+Q", nullptr));
 #endif // QT_NO_SHORTCUT
+        actionOpenRaw->setText(QApplication::translate("mainwindow", "Open Raw...", nullptr));
+        actionAbout->setText(QApplication::translate("mainwindow", "About", nullptr));
         menuFile_F->setTitle(QApplication::translate("mainwindow", "File", nullptr));
+        menuHelp->setTitle(QApplication::translate("mainwindow", "Help", nullptr));
         dockWidget_3->setWindowTitle(QApplication::translate("mainwindow", "Toolbox", nullptr));
     } // retranslateUi
 

@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
       <Extensions>qrc;*</Extensions>
@@ -34,10 +26,17 @@
     <Filter Include="Widget">
       <UniqueIdentifier>{ee804911-d224-4d71-835f-e96109af1fcf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Frame">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Dialog">
+      <UniqueIdentifier>{471c20c2-604d-468e-af23-47c1a0e837da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Frame</Filter>
     </ClCompile>
     <ClCompile Include="Image\BaseImage.cpp">
       <Filter>Image</Filter>
@@ -49,16 +48,16 @@
       <Filter>Image</Filter>
     </ClCompile>
     <ClCompile Include="Document.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Frame</Filter>
     </ClCompile>
     <ClCompile Include="GlobalFunc.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Frame</Filter>
     </ClCompile>
     <ClCompile Include="View.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Frame</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Frame</Filter>
     </ClCompile>
     <ClCompile Include="Image\BaseProcessor.cpp">
       <Filter>Image</Filter>
@@ -99,13 +98,13 @@
     <ClCompile Include="Widget\HistogramProcessor.cpp">
       <Filter>Widget</Filter>
     </ClCompile>
+    <ClCompile Include="Dialog\RawParameter.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="View.h">
-      <Filter>Source Files</Filter>
-    </QtMoc>
-    <QtMoc Include="mainwindow.h">
-      <Filter>Header Files</Filter>
+      <Filter>Frame</Filter>
     </QtMoc>
     <QtMoc Include="Widget\CommonWidget.h">
       <Filter>Widget</Filter>
@@ -124,6 +123,12 @@
     </QtMoc>
     <QtMoc Include="Widget\HistogramWidget.h">
       <Filter>Widget</Filter>
+    </QtMoc>
+    <QtMoc Include="mainwindow.h">
+      <Filter>Frame</Filter>
+    </QtMoc>
+    <QtMoc Include="Dialog\RawParameter.h">
+      <Filter>Dialog</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -153,10 +158,10 @@
       <Filter>Image</Filter>
     </ClInclude>
     <ClInclude Include="Document.h">
-      <Filter>Source Files</Filter>
+      <Filter>Frame</Filter>
     </ClInclude>
     <ClInclude Include="GlobalFunc.h">
-      <Filter>Source Files</Filter>
+      <Filter>Frame</Filter>
     </ClInclude>
     <ClInclude Include="Image\BaseProcessor.h">
       <Filter>Image</Filter>

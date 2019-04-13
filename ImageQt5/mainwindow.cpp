@@ -10,6 +10,7 @@
 #include "Widget/CommonWidget.h"
 #include "Widget/CurvesWidget.h"
 #include "Widget/LevelsWidget.h"
+#include "Dialog/RawParameter.h"
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -90,7 +91,7 @@ void MainWindow::clearPixelValue()
 	pixelInfoLabel->setText(nullptr);
 }
 
-void MainWindow::on_actionOpen_triggered()
+void MainWindow::on_actionOpenImage_triggered()
 {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image"),
 		"/", QStringLiteral("Image file (*.dr *.jpg *.png *.bmp *.tif *.gif)"));
@@ -99,6 +100,21 @@ void MainWindow::on_actionOpen_triggered()
 		pDoc->openFile(fileName);
 
 		WidgetManager::getInstance()->init();
+	}
+}
+
+void MainWindow::on_actionOpenRaw_triggered()
+{
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open Raw"),
+		"/", QStringLiteral("Raw file (*.raw)"));
+	if (!fileName.isEmpty())
+	{
+		RawParameter raw(this);
+		int res = raw.exec();
+		if (res == QDialog::Accepted)
+		{
+			WidgetManager::getInstance()->init();
+		}
 	}
 }
 
@@ -125,6 +141,11 @@ void MainWindow::on_actionClose_triggered()
 void MainWindow::on_actionQuit_triggered()
 {
 	close();
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+
 }
 
 void MainWindow::resizeEvent(QResizeEvent*)
