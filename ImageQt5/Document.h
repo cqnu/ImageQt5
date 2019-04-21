@@ -35,9 +35,11 @@ public:
 
 	void closeFile();
 
-	BaseImage* getImage() const { return pBaseImage; }
+	BaseImage* getImage() const { return _image.get(); }
 
-	float getZoomFactor() const { return zoomFactor; }
+	void copyImage(const std::shared_ptr<BaseImage>& image);
+
+	float getZoomFactor() const { return _zoomFactor; }
 	void setZoomFactor(float factor);
 
 	// Repaint view
@@ -50,6 +52,6 @@ private:
 
 private:
 	MainWindow* pMainWindow;
-	BaseImage* pBaseImage;
-	float zoomFactor;
+	std::shared_ptr<BaseImage> _image;
+	float _zoomFactor;
 };

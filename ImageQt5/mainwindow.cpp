@@ -98,7 +98,6 @@ void MainWindow::on_actionOpenImage_triggered()
 	if (!fileName.isEmpty())
 	{
 		pDoc->openFile(fileName);
-
 		WidgetManager::getInstance()->init();
 	}
 }
@@ -113,6 +112,8 @@ void MainWindow::on_actionOpenRaw_triggered()
 		int res = raw.exec();
 		if (res == QDialog::Accepted)
 		{
+			std::shared_ptr<BaseImage> image = raw.getImage();
+			pDoc->copyImage(image);
 			WidgetManager::getInstance()->init();
 		}
 	}

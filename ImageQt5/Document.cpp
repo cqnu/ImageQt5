@@ -7,24 +7,20 @@
 
 Document::Document(MainWindow* pWindow) :
 	pMainWindow(pWindow),
-	pBaseImage(nullptr),
-	zoomFactor(1.0f)
+	_image(nullptr),
+	_zoomFactor(1.0f)
 {
 
 }
 
 Document::~Document()
 {
-	if (pBaseImage)
-	{
-		delete pBaseImage;
-		pBaseImage = nullptr;
-	}
+
 }
 
 bool Document::openFile(const QString& fileName)
 {
-	if (pBaseImage)
+	if (_image)
 	{
 		closeFile();
 	}
@@ -32,23 +28,23 @@ bool Document::openFile(const QString& fileName)
 	int type = findType(fileName);
 	if (type == IMAGE_FORMAT_NDR || type == IMAGE_FORMAT_NCT)
 	{
-		pBaseImage = new ScanImage(fileName);
+		_image = std::make_shared<ScanImage>(fileName);
 	}
 	else if (type != IMAGE_FORMAT_UNKNOWN)
 	{
-		pBaseImage = new GeneralImage(fileName);
+		_image = std::make_shared<GeneralImage>(fileName);
 	}
 	else
 	{
-		pBaseImage = nullptr;
+		_image = nullptr;
 		return false;
 	}
 
 	// Judge whether open file successfully
-	if (pBaseImage->isOpenSucceed() == false)
+	if (_image->isOpenSucceed() == false)
 		return false;
 
-	pBaseImage->histogramStatistic();
+	_image->histogramStatistic();
 
 	getView()->zoomFitWindow();
 	getView()->repaint();
@@ -100,9 +96,9 @@ int Document::findType(const QString &fileName)
 
 bool Document::saveAs(const QString& fileName)
 {
-	if (pBaseImage)
+	if (_image)
 	{
-		return pBaseImage->getImageEntity()->save(fileName);
+		return _image->getImageEntity()->save(fileName);
 	}
 	else
 	{
@@ -112,13 +108,24 @@ bool Document::saveAs(const QString& fileName)
 
 void Document::closeFile()
 {
-	if (pBaseImage)
-	{
-		delete pBaseImage;
-		pBaseImage = nullptr;
-	}
+	_image.reset();
 
 	getView()->resetImageCenter();
+	getView()->repaint();
+}
+
+void Document::copyImage(const std::shared_ptr<BaseImage>& image)
+{
+	if (_image)
+	{
+		closeFile();
+	}
+
+	_image = image;
+
+	_image->histogramStatistic();
+
+	getView()->zoomFitWindow();
 	getView()->repaint();
 }
 
@@ -129,21 +136,21 @@ View* Document::getView() const
 
 void Document::setZoomFactor(float factor)
 {
-	float oldFactor = zoomFactor;
+	float oldFactor = _zoomFactor;
 	if (factor >= IMAGE_MAX_ZOOM)
 	{
-		zoomFactor = IMAGE_MAX_ZOOM;
+		_zoomFactor = IMAGE_MAX_ZOOM;
 	}
 	else if (factor <= IMAGE_MIN_ZOOM)
 	{
-		zoomFactor = IMAGE_MIN_ZOOM;
+		_zoomFactor = IMAGE_MIN_ZOOM;
 	}
 	else
 	{
-		zoomFactor = factor;
+		_zoomFactor = factor;
 	}
 
-	getView()->zoomChanged(zoomFactor, oldFactor);
+	getView()->zoomChanged(_zoomFactor, oldFactor);
 }
 
 // Repaint view

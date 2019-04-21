@@ -15,6 +15,9 @@ public:
 	RawParameter(QWidget* parent, QString fileName);
 	~RawParameter();
 
+public:
+	std::shared_ptr<BaseImage> getImage() { return _image; }
+
 public slots:
 	void updateOffset();
 
@@ -23,6 +26,8 @@ public slots:
 	void updateY();
 
 	void pixelDepthChanged(int value);
+
+	void clickedOK();
 
 protected:
 	void paintEvent(QPaintEvent*);
@@ -43,7 +48,7 @@ private:
 	int _width;
 	int _height;
 	int _pixelDepth;
-	BaseImage* _image;
+	std::shared_ptr<BaseImage> _image;
 
 	QLineEdit* _editFileSize;
 	QLineEdit* _editExpectSize;

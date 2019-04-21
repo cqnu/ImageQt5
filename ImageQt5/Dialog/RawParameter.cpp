@@ -92,7 +92,7 @@ RawParameter::RawParameter(QWidget* parent, QString fileName)
 	hbox->setStretch(1, 1);
 
 	QPushButton* buttonOK = new QPushButton(tr("&OK"));
-	connect(buttonOK, &QPushButton::clicked, this, &RawParameter::accept);
+	connect(buttonOK, &QPushButton::clicked, this, &RawParameter::clickedOK);
 	QPushButton* buttonReset = new QPushButton(tr("&Cancel"));
 	connect(buttonReset, &QPushButton::clicked, this, &RawParameter::reject);
 	QHBoxLayout* bottom = new QHBoxLayout();
@@ -127,11 +127,19 @@ void RawParameter::initialize()
 
 void RawParameter::updateSize()
 {
-	qint64 size = qint64(_width) * qint64(_height) * qint64(_pixelDepth) + _offset;
-	_editExpectSize->setText(QString::number(size));
+	qint64 expectedSize = qint64(_width) * qint64(_height) * qint64(_pixelDepth) + _offset;
+	_editExpectSize->setText(QString::number(expectedSize));
 
 	if (_width == 0 ||  _height == 0)
 		return;
+
+	qint64 fileSize = _editFileSize->text().toLongLong();
+	if (expectedSize > fileSize)
+	{
+		QMessageBox::critical(nullptr, QObject::tr("Open raw file error"),
+			QObject::tr("Expected size is larger than the true file size!"), QMessageBox::Ok);
+		return;
+	}
 
 	createTemplateImage();
 
@@ -142,33 +150,33 @@ void RawParameter::updateSize()
 
 void RawParameter::createTemplateImage()
 {
-	if (_image)
+	if (_image.get())
 	{
-		delete _image;
+		_image.reset();
 	}
 	
 	switch (_comboboxType->currentIndex())
 	{
 	case 0:
-		_image = new TemplateImage<unsigned char>(_fileName, _width, _height);
+		_image = std::make_shared<TemplateImage<unsigned char>>(_fileName, _width, _height);
 		break;
 	case 1:
-		_image = new TemplateImage<short>(_fileName, _width, _height);
+		_image = std::make_shared<TemplateImage<short>>(_fileName, _width, _height);
 		break;
 	case 2:
-		_image = new TemplateImage<unsigned short >(_fileName, _width, _height);
+		_image = std::make_shared<TemplateImage<unsigned short>>(_fileName, _width, _height);
 		break;
 	case 3:
-		_image = new TemplateImage<int>(_fileName, _width, _height);
+		_image = std::make_shared<TemplateImage<int>>(_fileName, _width, _height);
 		break;
 	case 4:
-		_image = new TemplateImage<unsigned int>(_fileName, _width, _height);
+		_image = std::make_shared<TemplateImage<unsigned int>>(_fileName, _width, _height);
 		break;
 	case 5:
-		_image = new TemplateImage<float>(_fileName, _width, _height);
+		_image = std::make_shared<TemplateImage<float>>(_fileName, _width, _height);
 		break;
 	case 6:
-		_image = new TemplateImage<double>(_fileName, _width, _height);
+		_image = std::make_shared<TemplateImage<double>>(_fileName, _width, _height);
 		break;
 	default:
 		assert(false);
@@ -188,7 +196,7 @@ void RawParameter::readRawData()
 	{
 	case 0:
 	{
-		TemplateImage<unsigned char>* image = dynamic_cast<TemplateImage<unsigned char>*>(_image);
+		TemplateImage<unsigned char>* image = dynamic_cast<TemplateImage<unsigned char>*>(_image.get());
 		unsigned char* originalData = image->getOriginalData();
 		qint64 readSize = file.read((char*)originalData, sizeof(unsigned char) * _width * _height);
 		assert(readSize == sizeof(unsigned char) * pixelNum);
@@ -201,7 +209,7 @@ void RawParameter::readRawData()
 	break;
 	case 1:
 	{
-		TemplateImage<short>* image = dynamic_cast<TemplateImage<short>*>(_image);
+		TemplateImage<short>* image = dynamic_cast<TemplateImage<short>*>(_image.get());
 		short* originalData = image->getOriginalData();
 		qint64 readSize = file.read((char*)originalData, sizeof(short) * _width * _height);
 		assert(readSize == sizeof(short) * pixelNum);
@@ -214,7 +222,7 @@ void RawParameter::readRawData()
 	break;
 	case 2:
 	{
-		TemplateImage<unsigned short>* image = dynamic_cast<TemplateImage<unsigned short>*>(_image);
+		TemplateImage<unsigned short>* image = dynamic_cast<TemplateImage<unsigned short>*>(_image.get());
 		unsigned short* originalData = image->getOriginalData();
 		qint64 readSize = file.read((char*)originalData, sizeof(unsigned short) * _width * _height);
 		assert(readSize == sizeof(unsigned short) * pixelNum);
@@ -227,7 +235,7 @@ void RawParameter::readRawData()
 	break;
 	case 3:
 	{
-		TemplateImage<int>* image = dynamic_cast<TemplateImage<int>*>(_image);
+		TemplateImage<int>* image = dynamic_cast<TemplateImage<int>*>(_image.get());
 		int* originalData = image->getOriginalData();
 		qint64 readSize = file.read((char*)originalData, sizeof(int) * _width * _height);
 		assert(readSize == sizeof(int) * pixelNum);
@@ -240,7 +248,7 @@ void RawParameter::readRawData()
 	break;
 	case 4:
 	{
-		TemplateImage<unsigned int>* image = dynamic_cast<TemplateImage<unsigned int>*>(_image);
+		TemplateImage<unsigned int>* image = dynamic_cast<TemplateImage<unsigned int>*>(_image.get());
 		unsigned int* originalData = image->getOriginalData();
 		qint64 readSize = file.read((char*)originalData, sizeof(unsigned int) * _width * _height);
 		assert(readSize == sizeof(unsigned int) * pixelNum);
@@ -253,7 +261,7 @@ void RawParameter::readRawData()
 	break;
 	case 5:
 	{
-		TemplateImage<float>* image = dynamic_cast<TemplateImage<float>*>(_image);
+		TemplateImage<float>* image = dynamic_cast<TemplateImage<float>*>(_image.get());
 		float* originalData = image->getOriginalData();
 		qint64 readSize = file.read((char*)originalData, sizeof(float) * _width * _height);
 		assert(readSize == sizeof(float) * pixelNum);
@@ -266,7 +274,7 @@ void RawParameter::readRawData()
 	break;
 	case 6:
 	{
-		TemplateImage<double>* image = dynamic_cast<TemplateImage<double>*>(_image);
+		TemplateImage<double>* image = dynamic_cast<TemplateImage<double>*>(_image.get());
 		double* originalData = image->getOriginalData();
 		qint64 readSize = file.read((char*)originalData, sizeof(double) * _width * _height);
 		assert(readSize == sizeof(double) * pixelNum);
@@ -321,6 +329,19 @@ void RawParameter::pixelDepthChanged(int value)
 		break;
 	}
 	updateSize();
+}
+
+void RawParameter::clickedOK()
+{
+	qint64 fileSize = _editFileSize->text().toLongLong();
+	qint64 expectedSize = _editExpectSize->text().toLongLong();
+	if (expectedSize > fileSize)
+	{
+		QMessageBox::critical(nullptr, QObject::tr("Open raw file error"),
+			QObject::tr("Expected size is larger than the true file size!"), QMessageBox::Ok);
+		return;
+	}
+	accept();
 }
 
 void RawParameter::paintEvent(QPaintEvent*)
