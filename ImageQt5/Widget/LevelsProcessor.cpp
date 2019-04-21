@@ -193,7 +193,7 @@ void LevelsProcessor::processArray(float* pArray, int width, int height, float m
 
 
 /*	float variable1 = 255.0f / (float)(_top - _bottom);
-	int midColor = FloatToInt(255 * _mid / (1 + _mid));
+	int midColor = round(255 * _mid / (1 + _mid));
 	float fVariable2 = (float)(midColor) / (float)((_bottom + _top) / 2.0f - _bottom);
 	float fVariable3 = (float)(255.0f - midColor) / (float)(_top - (_bottom + fTop) / 2.0f);
 

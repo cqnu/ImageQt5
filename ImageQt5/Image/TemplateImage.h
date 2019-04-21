@@ -15,6 +15,7 @@ class TemplateImage : public BaseImage
 {
 public:
 	TemplateImage();
+	TemplateImage(const QString& pathName, int width, int height);
 	virtual ~TemplateImage();
 
 public:
@@ -79,13 +80,31 @@ protected:
 
 template <class Type>
 TemplateImage<Type>::TemplateImage()
+	: _originalData(nullptr)
+	, _processingData(nullptr)
+	, _byteImage(nullptr)
 {
 
 }
 
 template <class Type>
-TemplateImage<Type>::TemplateImage(const QString& pathName) :
-	BaseImage(pathName)
+TemplateImage<Type>::TemplateImage(const QString& pathName, int width, int height)
+	: BaseImage(pathName)
+	, _processingData(nullptr)
+	, _byteImage(nullptr)
+{
+	_width = width;
+	_height = height;
+	_slice = 1;
+	_originalData = new Type[_width * _height * _slice];
+}
+
+template <class Type>
+TemplateImage<Type>::TemplateImage(const QString& pathName)
+	: BaseImage(pathName)
+	, _originalData(nullptr)
+	, _processingData(nullptr)
+	, _byteImage(nullptr)
 {
 
 }
@@ -129,10 +148,11 @@ template <class Type>
 bool TemplateImage<Type>::findTopAndBottom(Type* pData, int num)
 {
 	Q_ASSERT(pData);
+
 	_minValue = _maxValue = pData[0];
 	for (int i = 1; i < num; i++)
 	{
-		if (std::isnan(pData[i]) || std::isinf(pData[i]))
+		if ((std::is_same<Type, float>::value || std::is_same<Type, double>::value) && (std::isnan(pData[i]) || std::isinf(pData[i])))
 		{
 			QMessageBox::critical(nullptr, "Error in traversing data", "Invalid value in data!", QMessageBox::Ok);
 			return false;

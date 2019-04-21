@@ -109,7 +109,7 @@ void MainWindow::on_actionOpenRaw_triggered()
 		"/", QStringLiteral("Raw file (*.raw)"));
 	if (!fileName.isEmpty())
 	{
-		RawParameter raw(this);
+		RawParameter raw(this, fileName);
 		int res = raw.exec();
 		if (res == QDialog::Accepted)
 		{
