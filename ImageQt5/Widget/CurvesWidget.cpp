@@ -97,6 +97,7 @@ void CurvesWidget::init()
 {
 	_square->setChannel(CURVE_CHANNEL_GRAY);
 	_square->init();
+
 	_comboboxChannel->setCurrentIndex(CURVE_CHANNEL_GRAY);
 	generateHistogram();
 }
@@ -111,6 +112,12 @@ void CurvesWidget::channelChanged(int value)
 {
 	_square->setChannel(value);
 	_processor->setChannel(value);
+
+	if (value == 0)
+	{
+		// Channel changed from color to gray
+		updateImage();
+	}
 
 	generateHistogram();
 }

@@ -882,10 +882,6 @@ void CurveSquare::setChannel(int channel)
 		memcpy(_arrayGreen, _arrayIntensity, sizeof(uint) * _size);
 		memcpy(_arrayBlue, _arrayIntensity, sizeof(uint) * _size);
 	}
-	else if (_channel == CURVE_CHANNEL_GRAY)
-	{
-		emit updateImage();
-	}
 
 	repaint();
 }
