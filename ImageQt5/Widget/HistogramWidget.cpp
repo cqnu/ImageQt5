@@ -22,11 +22,11 @@ HistogramWidget::HistogramWidget(QWidget* parent)
 	, _select(nullptr)
 	, _selectTemp(nullptr)
 	, _drag(DRAG_NONE)
+	, _minValue(0)
+	, _maxValue(255)
 	, _bottom(0)
 	, _mid(1.0f)
 	, _top(255)
-	, _minValue(0)
-	, _maxValue(255)
 {
 	QPushButton* buttonReset = new QPushButton(tr("&Reset"));
 	buttonReset->setMaximumWidth(80);
@@ -70,8 +70,8 @@ void HistogramWidget::init()
 		_minValue = image->getMinValue();
 		_maxValue = image->getMaxValue();
 		_bottom = _minValue;
-		_top = _maxValue;
 		_mid = 1.0f;
+		_top = _maxValue;
 
 		_cursorPos[0] = 0;
 		_cursorPos[1] = round(float(_rectHistogram.width()) / (1.0f + _mid));
@@ -86,11 +86,23 @@ void HistogramWidget::init()
 
 void HistogramWidget::reset()
 {
-	_bottom = 0;
-	_mid = 1.0f;
-	_top = 255;
-	_minValue = 0;
-	_maxValue = 255;
+	BaseImage* image = getGlobalImage();
+	if (image)
+	{
+		_minValue = image->getMinValue();
+		_maxValue = image->getMaxValue();
+		_bottom = _minValue;
+		_mid = 1.0f;
+		_top = _maxValue;
+	}
+	else
+	{
+		_minValue = 0;
+		_maxValue = 255;
+		_bottom = 0;
+		_mid = 1.0f;
+		_top = 255;
+	}
 
 	_cursorPos[0] = 0;
 	_cursorPos[1] = round(float(_rectHistogram.width()) / (1.0f + _mid));
@@ -98,6 +110,25 @@ void HistogramWidget::reset()
 
 	memset(_select, 0, _rectHistogram.width());
 	memset(_selectTemp, 0, _rectHistogram.width());
+
+	repaint();
+}
+
+void HistogramWidget::setParameters(float bottom, float mid, float top)
+{
+	_bottom = bottom;
+	_mid = mid;
+	_top = top;
+
+	float factor = (_bottom - _minValue) / (_maxValue - _minValue);
+	factor = std::max(0.0f, factor);
+	_cursorPos[0] = round(factor * _rectHistogram.width());
+
+	factor = (_top - _minValue) / (_maxValue - _minValue);
+	factor = std::min(1.0f, factor);
+	_cursorPos[2] = round(factor * _rectHistogram.width());
+
+	_cursorPos[1] = round((_cursorPos[2] - _cursorPos[0]) / (1.0f + _mid)) + _cursorPos[0];
 
 	repaint();
 }

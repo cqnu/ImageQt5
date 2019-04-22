@@ -24,6 +24,8 @@ public:
 
 	void reset();
 
+	void setParameters(float bottom, float mid, float top);
+
 public slots:
 	void clickReset();
 
@@ -99,13 +101,13 @@ private:
 	// Drag flag
 	int _drag;
 
+	// Min and max value of image
+	float _minValue, _maxValue;
+
 	// 色阶调整对应的控件
 	float _bottom;
 	float _mid;
 	float _top;
-
-	// Min and max value of image
-	float _minValue, _maxValue;
 
 	// Image processor
 	HistogramProcessor* _processor;

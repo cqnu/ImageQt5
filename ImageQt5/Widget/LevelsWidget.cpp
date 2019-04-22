@@ -20,12 +20,15 @@ LevelsWidget::LevelsWidget(QWidget* parent)
 	_editMin = new QLineEdit();
 	_editMin->setText("0");
 	_editMin->setMaximumWidth(100);
+	connect(_editMin, &QLineEdit::editingFinished, this, &LevelsWidget::updateHistogram);
 	_editMid = new QLineEdit();
 	_editMid->setText("1");
 	_editMid->setMaximumWidth(100);
+	connect(_editMid, &QLineEdit::editingFinished, this, &LevelsWidget::updateHistogram);
 	_editMax = new QLineEdit();
 	_editMax->setText("255");
 	_editMax->setMaximumWidth(100);
+	connect(_editMax, &QLineEdit::editingFinished, this, &LevelsWidget::updateHistogram);
 
 	QHBoxLayout* hbox = new QHBoxLayout;
 	hbox->addWidget(_editMin);
@@ -69,11 +72,78 @@ void LevelsWidget::init()
 
 void LevelsWidget::reset()
 {
-	_editMin->setText("0");
-	_editMid->setText("1.0");
-	_editMax->setText("255");
+	BaseImage* image = getGlobalImage();
+	if (image)
+	{
+		float minValue = image->getMinValue();
+		float maxValue = image->getMaxValue();
+		float mid = 1.0f;
+
+		_editMin->setText(QString::number(minValue));
+		_editMid->setText(QString::number(mid));
+		_editMax->setText(QString::number(maxValue));
+	}
+	else
+	{
+		_editMin->setText("0");
+		_editMid->setText("1.0");
+		_editMax->setText("255");
+	}
 
 	_histogram->reset();
+
+	levelsAdjust();
+}
+
+void LevelsWidget::updateHistogram()
+{
+	float bottom = _editMin->text().toFloat();
+	float mid = _editMid->text().toFloat();
+	float top = _editMax->text().toFloat();
+
+	BaseImage* image = getGlobalImage();
+	if (image)
+	{
+		float minValue = image->getMinValue();
+		float maxValue = image->getMaxValue();
+		if (bottom < minValue)
+		{
+			_editMin->setText(QString::number(minValue));
+		}
+		else if (bottom > top)
+		{
+			_editMin->setText(QString::number(top));
+		}
+		if (top < bottom)
+		{
+			_editMax->setText(QString::number(bottom));
+		}
+		else if (top > maxValue)
+		{
+			_editMax->setText(QString::number(minValue));
+		}
+	}
+	else
+	{
+		if (bottom < 0)
+		{
+			_editMin->setText("0");
+		}
+		else if (bottom > top)
+		{
+			_editMin->setText(QString::number(top));
+		}
+		if (top < bottom)
+		{
+			_editMax->setText(QString::number(bottom));
+		}
+		else if (top > 255)
+		{
+			_editMax->setText("255");
+		}
+	}
+
+	_histogram->setParameters(bottom, mid, top);
 
 	levelsAdjust();
 }

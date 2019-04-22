@@ -20,6 +20,8 @@ public:
 	virtual void reset();
 
 public slots:
+	void updateHistogram();
+
 	void updateBottom(float bottom);
 
 	void updateMid(float mid);
