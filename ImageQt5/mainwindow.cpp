@@ -6,6 +6,7 @@
 
 #include "Document.h"
 #include "View.h"
+#include "GlobalFunc.h"
 #include "Widget/WidgetManager.h"
 #include "Widget/CommonWidget.h"
 #include "Widget/CurvesWidget.h"
@@ -98,7 +99,10 @@ void MainWindow::on_actionOpenImage_triggered()
 	if (!fileName.isEmpty())
 	{
 		pDoc->openFile(fileName);
-		WidgetManager::getInstance()->init();
+		if (getGlobalImage())
+		{
+			WidgetManager::getInstance()->init();
+		}
 	}
 }
 

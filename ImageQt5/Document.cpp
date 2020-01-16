@@ -54,39 +54,40 @@ bool Document::openFile(const QString& fileName)
 
 int Document::findType(const QString &fileName)
 {
-	if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg"))
+	QString str = fileName.toLower();
+	if (str.endsWith(".jpg") || str.endsWith(".jpeg"))
 	{
 		return IMAGE_FORMAT_JPG;
 	}
-	else if (fileName.endsWith(".png"))
+	else if (str.endsWith(".png"))
 	{
 		return IMAGE_FORMAT_PNG;
 	}
-	else if (fileName.endsWith(".tif") || fileName.endsWith(".tiff"))
+	else if (str.endsWith(".tif") || str.endsWith(".tiff"))
 	{
 		return IMAGE_FORMAT_TIF;
 	}
-	else if (fileName.endsWith(".bmp"))
+	else if (str.endsWith(".bmp"))
 	{
 		return IMAGE_FORMAT_BMP;
 	}
-	else if (fileName.endsWith(".GIF"))
+	else if (str.endsWith(".GIF"))
 	{
 		return IMAGE_FORMAT_GIF;
 	}
-	else if (fileName.endsWith(".dr"))
+	else if (str.endsWith(".dr"))
 	{
 		return IMAGE_FORMAT_NDR;
 	}
-	else if (fileName.endsWith(".ct"))
+	else if (str.endsWith(".ct"))
 	{
 		return IMAGE_FORMAT_NCT;
 	}
-	else if (fileName.endsWith(".raw"))
+	else if (str.endsWith(".raw"))
 	{
 		return IMAGE_FORMAT_RAW;
 	}
-	else if (fileName.endsWith(".dat"))
+	else if (str.endsWith(".dat"))
 	{
 		return IMAGE_FORMAT_DAT;
 	}

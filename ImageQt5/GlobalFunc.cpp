@@ -1,4 +1,4 @@
-﻿#include "globalfunc.h"
+﻿#include "GlobalFunc.h"
 
 #include <QApplication>
 #include "mainwindow.h"
